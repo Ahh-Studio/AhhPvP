@@ -30,9 +30,9 @@ public class FireballItem extends Item {
             float f = -MathHelper.sin(user.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(user.getPitch() * ((float)Math.PI / 180));
             float g = -MathHelper.sin((user.getPitch() + 0.0F) * ((float)Math.PI / 180));
             float h = MathHelper.cos(user.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(user.getPitch() * ((float)Math.PI / 180));
-            fireballEntity.setVelocity(f, g, h, (float) serverWorld.getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER) / 10, 0.0F);
+            fireballEntity.setVelocity(f, g, h, (float) serverWorld.getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER) / 10, 0.0F);
 
-            if (serverWorld.getGameRules().getBoolean(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY)) {
+            if (serverWorld.getGameRules().getValue(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY)) {
                 Vec3d vec3d = user.getMovement();
                 fireballEntity.setVelocity(fireballEntity.getVelocity().add(vec3d.x, user.isOnGround() ? 0.0 : vec3d.y, vec3d.z));
             }

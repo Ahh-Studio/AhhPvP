@@ -74,10 +74,9 @@ public class PvP implements ModInitializer {
 			context.server().execute(() -> {
 				if (context.player() == null) return;
 				ServerWorld serverWorld = context.player().getEntityWorld();
-				serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER).set(payload.value(), context.server());
+				serverWorld.getGameRules().setValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value(), serverWorld.getServer());
 			});
 		});
-
 		LOGGER.info("[Main]              Mod Initialized Successfully! ");
 	}
 }

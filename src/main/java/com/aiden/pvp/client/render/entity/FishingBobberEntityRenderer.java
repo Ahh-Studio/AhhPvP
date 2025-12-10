@@ -6,10 +6,7 @@ import com.aiden.pvp.items.FishingRodItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -25,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEntity, FishingBobberEntityState> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/fishing_hook.png");
-    private static final RenderLayer LAYER = RenderLayer.getEntityCutout(TEXTURE);
+    private static final RenderLayer LAYER = RenderLayers.entityCutout(TEXTURE);
 
     public FishingBobberEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
@@ -62,7 +59,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         float f = (float)fishingBobberEntityState.pos.x;
         float g = (float)fishingBobberEntityState.pos.y;
         float h = (float)fishingBobberEntityState.pos.z;
-        orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayer.getLines(), (entry, vertexConsumer) -> {
+        orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayers.lines(), (entry, vertexConsumer) -> {
             int i = 16;
 
             for (int j = 0; j < 16; j++) {

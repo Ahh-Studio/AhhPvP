@@ -122,7 +122,7 @@ public abstract class LivingEntityMixin {
             } else {
                 int phdi = 10;
                 if (instance.getEntityWorld() instanceof ServerWorld serverWorld) {
-                    phdi = serverWorld.getGameRules().getInt(ModGameRules.PHDI);
+                    phdi = serverWorld.getGameRules().getValue(ModGameRules.PHDI);
                 }
                 accessor.setLastDamageTaken(amount);
                 instance.timeUntilRegen = 2 * phdi;
@@ -142,7 +142,7 @@ public abstract class LivingEntityMixin {
                 }
 
                 if (!source.isIn(DamageTypeTags.NO_IMPACT) && (!bl || amount > 0.0F)) {
-                    instance.velocityModified = true;
+                    instance.knockedBack = true;
                 }
 
                 if (!source.isIn(DamageTypeTags.NO_KNOCKBACK)) {
