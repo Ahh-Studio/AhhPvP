@@ -7,9 +7,9 @@ A Mod helping PvP. Items:
 - Throwable Fireball(createFire, breakBlocks)
 - Rescue Platform(CD 20s, blocks placed by it don't drop)
 - Auto TNT Ignite(That's the custom one)
-- 1.8 Fishing Rod
+- BBU Fishing Rod
 - Bridge Egg
-- 1.8 Sword
+- BBU Sword
 - Bed Bug
 - So on...
 
