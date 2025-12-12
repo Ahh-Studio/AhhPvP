@@ -139,7 +139,8 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         }
     }
 
-    protected boolean canBeCulled(net.minecraft.entity.projectile.FishingBobberEntity fishingBobberEntity) {
+    @Override
+    protected boolean canBeCulled(FishingBobberEntity fishingBobberEntity) {
         return false;
     }
 }
