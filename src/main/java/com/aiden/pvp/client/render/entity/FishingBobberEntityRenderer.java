@@ -2,7 +2,6 @@ package com.aiden.pvp.client.render.entity;
 
 import com.aiden.pvp.client.render.entity.state.FishingBobberEntityRenderState;
 import com.aiden.pvp.entities.FishingBobberEntity;
-import com.aiden.pvp.items.FishingRodItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -16,6 +15,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FishingRodItem;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -31,19 +31,12 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         super(context);
     }
 
-    @Override
-    public boolean shouldRender(FishingBobberEntity entity, Frustum frustum, double x, double y, double z) {
-        return super.shouldRender(entity, frustum, x, y, z) && entity.getPlayerOwner() != null;
+    public boolean shouldRender(FishingBobberEntity fishingBobberEntity, Frustum frustum, double d, double e, double f) {
+        return super.shouldRender(fishingBobberEntity, frustum, d, e, f) && fishingBobberEntity.getPlayerOwner() != null;
     }
 
-    @Override
-    public FishingBobberEntityState createRenderState() {
-        return new FishingBobberEntityState();
-    }
-
-    @Override
     public void render(
-            FishingBobberEntityRenderState fishingBobberEntityRenderState,
+            FishingBobberEntityRenderState fishingBobberEntityState,
             MatrixStack matrixStack,
             OrderedRenderCommandQueue orderedRenderCommandQueue,
             CameraRenderState cameraRenderState
@@ -52,7 +45,6 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         matrixStack.push();
         matrixStack.scale(0.5F, 0.5F, 0.5F);
         matrixStack.multiply(cameraRenderState.orientation);
-<<<<<<< HEAD
         orderedRenderCommandQueue.submitCustom(matrixStack, LAYER, (entry, vertexConsumer) -> {
             vertex(vertexConsumer, entry, fishingBobberEntityState.light, 0.0F, 0, 0, 1);
             vertex(vertexConsumer, entry, fishingBobberEntityState.light, 1.0F, 0, 1, 1);
@@ -65,21 +57,6 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         float h = (float)fishingBobberEntityState.pos.z;
         orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayer.getLines(), (entry, vertexConsumer) -> {
             int i = 16;
-=======
-        orderedRenderCommandQueue.submitCustom(matrixStack, LAYER, (matricesEntry, vertexConsumer) -> {
-            vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.light, 0.0F, 0, 0, 1);
-            vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.light, 1.0F, 0, 1, 1);
-            vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.light, 1.0F, 1, 1, 0);
-            vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.light, 0.0F, 1, 0, 0);
-        });
-        matrixStack.pop();
-        float f = (float) fishingBobberEntityRenderState.pos.x;
-        float g = (float) fishingBobberEntityRenderState.pos.y;
-        float h = (float) fishingBobberEntityRenderState.pos.z;
-        float i = MinecraftClient.getInstance().getWindow().getMinimumLineWidth();
-        orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayers.lines(), (matricesEntry, vertexConsumer) -> {
-            int j = 16;
->>>>>>> af56919 (Adds the Dagger.)
 
             for (int j = 0; j < 16; j++) {
                 float k = percentage(j, 16);
@@ -89,7 +66,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
             }
         });
         matrixStack.pop();
-        super.render(fishingBobberEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
+        super.render(fishingBobberEntityState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
     }
 
     public static Arm getArmHoldingRod(PlayerEntity player) {
@@ -138,29 +115,24 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         i /= l;
         j /= l;
         k /= l;
-<<<<<<< HEAD
         buffer.vertex(matrices, f, g, h).color(Colors.BLACK).normal(matrices, i, j, k);
-=======
-        buffer.vertex(matrices, f, g, h).color(Colors.BLACK).normal(matrices, i, j, k).lineWidth(getMinimumLineWidth);
     }
 
-    @Override
     public FishingBobberEntityRenderState createRenderState() {
         return new FishingBobberEntityRenderState();
->>>>>>> af56919 (Adds the Dagger.)
     }
 
-    public void updateRenderState(FishingBobberEntity fishingBobberEntity, FishingBobberEntityRenderState fishingBobberEntityRenderState, float f) {
-        super.updateRenderState(fishingBobberEntity, fishingBobberEntityRenderState, f);
+    public void updateRenderState(FishingBobberEntity fishingBobberEntity, FishingBobberEntityRenderState fishingBobberEntityState, float f) {
+        super.updateRenderState(fishingBobberEntity, fishingBobberEntityState, f);
         PlayerEntity playerEntity = fishingBobberEntity.getPlayerOwner();
         if (playerEntity == null) {
-            fishingBobberEntityRenderState.pos = Vec3d.ZERO;
+            fishingBobberEntityState.pos = Vec3d.ZERO;
         } else {
             float g = playerEntity.getHandSwingProgress(f);
             float h = MathHelper.sin(MathHelper.sqrt(g) * (float) Math.PI);
             Vec3d vec3d = this.getHandPos(playerEntity, h, f);
             Vec3d vec3d2 = fishingBobberEntity.getLerpedPos(f).add(0.0, 0.25, 0.0);
-            fishingBobberEntityRenderState.pos = vec3d.subtract(vec3d2);
+            fishingBobberEntityState.pos = vec3d.subtract(vec3d2);
         }
     }
 
