@@ -1,0 +1,10 @@
+# Gradle
+.gradle/
+build/
+
+# IDEA
+.idea/
+
+# Minecraft
+run/
+.vscode/settings.json
