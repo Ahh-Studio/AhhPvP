@@ -7,3 +7,4 @@ build/
 
 # Minecraft
 run/
+.vscode/settings.json

@@ -43,19 +43,18 @@ public class BossSpawnerBlock extends BlockWithEntity {
     }
 
     @Override
-    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
+            PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(ModItems.BOSS_KEY) && world instanceof ServerWorld serverWorld) {
-            if (
-                    serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)
-            ) {
+            if (serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)) {
                 if (world.getBlockEntity(pos) instanceof BossSpawnerBlockEntity blockEntity) {
                     this.summonIllusioner(world, pos.up());
                     blockEntity.placeStructure(serverWorld);
@@ -71,10 +70,12 @@ public class BossSpawnerBlock extends BlockWithEntity {
     protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
+
     @Override
     protected VoxelShape getCullingShape(BlockState state) {
         return SHAPE;
     }
+
     @Override
     protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
@@ -85,6 +86,8 @@ public class BossSpawnerBlock extends BlockWithEntity {
             IllusionerEntity illusionerEntity = new IllusionerEntity(EntityType.ILLUSIONER, world);
             illusionerEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
             illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 2147483647, 14));
+            illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 400, 1));
+            illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 400, 10));
 
             serverWorld.spawnEntity(illusionerEntity);
         }
