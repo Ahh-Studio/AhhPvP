@@ -41,7 +41,7 @@ public class MurdererEntityRenderer extends MobEntityRenderer<MurdererEntity, Mu
         super.updateRenderState(murdererEntity, murdererEntityRenderState, f);
         ArmedEntityRenderState.updateRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
         murdererEntityRenderState.hasVehicle = murdererEntity.hasVehicle();
-        murdererEntityRenderState.illagerMainArm = murdererEntity.getMainArm();
+        murdererEntityRenderState.mainArm = murdererEntity.getMainArm();
         murdererEntityRenderState.murdererState = murdererEntity.getState();
         murdererEntityRenderState.crossbowPullTime = murdererEntityRenderState.murdererState == MurdererEntity.State.CROSSBOW_CHARGE
                 ? CrossbowItem.getPullTime(murdererEntity.getActiveItem(), murdererEntity)

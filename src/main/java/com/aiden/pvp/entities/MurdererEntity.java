@@ -1,7 +1,7 @@
 package com.aiden.pvp.entities;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import com.aiden.pvp.items.ModItems;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -10,10 +10,16 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jspecify.annotations.Nullable;
 
 public class MurdererEntity extends HostileEntity {
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
@@ -64,7 +70,27 @@ public class MurdererEntity extends HostileEntity {
     }
 
     public State getState() {
-        return MurdererEntity.State.CROSSED;
+        if (this.isAttacking()) {
+            return State.ATTACKING;
+        } else {
+            return State.CROSSED;
+        }
+    }
+
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        EntityData entityData2 = super.initialize(world, difficulty, spawnReason, entityData);
+        this.getNavigation().setCanOpenDoors(true);
+        Random random = world.getRandom();
+        this.initEquipment(random, difficulty);
+        this.updateEnchantments(world, random, difficulty);
+        return entityData2;
+    }
+
+    @Override
+    protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
+        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
     }
 
     public enum State {
