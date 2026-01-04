@@ -31,8 +31,6 @@ public class MurdererEntity extends HostileEntity {
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0, false));
-        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0, false));
-        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0, false));
         this.targetSelector.add(1, new RevengeGoal(this));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
@@ -46,8 +44,8 @@ public class MurdererEntity extends HostileEntity {
         return new DefaultAttributeContainer.Builder()
                 .add(EntityAttributes.MAX_HEALTH, 40)
                 .add(EntityAttributes.KNOCKBACK_RESISTANCE)
-                .add(EntityAttributes.MOVEMENT_SPEED)
-                .add(EntityAttributes.ARMOR, 300)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.4)
+                .add(EntityAttributes.ARMOR, 100)
                 .add(EntityAttributes.ARMOR_TOUGHNESS)
                 .add(EntityAttributes.MAX_ABSORPTION)
                 .add(EntityAttributes.STEP_HEIGHT)
@@ -66,7 +64,8 @@ public class MurdererEntity extends HostileEntity {
                 .add(EntityAttributes.WAYPOINT_TRANSMIT_RANGE)
                 .add(EntityAttributes.FOLLOW_RANGE, 20.0)
                 .add(EntityAttributes.ATTACK_DAMAGE, 15.0)
-                .add(EntityAttributes.ATTACK_SPEED, 10);
+                .add(EntityAttributes.ATTACK_SPEED, 10)
+                .add(EntityAttributes.ENTITY_INTERACTION_RANGE, 3);
     }
 
     public State getState() {
