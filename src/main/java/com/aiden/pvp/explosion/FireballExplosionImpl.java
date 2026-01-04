@@ -108,7 +108,7 @@ public class FireballExplosionImpl implements Explosion {
 
     private void damageEntities() {
         if (!(this.power < 1.0E-5F)) {
-            float f = this.power * 2.0F;
+            float f = this.power * 2.5F;
             int i = MathHelper.floor(this.pos.x - f - 1.0);
             int j = MathHelper.floor(this.pos.x + f + 1.0);
             int k = MathHelper.floor(this.pos.y - f - 1.0);
@@ -119,7 +119,7 @@ public class FireballExplosionImpl implements Explosion {
             for (Entity entity : this.world.getOtherEntities(this.entity, new Box(i, k, m, j, l, n))) {
                 if (!entity.isImmuneToExplosion(this)) {
                     double d = Math.sqrt(entity.squaredDistanceTo(this.pos)) / f;
-                    if (!(d > 1.0)) {
+                    if (!(d > 1.0)) { // 距离小于等于强度的2.5倍
                         Vec3d vec3d = entity instanceof TntEntity ? entity.getEntityPos() : entity.getEyePos();
                         Vec3d vec3d2 = vec3d.subtract(this.pos).normalize();
                         boolean bl = this.behavior.shouldDamage(this, entity);
@@ -132,7 +132,7 @@ public class FireballExplosionImpl implements Explosion {
 
                         Vec3d vec3d3 = new Vec3d(
                                 vec3d2.x * 2,
-                                vec3d2.y * 0.5,
+                                vec3d2.y * 0.5 + 0.1,
                                 vec3d2.z * 2
                         );
 
