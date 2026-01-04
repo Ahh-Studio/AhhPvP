@@ -46,15 +46,17 @@ public class BossSpawnerBlock extends BlockWithEntity {
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
             PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(ModItems.BOSS_KEY) && world instanceof ServerWorld serverWorld) {
-            if (serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)) {
+            if (
+                    serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
+                            serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
+                            serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
+                            serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
+                            serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
+                            serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
+                            serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
+                            serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
+                            serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)
+            ) {
                 if (world.getBlockEntity(pos) instanceof BossSpawnerBlockEntity blockEntity) {
                     this.summonIllusioner(world, pos.up());
                     blockEntity.placeStructure(serverWorld);
