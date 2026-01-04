@@ -1,6 +1,7 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.PvP;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -9,6 +10,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 public class ModEntities {
     public static final EntityType<FireballEntity> FIREBALL;
@@ -16,6 +18,7 @@ public class ModEntities {
     public static final EntityType<FishingBobberEntity> FISHING_BOBBER;
     public static final EntityType<BedBugEntity> BED_BUG;
     public static final EntityType<DaggerEntity> DAGGER;
+    public static final EntityType<MurdererEntity> MURDERER;
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
         return Registry.register(Registries.ENTITY_TYPE,
@@ -24,6 +27,7 @@ public class ModEntities {
     }
 
     public static void initialize() {
+        FabricDefaultAttributeRegistry.register(MURDERER, MurdererEntity.createMurdererAttributes().build());
     }
 
     static {
@@ -78,6 +82,13 @@ public class ModEntities {
                         .dimensions(0.5F, 0.5F)
                         .maxTrackingRange(4)
                         .trackingTickInterval(5)
+        );
+        MURDERER = register(
+                "murderer",
+                EntityType.Builder.create(MurdererEntity::new, SpawnGroup.MONSTER)
+                        .dimensions(0.6F, 1.95F)
+                        .maxTrackingRange(8)
+                        .notAllowedInPeaceful()
         );
     }
 }

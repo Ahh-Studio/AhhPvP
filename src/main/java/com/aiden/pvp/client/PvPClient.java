@@ -3,6 +3,7 @@ package com.aiden.pvp.client;
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
+import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
 import com.aiden.pvp.entities.ModEntities;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
@@ -43,6 +44,7 @@ public class PvPClient implements ClientModInitializer {
                 FishingBobberEntityRenderer::new
         );
         EntityRendererFactories.register(ModEntities.DAGGER, DaggerEntityRenderer::new);
+        EntityRendererFactories.register(ModEntities.MURDERER, MurdererEntityRenderer::new);
 
         BlockRenderLayerMap.putBlock(STRONG_GLASS, BlockRenderLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, BlockRenderLayer.TRANSLUCENT);
