@@ -1,5 +1,6 @@
 package com.aiden.pvp.client.render.entity;
 
+import com.aiden.pvp.PvP;
 import com.aiden.pvp.client.render.entity.model.MurdererEntityModel;
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
 import com.aiden.pvp.entities.MurdererEntity;
@@ -9,16 +10,13 @@ import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.IllagerEntityModel;
 import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
-import net.minecraft.client.render.entity.state.IllagerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.util.Identifier;
 
 public class MurdererEntityRenderer extends MobEntityRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
-    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/murderer.png");
+    private static final Identifier TEXTURE = Identifier.of(PvP.MOD_ID, "textures/entity/murderer.png");
 
     public MurdererEntityRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, new MurdererEntityModel(ctx.getPart(EntityModelLayers.VINDICATOR)), 0.5F);

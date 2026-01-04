@@ -1,5 +1,6 @@
 package com.aiden.pvp.entities;
 
+import com.aiden.pvp.explosion.FireballExplosionImpl;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
 import net.minecraft.block.Block;
@@ -71,11 +72,13 @@ public class FireballEntity extends ThrownItemEntity {
         super.onBlockHit(blockHitResult);
         World var3 = this.getEntityWorld();
         if (var3 instanceof ServerWorld serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            // fire
             this.explode(
                     0.5F, true, false, true, 0F, 1.0F,
                     Pool.<BlockParticleEffect>builder().build(), 0, 0, 0
             );
+            // particle
             this.explode(
                     12F, false, false, false, 0F, 0F,
                     Pool.<BlockParticleEffect>builder()
@@ -83,7 +86,7 @@ public class FireballEntity extends ThrownItemEntity {
                             .add(new BlockParticleEffect(ParticleTypes.SMOKE, 1.0F, 1.0F))
                             .build(), 0, 0, 0
             );
-
+            // kb and damage
             this.explode(
                     this.explosionPower, false, true, false, (float) 1 / 600, 1.0F,
                     Pool.<BlockParticleEffect>builder().build(),
@@ -97,7 +100,7 @@ public class FireballEntity extends ThrownItemEntity {
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
         if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
             this.explode(
                     0.5F,
                     true, false, true,
@@ -139,9 +142,10 @@ public class FireballEntity extends ThrownItemEntity {
 
     private void explode(float power, boolean destroyBlocks, boolean damageEntities, boolean createFire, float damageFactor, float kbModifierFactor, Pool<BlockParticleEffect> blockParticles, double dx, double dy, double dz) {
         if (getEntityWorld() instanceof ServerWorld serverWorld) {
-            this.getEntityWorld().createExplosion(
+            FireballExplosionImpl.createExplosion(
+                    this.getEntityWorld(),
                     this,
-                    /* DamageSource: */serverWorld.getDamageSources().explosion(this, this.getOwner()),
+                    serverWorld.getDamageSources().explosion(this, this.getOwner()),
                     new AdvancedExplosionBehavior(
                             destroyBlocks,
                             damageEntities,
@@ -168,6 +172,7 @@ public class FireballEntity extends ThrownItemEntity {
                     ParticleTypes.EXPLOSION_EMITTER,
                     blockParticles,
                     SoundEvents.ENTITY_GENERIC_EXPLODE
+
             );
         }
     }
