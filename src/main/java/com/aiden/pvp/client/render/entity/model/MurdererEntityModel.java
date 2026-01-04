@@ -117,9 +117,7 @@ public class MurdererEntityModel extends EntityModel<MurdererEntityRenderState> 
             if (state.getMainHandItemState().isEmpty()) {
                 ArmPosing.zombieArms(this.leftArm, this.rightArm, true, state);
             } else {
-                ArmPosing.meleeAttack(
-                        this.rightArm, this.leftArm, state.illagerMainArm, state.handSwingProgress, state.age
-                );
+                ArmPosing.meleeAttack(this.rightArm, this.leftArm, state.mainArm, state.handSwingProgress, state.age);
             }
         } else if (state2 == MurdererEntity.State.SPELLCASTING) {
             this.rightArm.originZ = 0.0F;

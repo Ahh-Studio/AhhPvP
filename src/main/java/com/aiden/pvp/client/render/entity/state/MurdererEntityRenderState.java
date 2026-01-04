@@ -7,7 +7,7 @@ import net.minecraft.util.Arm;
 public class MurdererEntityRenderState extends LancerEntityRenderState {
     public boolean hasVehicle;
     public boolean attacking;
-    public Arm illagerMainArm = Arm.RIGHT;
+    public Arm mainArm = Arm.RIGHT;
     public MurdererEntity.State murdererState = MurdererEntity.State.NEUTRAL;
     public int crossbowPullTime;
     public float itemUseTime;
