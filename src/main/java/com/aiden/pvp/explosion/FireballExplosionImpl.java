@@ -1,5 +1,6 @@
 package com.aiden.pvp.explosion;
 
+import com.aiden.pvp.PvP;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
@@ -118,17 +119,18 @@ public class FireballExplosionImpl implements Explosion {
 
             for (Entity entity : this.world.getOtherEntities(this.entity, new Box(i, k, m, j, l, n))) {
                 if (!entity.isImmuneToExplosion(this)) {
-                    double d = Math.sqrt(entity.squaredDistanceTo(this.pos)) / f;
+                    double d = Math.sqrt(entity.squaredDistanceTo(this.pos)) / f; // 距离除以强度的2.5倍
                     if (!(d > 1.0)) { // 距离小于等于强度的2.5倍
-                        Vec3d vec3d = entity instanceof TntEntity ? entity.getEntityPos() : entity.getEyePos();
-                        Vec3d vec3d2 = vec3d.subtract(this.pos).normalize();
+                        Vec3d vec3d = entity instanceof TntEntity ? entity.getEntityPos() : entity.getEyePos(); // 实体眼睛的位置
+                        Vec3d vec3d2 = vec3d.subtract(this.pos).normalize(); // 位置差（距离向量）
                         boolean bl = this.behavior.shouldDamage(this, entity);
                         float g = this.behavior.getKnockbackModifier(entity);
                         float h = !bl && g == 0.0F ? 0.0F : calculateReceivedDamage(this.pos, entity);
                         if (bl) entity.damage(this.world, this.damageSource, this.behavior.calculateDamage(this, entity, h));
 
                         double e = entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(EntityAttributes.EXPLOSION_KNOCKBACK_RESISTANCE) : 0.0;
-                        double o = (1.0 - d) * h * g * (1.0 - e);
+                        double o = (1.0 - d) * h * g * (1.0 - e); // 最终乘数 =  强度的2.5倍减距离 * 伤害 * 击退乘数 * (1.0 - 击退抗性，没有属性值则为0.0)
+                        double p = h == 0 ? 0.5 * (1.0 - d) * g * (1.0 - e) : o; // 防止动量为0，修正动量
 
                         Vec3d vec3d3 = new Vec3d(
                                 vec3d2.x * 2,
@@ -136,7 +138,7 @@ public class FireballExplosionImpl implements Explosion {
                                 vec3d2.z * 2
                         );
 
-                        Vec3d vec3d4 = vec3d3.multiply(o);
+                        Vec3d vec3d4 = vec3d3.multiply(p);
                         entity.addVelocity(vec3d4);
                         if (entity.getType().isIn(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof ProjectileEntity projectileEntity) {
                             projectileEntity.setOwner(this.damageSource.getAttacker());
