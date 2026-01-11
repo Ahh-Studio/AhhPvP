@@ -2,6 +2,7 @@ package com.aiden.pvp.items;
 
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
+import com.aiden.pvp.entities.ModEntities;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -63,6 +64,7 @@ public class ModItems {
     public static final Potion SHORT_INVISIBILITY_POTION = Registry.register(Registries.POTION, Identifier.of(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new StatusEffectInstance(StatusEffects.INVISIBILITY, 600, 0)));
     public static final Potion LONG_INVISIBILITY_POTION = Registry.register(Registries.POTION, Identifier.of(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new StatusEffectInstance(StatusEffects.INVISIBILITY, 12000, 0)));
 
+    public static final Item MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Settings().spawnEgg(ModEntities.MURDERER));
 
     public static final ItemGroup PVP_ITEM_GROUP = ItemGroup
             .create(ItemGroup.Row.BOTTOM, 6)
@@ -112,11 +114,12 @@ public class ModItems {
                 i.add(ModItems.DIAMOND_SWORD);
                 i.add(ModItems.THROWABLE_DAGGER);
                 i.add(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
+                i.add(ModItems.MURDERER_SPAWN_EGG);
             });
             ItemTooltipCallback.EVENT.register((i, context, type, list) -> {
                 if (i.isOf(FIREBALL)) list.add(Text.literal("Use it... and watch it explode!"));
                 if (i.isOf(SELF_RES_PLATFORM)) list.add(Text.literal("Breaking the fall!"));
-                if (i.isOf(WOODEN_SWORD) || i.isOf(STONE_SWORD) || i.isOf(IRON_SWORD) || i.isOf(DIAMOND_SWORD)) list.add(Text.literal("No attack CDs"));
+                if (i.isOf(WOODEN_SWORD) || i.isOf(STONE_SWORD) || i.isOf(IRON_SWORD) || i.isOf(DIAMOND_SWORD)) list.add(Text.literal("No attack CD"));
                 if (i.isOf(GOLDEN_HEAD)) list.add(Text.literal("Powerful! "));
             });
             PvP.LOGGER.info("[Item Initializer]  Mod Items Initialized! ");
