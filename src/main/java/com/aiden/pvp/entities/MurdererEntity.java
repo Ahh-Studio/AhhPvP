@@ -1,6 +1,15 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
+import net.minecraft.component.Component;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.EnchantmentEffectComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentLevelBasedValue;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.effect.value.AddEnchantmentEffect;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.Path;
@@ -17,11 +26,22 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.loot.condition.DamageSourcePropertiesLootCondition;
+import net.minecraft.predicate.TagPredicate;
+import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.predicate.item.EnchantmentsPredicate;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.registry.tag.EnchantmentTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
@@ -33,9 +53,34 @@ import org.jspecify.annotations.Nullable;
 import java.util.EnumSet;
 
 public class MurdererEntity extends HostileEntity {
+    private int wTapFreezeTicks;
+    private static final int DEFAULT_FREEZE_DURATION = 4;
+
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(ModEntities.MURDERER, world);
+        this.wTapFreezeTicks = 0;
     }
+
+    private void triggerWTapPause() {
+        this.wTapFreezeTicks = DEFAULT_FREEZE_DURATION;
+        this.getNavigation().stop();
+    }
+
+    @Override
+    public boolean canMoveVoluntarily() {
+        return this.wTapFreezeTicks <= 0 && super.canMoveVoluntarily();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (this.wTapFreezeTicks > 0) {
+            this.wTapFreezeTicks--;
+        }
+    }
+
+
 
     @Override
     protected void initGoals() {
@@ -58,8 +103,8 @@ public class MurdererEntity extends HostileEntity {
                 .add(EntityAttributes.MAX_HEALTH, 40)
                 .add(EntityAttributes.KNOCKBACK_RESISTANCE)
                 .add(EntityAttributes.MOVEMENT_SPEED, 0.4)
-                .add(EntityAttributes.ARMOR, 100)
-                .add(EntityAttributes.ARMOR_TOUGHNESS)
+                .add(EntityAttributes.ARMOR, 0)
+                .add(EntityAttributes.ARMOR_TOUGHNESS, 4)
                 .add(EntityAttributes.MAX_ABSORPTION)
                 .add(EntityAttributes.STEP_HEIGHT)
                 .add(EntityAttributes.SCALE)
@@ -102,7 +147,23 @@ public class MurdererEntity extends HostileEntity {
 
     @Override
     protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
+        ItemStack helmet = Items.LEATHER_HELMET.getDefaultStack();
+        ItemStack chestplate = Items.LEATHER_CHESTPLATE.getDefaultStack();
+        ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultStack();
+        ItemStack boots = Items.DIAMOND_BOOTS.getDefaultStack();
+
+        {
+            helmet.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
+            chestplate.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
+            leggings.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
+            boots.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
+        }
+
         this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
+        this.equipStack(EquipmentSlot.HEAD, helmet);
+        this.equipStack(EquipmentSlot.CHEST, chestplate);
+        this.equipStack(EquipmentSlot.LEGS, leggings);
+        this.equipStack(EquipmentSlot.FEET, boots);
     }
 
     public enum State {
@@ -113,7 +174,7 @@ public class MurdererEntity extends HostileEntity {
         CROSSBOW_HOLD,
         CROSSBOW_CHARGE,
         CELEBRATING,
-        NEUTRAL;
+        NEUTRAL
     }
 
     static class MeleeAttackGoal extends Goal {
@@ -235,11 +296,16 @@ public class MurdererEntity extends HostileEntity {
                 this.resetCooldown();
                 this.mob.swingHand(Hand.MAIN_HAND);
                 this.mob.tryAttack(getServerWorld(this.mob), target);
+                if (this.mob instanceof MurdererEntity murderer) {
+                    murderer.triggerWTapPause();
+                }
             }
         }
 
         protected void resetCooldown() {
-            this.cooldown = this.getTickCount(20);
+            double attackSpeed = this.mob.getAttributeValue(EntityAttributes.ATTACK_SPEED);
+            int dynamicCooldown = (int) (20 / attackSpeed);
+            this.cooldown = this.getTickCount(Math.max(1, dynamicCooldown));
         }
 
         protected boolean isCooledDown() {
@@ -255,7 +321,9 @@ public class MurdererEntity extends HostileEntity {
         }
 
         protected int getMaxCooldown() {
-            return this.getTickCount(20);
+            double attackSpeed = this.mob.getAttributeValue(EntityAttributes.ATTACK_SPEED);
+            int dynamicCooldown = (int) (20 / attackSpeed);
+            return this.getTickCount(Math.max(1, dynamicCooldown));
         }
     }
 
