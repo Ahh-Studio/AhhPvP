@@ -4,6 +4,8 @@ import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.entity.BossSpawnerBlockEntity;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.client.PvPClient;
+import com.aiden.pvp.entities.ModEntities;
+import com.aiden.pvp.entities.MurdererEntity;
 import com.aiden.pvp.items.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
@@ -46,19 +48,18 @@ public class BossSpawnerBlock extends BlockWithEntity {
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
             PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(ModItems.BOSS_KEY) && world instanceof ServerWorld serverWorld) {
-            if (
-                    serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
-                            serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
-                            serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)
-            ) {
+            if (serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)) {
                 if (world.getBlockEntity(pos) instanceof BossSpawnerBlockEntity blockEntity) {
                     this.summonIllusioner(world, pos.up());
+                    this.summonMurderer(world, pos.west());
                     blockEntity.placeStructure(serverWorld);
                 }
             }
@@ -92,6 +93,15 @@ public class BossSpawnerBlock extends BlockWithEntity {
             illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 400, 10));
 
             serverWorld.spawnEntity(illusionerEntity);
+        }
+    }
+
+    private void summonMurderer(World world, Vec3i pos) {
+        if (world instanceof ServerWorld serverWorld) {
+            MurdererEntity murdererEntity = new MurdererEntity(ModEntities.MURDERER, world);
+            murdererEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
+
+            serverWorld.spawnEntity(murdererEntity);
         }
     }
 
