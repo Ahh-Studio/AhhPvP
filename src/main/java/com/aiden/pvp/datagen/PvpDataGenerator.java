@@ -9,5 +9,7 @@ public class PvpDataGenerator implements DataGeneratorEntrypoint {
         public void onInitializeDataGenerator(FabricDataGenerator generator) {
                 FabricDataGenerator.Pack pack = generator.createPack();
                 pack.addProvider(PvPRecipeProvider::new);
+                pack.addProvider(PvPBlockLootTableProvider::new);
+                pack.addProvider(PvPAdvancementProvider::new);
         }
 }

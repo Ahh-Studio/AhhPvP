@@ -4,6 +4,7 @@ import com.aiden.pvp.PvP;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
+import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
 import com.aiden.pvp.entities.ModEntities;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
@@ -29,6 +30,8 @@ import static com.aiden.pvp.client.keybinding.ModKeyBindings.*;
 public class PvPClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ModEntityModelLayers.register();
+
         EntityRendererFactories.register(
                 ModEntities.FIREBALL,  // 你的实体类型常量
                 FlyingItemEntityRenderer::new  // 使用投掷物默认渲染器
