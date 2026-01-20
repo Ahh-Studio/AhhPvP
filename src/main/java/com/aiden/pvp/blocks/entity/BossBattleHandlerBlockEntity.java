@@ -1,7 +1,7 @@
 package com.aiden.pvp.blocks.entity;
 
 import com.aiden.pvp.PvP;
-import net.minecraft.block.BarrelBlock;
+import com.aiden.pvp.entities.MurdererEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BarrelBlockEntity;
@@ -9,7 +9,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
-import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 public class BossBattleHandlerBlockEntity extends BlockEntity {
     public ArrayList<Entity> players = new ArrayList<>();
     public ServerBossBar bossBar = new ServerBossBar(
-            Text.literal("Illusioner"),
+            Text.literal("AhhPvP Boss"),
             BossBar.Color.YELLOW,
             BossBar.Style.NOTCHED_20
     );
@@ -46,13 +45,13 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
                 x + 17, y + 6, z + 17,
                 x - 17, y, z - 17
         );
-        ArrayList<Entity> illusioners = (ArrayList<Entity>) world.getOtherEntities(
+        ArrayList<Entity> murderers = (ArrayList<Entity>) world.getOtherEntities(
                 null,
                 box,
-                entity -> entity instanceof IllusionerEntity
+                entity -> entity instanceof MurdererEntity
         );
 
-        if (illusioners.isEmpty()) {
+        if (murderers.isEmpty()) {
             for (Entity player : players) {
                 if (player instanceof ServerPlayerEntity serverPlayer) {
                     this.bossBar.removePlayer(serverPlayer);
@@ -64,10 +63,10 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
         }
 
         int bossHP = 0;
-        for (Entity entity : illusioners) {
-            if (entity instanceof IllusionerEntity illusioner) {
-                bossHP = (int) (bossHP + illusioner.getHealth());
-                bossHP = (int) (bossHP + illusioner.getAbsorptionAmount());
+        for (Entity entity : murderers) {
+            if (entity instanceof MurdererEntity murderer) {
+                bossHP = (int) (bossHP + murderer.getHealth());
+                bossHP = (int) (bossHP + murderer.getAbsorptionAmount());
             }
         }
 
