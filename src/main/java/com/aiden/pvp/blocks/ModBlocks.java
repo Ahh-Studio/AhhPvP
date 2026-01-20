@@ -18,7 +18,10 @@ public class ModBlocks {
             "slime_block",
             SlimeBlock::new,
             AbstractBlock.Settings.create()
+                    .mapColor(MapColor.PALE_GREEN)
+                    .slipperiness(0.8F)
                     .sounds(BlockSoundGroup.SLIME)
+                    .nonOpaque()
     );
     public static final Block EGG_BRIDGE = register(
             "egg_bridge",
