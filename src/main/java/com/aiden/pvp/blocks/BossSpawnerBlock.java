@@ -58,8 +58,7 @@ public class BossSpawnerBlock extends BlockWithEntity {
                     serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
                     serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)) {
                 if (world.getBlockEntity(pos) instanceof BossSpawnerBlockEntity blockEntity) {
-                    this.summonIllusioner(world, pos.up());
-                    this.summonMurderer(world, pos.west());
+                    this.summonMurderer(world, pos.up());
                     blockEntity.placeStructure(serverWorld);
                 }
             }
