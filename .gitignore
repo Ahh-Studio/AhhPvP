@@ -8,3 +8,4 @@ build/
 # Minecraft
 run/
 .vscode/settings.json
+/src/main/generated/.cache/
