@@ -1,6 +1,5 @@
 package com.aiden.pvp.explosion;
 
-import com.aiden.pvp.PvP;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
@@ -29,14 +28,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
 import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.explosion.ExplosionBehavior;
-import net.minecraft.world.rule.GameRules;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -211,11 +210,11 @@ public class FireballExplosionImpl implements Explosion {
         ServerWorld serverWorld = (ServerWorld) world;
         Explosion.DestructionType destructionType = switch (explosionSourceType) {
             case NONE -> Explosion.DestructionType.KEEP;
-            case BLOCK -> serverWorld.getGameRules().getValue(GameRules.BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY;
-            case MOB -> serverWorld.getGameRules().getValue(GameRules.DO_MOB_GRIEFING)
-                    ? serverWorld.getGameRules().getValue(GameRules.MOB_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY
+            case BLOCK -> serverWorld.getGameRules().getBoolean(GameRules.BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY;
+            case MOB -> serverWorld.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING)
+                    ? serverWorld.getGameRules().getBoolean(GameRules.MOB_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY
                     : Explosion.DestructionType.KEEP;
-            case TNT -> serverWorld.getGameRules().getValue(GameRules.TNT_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY;
+            case TNT -> serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLOSION_DROP_DECAY) ? Explosion.DestructionType.DESTROY_WITH_DECAY : Explosion.DestructionType.DESTROY;
             case TRIGGER -> Explosion.DestructionType.TRIGGER_BLOCK;
         };
         Vec3d vec3d = new Vec3d(x, y, z);
@@ -266,13 +265,13 @@ public class FireballExplosionImpl implements Explosion {
         if (this.destructionType != Explosion.DestructionType.TRIGGER_BLOCK) {
             return false;
         } else {
-            return this.entity != null && this.entity.getType() == EntityType.BREEZE_WIND_CHARGE ? this.world.getGameRules().getValue(GameRules.DO_MOB_GRIEFING) : true;
+            return this.entity == null || this.entity.getType() != EntityType.BREEZE_WIND_CHARGE || this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING);
         }
     }
 
     @Override
     public boolean preservesDecorativeEntities() {
-        boolean bl = this.world.getGameRules().getValue(GameRules.DO_MOB_GRIEFING);
+        boolean bl = this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING);
         boolean bl2 = this.entity == null || this.entity.getType() != EntityType.BREEZE_WIND_CHARGE && this.entity.getType() != EntityType.WIND_CHARGE;
         return bl ? bl2 : this.destructionType.destroysBlocks() && bl2;
     }

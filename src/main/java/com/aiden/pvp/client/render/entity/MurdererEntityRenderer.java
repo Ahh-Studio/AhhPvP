@@ -14,6 +14,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EquipmentModelData;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
@@ -43,7 +44,7 @@ public class MurdererEntityRenderer extends BipedEntityRenderer<MurdererEntity, 
 
     public void updateRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
         super.updateRenderState(murdererEntity, murdererEntityRenderState, f);
-        ArmedEntityRenderState.updateRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
+        BipedEntityRenderState.updateRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver);
         murdererEntityRenderState.hasVehicle = murdererEntity.hasVehicle();
         murdererEntityRenderState.mainArm = murdererEntity.getMainArm();
         murdererEntityRenderState.attacking = murdererEntity.isAttacking();

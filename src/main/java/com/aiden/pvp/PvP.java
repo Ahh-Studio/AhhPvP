@@ -82,7 +82,7 @@ public class PvP implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(SetFBExplodePowerGameruleC2SPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
                 ServerWorld serverWorld = context.player().getEntityWorld();
-				serverWorld.getGameRules().setValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value(), serverWorld.getServer());
+				serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER).set(payload.value(), serverWorld.getServer());
 			});
 		});
 		LOGGER.info("[Main]              Mod Initialized Successfully! ");

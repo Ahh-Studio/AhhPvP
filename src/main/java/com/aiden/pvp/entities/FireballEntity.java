@@ -72,7 +72,7 @@ public class FireballEntity extends ThrownItemEntity {
         super.onBlockHit(blockHitResult);
         World var3 = this.getEntityWorld();
         if (var3 instanceof ServerWorld serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
             // fire
             this.explode(
                     0.5F, true, false, true, 0F, 1.0F,
@@ -100,7 +100,7 @@ public class FireballEntity extends ThrownItemEntity {
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
         if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
             this.explode(
                     0.5F,
                     true, false, true,
