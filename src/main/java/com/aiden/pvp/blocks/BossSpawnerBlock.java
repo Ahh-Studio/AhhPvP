@@ -11,6 +11,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -99,6 +100,7 @@ public class BossSpawnerBlock extends BlockWithEntity {
         if (world instanceof ServerWorld serverWorld) {
             MurdererEntity murdererEntity = new MurdererEntity(ModEntities.MURDERER, world);
             murdererEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
+            murdererEntity.initialize(serverWorld, serverWorld.getLocalDifficulty(new BlockPos(pos)), SpawnReason.STRUCTURE, null);
 
             serverWorld.spawnEntity(murdererEntity);
         }
