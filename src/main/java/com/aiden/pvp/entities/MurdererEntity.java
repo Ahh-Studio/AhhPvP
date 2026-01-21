@@ -21,6 +21,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Unit;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
@@ -36,7 +38,14 @@ public class MurdererEntity extends HostileEntity {
     private static final int DEFAULT_FREEZE_DURATION = 4;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
-        super(ModEntities.MURDERER, world);
+        super(type, world);
+        if (world instanceof ServerWorld serverWorld) {
+//            initialize(
+//                    serverWorld,
+//                    serverWorld.getLocalDifficulty(new BlockPos((int) getEntityPos().x, (int) getEntityPos().y, (int) getEntityPos().z)),
+//                    SpawnReason.EVENT, null
+//            );
+        }
         this.wTapFreezeTicks = 0;
     }
 
@@ -131,12 +140,10 @@ public class MurdererEntity extends HostileEntity {
         ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultStack();
         ItemStack boots = Items.DIAMOND_BOOTS.getDefaultStack();
 
-        {
-            helmet.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
-            chestplate.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
-            leggings.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
-            boots.set(Component.of(DataComponentTypes.UNBREAKABLE, true));
-        }
+        helmet.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+        chestplate.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+        leggings.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+        boots.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
 
         this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
         this.equipStack(EquipmentSlot.HEAD, helmet);

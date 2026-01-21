@@ -98,11 +98,7 @@ public class BossSpawnerBlock extends BlockWithEntity {
 
     private void summonMurderer(World world, Vec3i pos) {
         if (world instanceof ServerWorld serverWorld) {
-            MurdererEntity murdererEntity = new MurdererEntity(ModEntities.MURDERER, world);
-            murdererEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
-            murdererEntity.initialize(serverWorld, serverWorld.getLocalDifficulty(new BlockPos(pos)), SpawnReason.STRUCTURE, null);
-
-            serverWorld.spawnEntity(murdererEntity);
+            ModEntities.MURDERER.spawn(serverWorld, new BlockPos(pos), SpawnReason.EVENT);
         }
     }
 
