@@ -6,10 +6,14 @@ import com.aiden.pvp.commands.ModCommand;
 import com.aiden.pvp.entities.ModEntities;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
-import com.aiden.pvp.payloads.SetFBExplodePowerGameruleC2SPayload;
+import com.aiden.pvp.payloads.GetGameRulesC2SPayload;
+import com.aiden.pvp.payloads.GetGameRulesS2CPayload;
+import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
+import com.aiden.pvp.screen.SettingsScreen;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.DispenserBlock;
@@ -18,7 +22,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.item.Item;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -78,13 +84,44 @@ public class PvP implements ModInitializer {
             });
 		}));
 
-		PayloadTypeRegistry.playC2S().register(SetFBExplodePowerGameruleC2SPayload.ID, SetFBExplodePowerGameruleC2SPayload.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(SetFBExplodePowerGameruleC2SPayload.ID, (payload, context) -> {
+        // register the client=>server packet of setting game rules
+		PayloadTypeRegistry.playC2S().register(SetGameRulesC2SPayload.ID, SetGameRulesC2SPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(SetGameRulesC2SPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
                 ServerWorld serverWorld = context.player().getEntityWorld();
-				serverWorld.getGameRules().setValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value(), serverWorld.getServer());
+				serverWorld.getGameRules().setValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value1(), serverWorld.getServer());
+                serverWorld.getGameRules().setValue(ModGameRules.PHDI, payload.value2(), serverWorld.getServer());
 			});
 		});
+
+        // register the server=>client packet of getting game rules
+        PayloadTypeRegistry.playS2C().register(GetGameRulesS2CPayload.ID, GetGameRulesS2CPayload.CODEC);
+        ClientPlayNetworking.registerGlobalReceiver(GetGameRulesS2CPayload.ID, (payload, context) -> {
+            if (context.client().currentScreen instanceof SettingsScreen settingsScreen) {
+                settingsScreen.setSliderValues(
+                        payload.value1(),
+                        payload.value2()
+                );
+            }
+        });
+
+        // register the client=>server packet of getting game rules (triggers the returning packet)
+        PayloadTypeRegistry.playC2S().register(GetGameRulesC2SPayload.ID, GetGameRulesC2SPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(GetGameRulesC2SPayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                Entity entity = context.player().getEntityWorld().getEntityById(payload.playerId());
+                if (entity instanceof ServerPlayerEntity serverPlayer) {
+                    ServerPlayNetworking.send(
+                            serverPlayer,
+                            new GetGameRulesS2CPayload(
+                                    serverPlayer.getEntityWorld().getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
+                                    serverPlayer.getEntityWorld().getGameRules().getValue(ModGameRules.PHDI)
+                            )
+                    );
+                }
+            });
+        });
+
 		LOGGER.info("[Main]              Mod Initialized Successfully! ");
 	}
 }
