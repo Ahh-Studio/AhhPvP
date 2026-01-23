@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class SlimeBlock extends TranslucentBlock implements BlockEntityProvider {
     public static final MapCodec<SlimeBlock> CODEC = createCodec(SlimeBlock::new);
