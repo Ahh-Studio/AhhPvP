@@ -27,7 +27,12 @@ public class ModEntities {
     }
 
     public static void initialize() {
-        FabricDefaultAttributeRegistry.register(MURDERER, MurdererEntity.createMurdererAttributes().build());
+        try {
+            FabricDefaultAttributeRegistry.register(MURDERER, MurdererEntity.createMurdererAttributes().build());
+            PvP.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
+        } catch (Exception e) {
+            PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: " + e.getMessage());
+        }
     }
 
     static {

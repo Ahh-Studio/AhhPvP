@@ -2,10 +2,11 @@ package com.aiden.pvp;
 
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
-import com.aiden.pvp.commands.ModCommand;
+import com.aiden.pvp.commands.ModCommands;
 import com.aiden.pvp.entities.ModEntities;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
+import com.aiden.pvp.items.SwordItem;
 import com.aiden.pvp.payloads.GetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.GetGameRulesS2CPayload;
 import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
@@ -14,6 +15,7 @@ import com.aiden.pvp.screen.SettingsScreen;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.DispenserBlock;
@@ -21,17 +23,23 @@ import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.event.Vibrations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.security.auth.callback.Callback;
+import java.util.WeakHashMap;
 
 public class PvP implements ModInitializer {
 	public static final String MOD_ID = "pvp";
@@ -44,12 +52,15 @@ public class PvP implements ModInitializer {
 		ModItems.initialize();
 		ModBlockEntityTypes.initialize();
 		ModEntities.initialize();
-		ModCommand.initialize();
+		ModCommands.initialize();
 
         Item fireballItem = Registries.ITEM.get(Identifier.of(MOD_ID, "fireball"));
         ProjectileDispenserBehavior projectileDispenserBehavior = new ProjectileDispenserBehavior(fireballItem);
         DispenserBlock.registerBehavior(fireballItem, projectileDispenserBehavior);
 
+        LOGGER.info("[Main] Registering Packets...");
+
+        // register the client=>server packet of throwing TNT
 		PayloadTypeRegistry.playC2S().register(ThrowTntC2SPayload.ID, ThrowTntC2SPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ThrowTntC2SPayload.ID, ((throwTntC2SPayload, context) -> {
 			context.server().execute(() -> {
@@ -122,6 +133,6 @@ public class PvP implements ModInitializer {
             });
         });
 
-		LOGGER.info("[Main]              Mod Initialized Successfully! ");
+		LOGGER.info("[Main] Mod Initialized Successfully! ");
 	}
 }

@@ -33,8 +33,13 @@ public class ModBlockEntityTypes {
     }
 
     public static void initialize() {
-        SLIME_BLOCK_ENTITY = register("slime_block_entity", SlimeBlockEntity::new, ModBlocks.SPECIAL_SLIME_BLOCK);
-        BOSS_SPAWNER_BLOCK_ENTITY = register("boss_spawner_block_entity", BossSpawnerBlockEntity::new, ModBlocks.BOSS_SPAWNER);
-        BOSS_BATTLE_HANDLER_BLOCK_ENTITY = register("boss_battle_handler_block_entity", BossBattleHandlerBlockEntity::new, ModBlocks.BOSS_BATTLE_HANDLER);
+        try {
+            SLIME_BLOCK_ENTITY = register("slime_block_entity", SlimeBlockEntity::new, ModBlocks.SPECIAL_SLIME_BLOCK);
+            BOSS_SPAWNER_BLOCK_ENTITY = register("boss_spawner_block_entity", BossSpawnerBlockEntity::new, ModBlocks.BOSS_SPAWNER);
+            BOSS_BATTLE_HANDLER_BLOCK_ENTITY = register("boss_battle_handler_block_entity", BossBattleHandlerBlockEntity::new, ModBlocks.BOSS_BATTLE_HANDLER);
+            PvP.LOGGER.info("[Block Entity Type Initializer] Mod Block Entity Types Initialized!");
+        } catch (Exception e) {
+            PvP.LOGGER.warn("[Block Entity Type Initializer] An Error Occurred: " + e.getMessage());
+        }
     }
 }
