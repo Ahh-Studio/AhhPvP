@@ -19,27 +19,31 @@ public class ModGameRules {
     public static GameRule<Integer> PvpMod_FIREBALL_SHOOT_POWER; // 声明变量
     public static GameRule<Integer> PvpMod_FIREBALL_EXPLODE_POWER; // 声明变量
     public static void initialize() {
-        // 赋值/注册
-        PHDI = registerIntRule(
-                "phdi",
-                GameRuleCategory.MISC,
-                10, 0, 10
-        );
-        PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY = registerBooleanRule(
-                "pvp_mod_do_shooter_velocity_affects_fireball_velocity",
-                GameRuleCategory.MISC,
-                false
-        );
-        PvpMod_FIREBALL_SHOOT_POWER = registerIntRule(
-                "pvp_mod_fireball_shoot_power",
-                GameRuleCategory.MISC,
-                12, 0
-        );
-        PvpMod_FIREBALL_EXPLODE_POWER = registerIntRule(
-                "pvp_mod_fireball_explode_power",
-                GameRuleCategory.MISC,
-                16, 0
-        );
+        try {
+            PHDI = registerIntRule(
+                    "phdi",
+                    GameRuleCategory.MISC,
+                    10, 0, 10
+            );
+            PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY = registerBooleanRule(
+                    "pvp_mod_do_shooter_velocity_affects_fireball_velocity",
+                    GameRuleCategory.MISC,
+                    false
+            );
+            PvpMod_FIREBALL_SHOOT_POWER = registerIntRule(
+                    "pvp_mod_fireball_shoot_power",
+                    GameRuleCategory.MISC,
+                    12, 0
+            );
+            PvpMod_FIREBALL_EXPLODE_POWER = registerIntRule(
+                    "pvp_mod_fireball_explode_power",
+                    GameRuleCategory.MISC,
+                    16, 0
+            );
+            PvP.LOGGER.info("[Game Rules Initializer] Mod Game Rules Initialized! ");
+        } catch (Exception e) {
+            PvP.LOGGER.warn("[Game Rules Initializer] An Error Occurred! ");
+        }
     }
 
     private static GameRule<Boolean> registerBooleanRule(String name, GameRuleCategory category, boolean defaultValue) {

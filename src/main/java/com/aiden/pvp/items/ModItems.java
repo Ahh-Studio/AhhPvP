@@ -54,10 +54,10 @@ public class ModItems {
     public static final Item GOLDEN_HEAD = Items.register(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Settings().rarity(Rarity.EPIC).maxCount(2).translationKey("block.pvp.golden_head"));
     public static final Item BOSS_SPAWNER = Items.register(ModBlocks.BOSS_SPAWNER, new Item.Settings().rarity(Rarity.EPIC).maxCount(64).translationKey("block.pvp.boss_spawner"));
 
-    public static final Item WOODEN_SWORD = register("wooden_sword", Item::new, new Item.Settings().sword(ToolMaterial.WOOD, 3, 251));
-    public static final Item STONE_SWORD = register("stone_sword", Item::new, new Item.Settings().sword(ToolMaterial.STONE, 3, 251));
-    public static final Item IRON_SWORD = register("iron_sword", Item::new, new Item.Settings().sword(ToolMaterial.IRON, 3, 251));
-    public static final Item DIAMOND_SWORD = register("diamond_sword", Item::new, new Item.Settings().sword(ToolMaterial.DIAMOND, 3, 251));
+    public static final Item WOODEN_SWORD = register("wooden_sword", SwordItem::new, new Item.Settings().sword(ToolMaterial.WOOD, 3, 251));
+    public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Settings().sword(ToolMaterial.STONE, 3, 251));
+    public static final Item IRON_SWORD = register("iron_sword", SwordItem::new, new Item.Settings().sword(ToolMaterial.IRON, 3, 251));
+    public static final Item DIAMOND_SWORD = register("diamond_sword", SwordItem::new, new Item.Settings().sword(ToolMaterial.DIAMOND, 3, 251));
 
     public static final Item THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Settings().sword(ToolMaterial.IRON, 2, 251).useCooldown(5));
 
@@ -122,7 +122,7 @@ public class ModItems {
                 if (i.isOf(WOODEN_SWORD) || i.isOf(STONE_SWORD) || i.isOf(IRON_SWORD) || i.isOf(DIAMOND_SWORD)) list.add(Text.literal("No attack CD"));
                 if (i.isOf(GOLDEN_HEAD)) list.add(Text.literal("Powerful! "));
             });
-            PvP.LOGGER.info("[Item Initializer]  Mod Items Initialized! ");
+            PvP.LOGGER.info("[Item Initializer] Mod Items Initialized! ");
         } catch (Exception e) {
             PvP.LOGGER.warn("[Item Initializer]  An Error Occurred! ");
         }
