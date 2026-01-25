@@ -1,7 +1,7 @@
 package com.aiden.pvp.entities;
 
+import com.aiden.pvp.PvP;
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.component.Component;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -14,6 +14,7 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicates;
@@ -22,8 +23,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -36,16 +37,12 @@ import java.util.EnumSet;
 public class MurdererEntity extends HostileEntity {
     private int wTapFreezeTicks;
     private static final int DEFAULT_FREEZE_DURATION = 4;
+    private int enderPearlCooldownTicks;
+    private static final int ENDER_PEARL_COOLDOWN = 200;
+    private static final float PEARL_VELOCITY = 1.2F;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(type, world);
-        if (world instanceof ServerWorld serverWorld) {
-//            initialize(
-//                    serverWorld,
-//                    serverWorld.getLocalDifficulty(new BlockPos((int) getEntityPos().x, (int) getEntityPos().y, (int) getEntityPos().z)),
-//                    SpawnReason.EVENT, null
-//            );
-        }
         this.wTapFreezeTicks = 0;
     }
 
@@ -66,6 +63,10 @@ public class MurdererEntity extends HostileEntity {
         if (this.wTapFreezeTicks > 0) {
             this.wTapFreezeTicks--;
         }
+
+        if (this.enderPearlCooldownTicks > 0) {
+            this.enderPearlCooldownTicks--;
+        }
     }
 
 
@@ -74,6 +75,7 @@ public class MurdererEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(2, new EnderPearlTeleportGoal(this));
         this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0, false));
         this.goalSelector.add(3, new DaggerAttackGoal(this, 1.0, 20, 30.0F));
         this.targetSelector.add(1, new RevengeGoal(this));
@@ -108,7 +110,7 @@ public class MurdererEntity extends HostileEntity {
                 .add(EntityAttributes.ATTACK_KNOCKBACK)
                 .add(EntityAttributes.CAMERA_DISTANCE)
                 .add(EntityAttributes.WAYPOINT_TRANSMIT_RANGE)
-                .add(EntityAttributes.FOLLOW_RANGE, 35.0)
+                .add(EntityAttributes.FOLLOW_RANGE, 40.0)
                 .add(EntityAttributes.ATTACK_DAMAGE, 7.0)
                 .add(EntityAttributes.ATTACK_SPEED, 10)
                 .add(EntityAttributes.ENTITY_INTERACTION_RANGE, 3);
@@ -156,6 +158,67 @@ public class MurdererEntity extends HostileEntity {
         IDLE,
         ATTACKING,
         NEUTRAL
+    }
+
+    static class EnderPearlTeleportGoal extends Goal {
+        private final MurdererEntity mob;
+        private LivingEntity target;
+
+        public EnderPearlTeleportGoal(MurdererEntity mob) {
+            this.mob = mob;
+            this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+        }
+
+        @Override
+        public boolean canStart() {
+            this.target = this.mob.getTarget();
+
+            return this.target != null
+                    && this.target.isAlive()
+                    && this.mob.squaredDistanceTo(this.target) > 400
+                    && this.mob.enderPearlCooldownTicks <= 0
+                    && !this.mob.getEntityWorld().isClient()
+                    && !this.mob.isSubmergedInWater();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            if (this.target == null) return;
+
+            World world = this.mob.getEntityWorld();
+            if (world.isClient()) return;
+
+            PvP.LOGGER.info("Throwing enderPearl");
+            EnderPearlEntity enderPearl = new EnderPearlEntity(EntityType.ENDER_PEARL, world);
+            enderPearl.setOwner(this.mob);
+            enderPearl.setPos(mob.getX(), mob.getEyeY(), mob.getZ());
+
+            Vec3d targetPos = this.target.getEyePos();
+            Vec3d mobPos = this.mob.getEyePos();
+            Vec3d direction = targetPos.subtract(mobPos).normalize();
+
+            enderPearl.setVelocity(
+                    direction.x * PEARL_VELOCITY,
+                    direction.y * PEARL_VELOCITY > 0 ? direction.y * PEARL_VELOCITY * 2.0 : direction.y * PEARL_VELOCITY * -2.0,
+                    direction.z * PEARL_VELOCITY,
+                    PEARL_VELOCITY,
+                    1.0F
+            );
+
+            this.mob.playSound(SoundEvents.ENTITY_ENDER_PEARL_THROW, 1.0F, 1.0F);
+            this.mob.lookAtEntity(this.target, 30.0F, 30.0F);
+            world.spawnEntity(enderPearl);
+
+            this.mob.enderPearlCooldownTicks = ENDER_PEARL_COOLDOWN;
+            this.mob.getNavigation().stop();
+            this.mob.lookAtEntity(this.target, 30.0F, 30.0F);
+        }
+
+        @Override
+        public boolean shouldContinue() {
+            return false;
+        }
     }
 
     static class MeleeAttackGoal extends Goal {
@@ -333,7 +396,9 @@ public class MurdererEntity extends HostileEntity {
 
         @Override
         public boolean canStart() {
-            return this.actor.getTarget() != null && this.isHoldingDagger() && this.actor.getTarget().squaredDistanceTo(this.actor) > 100;
+            return this.actor.getTarget() != null && this.isHoldingDagger()
+                    && this.actor.getTarget().squaredDistanceTo(this.actor) > 100
+                    && this.actor.getTarget().squaredDistanceTo(this.actor) <= 400;
         }
 
         protected boolean isHoldingDagger() {
