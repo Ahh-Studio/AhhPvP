@@ -189,7 +189,6 @@ public class MurdererEntity extends HostileEntity {
             World world = this.mob.getEntityWorld();
             if (world.isClient()) return;
 
-            PvP.LOGGER.info("Throwing enderPearl");
             EnderPearlEntity enderPearl = new EnderPearlEntity(EntityType.ENDER_PEARL, world);
             enderPearl.setOwner(this.mob);
             enderPearl.setPos(mob.getX(), mob.getEyeY(), mob.getZ());
@@ -198,13 +197,24 @@ public class MurdererEntity extends HostileEntity {
             Vec3d mobPos = this.mob.getEyePos();
             Vec3d direction = targetPos.subtract(mobPos).normalize();
 
-            enderPearl.setVelocity(
-                    direction.x * PEARL_VELOCITY,
-                    direction.y * PEARL_VELOCITY > 0 ? direction.y * PEARL_VELOCITY * 2.0 : direction.y * PEARL_VELOCITY * -2.0,
-                    direction.z * PEARL_VELOCITY,
-                    PEARL_VELOCITY,
-                    1.0F
-            );
+            double i = direction.y * 1.2;
+
+            if (i >= 0) {
+                enderPearl.setVelocity(
+                        1.2 * direction.x, 2.0 * i + 0.5, 1.2 * direction.z,
+                        1.2F, 1.0F
+                );
+            } else if (i > -0.4 && i < -0.1) {
+                enderPearl.setVelocity(
+                        1.2 * direction.x, 1 / i * -0.05, 1.2 * direction.z,
+                        1.2F, 1.0F
+                );
+            } else {
+                enderPearl.setVelocity(
+                        1.2 * direction.x, 0.25 * i, 1.2 * direction.z,
+                        1.2F, 1.0F
+                );
+            }
 
             this.mob.playSound(SoundEvents.ENTITY_ENDER_PEARL_THROW, 1.0F, 1.0F);
             this.mob.lookAtEntity(this.target, 30.0F, 30.0F);
