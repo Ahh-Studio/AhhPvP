@@ -1,6 +1,5 @@
 package com.aiden.pvp.entities;
 
-import com.aiden.pvp.PvP;
 import com.aiden.pvp.items.ModItems;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
@@ -9,7 +8,6 @@ import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -47,7 +45,7 @@ public class MurdererEntity extends HostileEntity {
     private static final int FIREBALL_COOLDOWN = 100;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
-        super(type, world);
+        super(ModEntityTypes.MURDERER, world);
         this.wTapFreezeTicks = 0;
     }
 
@@ -483,14 +481,14 @@ public class MurdererEntity extends HostileEntity {
         public void tick() {
             LivingEntity livingEntity = this.actor.getTarget();
             if (livingEntity != null) {
-                double d = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+                double d = this.actor.squaredDistanceTo(livingEntity); //
                 boolean bl = this.actor.getVisibilityCache().canSee(livingEntity);
                 boolean bl2 = this.targetSeeingTicker > 0;
                 this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
 
                 // Approach by fireball
                 if (this.actor.getHealth() >= 10 && this.actor.getEntityWorld().getBlockState(new BlockPos((int) this.actor.getEntityPos().x, ((int) this.actor.getEntityPos().y) - 1, (int) this.actor.getEntityPos().z)) != null) {
-                    if (this.actor.getRandom().nextBetween(0, 2) <= 0.5) {
+                    if (this.actor.getRandom().nextBetween(0, 10) <= 0.5) {
                         if (this.actor.getEntityWorld() instanceof ServerWorld serverWorld && this.actor.fireballCooldownTicks <= 0) {
                             FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
                             fireballEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
@@ -584,7 +582,7 @@ public class MurdererEntity extends HostileEntity {
         }
 
         private @NotNull DaggerEntity getDaggerEntity() {
-            DaggerEntity daggerEntity = new DaggerEntity(ModEntities.DAGGER, this.actor.getEntityWorld());
+            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, this.actor.getEntityWorld());
             daggerEntity.setOwner(this.actor);
 
             daggerEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());

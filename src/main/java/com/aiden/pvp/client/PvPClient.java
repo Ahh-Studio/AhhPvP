@@ -5,7 +5,7 @@ import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
 import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
-import com.aiden.pvp.entities.ModEntities;
+import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
 import net.fabricmc.api.ClientModInitializer;
@@ -33,21 +33,21 @@ public class PvPClient implements ClientModInitializer {
         ModEntityModelLayers.register();
 
         EntityRendererFactories.register(
-                ModEntities.FIREBALL,  // 你的实体类型常量
+                ModEntityTypes.FIREBALL,  // 你的实体类型常量
                 FlyingItemEntityRenderer::new  // 使用投掷物默认渲染器
         );
-        EntityRendererFactories.register(ModEntities.BRIDGE_EGG, context ->
+        EntityRendererFactories.register(ModEntityTypes.BRIDGE_EGG, context ->
                 new FlyingItemEntityRenderer<>(context, 1.0F, true)
         );
-        EntityRendererFactories.register(ModEntities.BED_BUG, context ->
+        EntityRendererFactories.register(ModEntityTypes.BED_BUG, context ->
                 new FlyingItemEntityRenderer<>(context, 1.0F, true)
         );
         EntityRendererFactories.register(
-                ModEntities.FISHING_BOBBER,
+                ModEntityTypes.FISHING_BOBBER,
                 FishingBobberEntityRenderer::new
         );
-        EntityRendererFactories.register(ModEntities.DAGGER, DaggerEntityRenderer::new);
-        EntityRendererFactories.register(ModEntities.MURDERER, MurdererEntityRenderer::new);
+        EntityRendererFactories.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
+        EntityRendererFactories.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
 
         BlockRenderLayerMap.putBlock(STRONG_GLASS, BlockRenderLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, BlockRenderLayer.TRANSLUCENT);

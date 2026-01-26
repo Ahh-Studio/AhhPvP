@@ -2,7 +2,7 @@ package com.aiden.pvp.items;
 
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
-import com.aiden.pvp.entities.ModEntities;
+import com.aiden.pvp.entities.ModEntityTypes;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -64,7 +64,7 @@ public class ModItems {
     public static final Potion SHORT_INVISIBILITY_POTION = Registry.register(Registries.POTION, Identifier.of(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new StatusEffectInstance(StatusEffects.INVISIBILITY, 600, 0)));
     public static final Potion LONG_INVISIBILITY_POTION = Registry.register(Registries.POTION, Identifier.of(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new StatusEffectInstance(StatusEffects.INVISIBILITY, 12000, 0)));
 
-    public static final Item MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Settings().spawnEgg(ModEntities.MURDERER));
+    public static final Item MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Settings().spawnEgg(ModEntityTypes.MURDERER));
 
     public static final ItemGroup PVP_ITEM_GROUP = ItemGroup
             .create(ItemGroup.Row.BOTTOM, 6)

@@ -31,11 +31,11 @@ public class BridgeEggEntity extends ThrownItemEntity {
     }
 
     public BridgeEggEntity(World world, LivingEntity owner, ItemStack stack) {
-        super(ModEntities.BRIDGE_EGG, owner, world, stack);
+        super(ModEntityTypes.BRIDGE_EGG, owner, world, stack);
     }
 
     public BridgeEggEntity(World world, double x, double y, double z, ItemStack stack) {
-        super(ModEntities.BRIDGE_EGG, x, y, z, world, stack);
+        super(ModEntityTypes.BRIDGE_EGG, x, y, z, world, stack);
     }
 
 

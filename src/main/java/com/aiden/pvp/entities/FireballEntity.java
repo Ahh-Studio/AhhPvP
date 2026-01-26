@@ -3,8 +3,6 @@ package com.aiden.pvp.entities;
 import com.aiden.pvp.explosion.FireballExplosionImpl;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -13,10 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.BlockParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.collection.Pool;
@@ -29,18 +23,17 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import net.minecraft.world.explosion.Explosion;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 public class FireballEntity extends ThrownItemEntity {
     private float explosionPower = 12.0F;
     private final float explosionDamage = 2.0F;
 
     public FireballEntity(double x, double y, double z, World world, ItemStack stack) {
-        super(ModEntities.FIREBALL, x, y, z, world, stack);
+        super(ModEntityTypes.FIREBALL, x, y, z, world, stack);
     }
 
     public FireballEntity(LivingEntity owner, World world, ItemStack stack) {
-        super(ModEntities.FIREBALL, owner, world, stack);
+        super(ModEntityTypes.FIREBALL, owner, world, stack);
     }
 
     public FireballEntity(EntityType<? extends FireballEntity> entityType, World world) {
@@ -48,7 +41,7 @@ public class FireballEntity extends ThrownItemEntity {
     }
 
     public FireballEntity(World world, double x, double y, double z, ItemStack stack) {
-        super(ModEntities.FIREBALL, x, y, z, world, stack);
+        super(ModEntityTypes.FIREBALL, x, y, z, world, stack);
     }
 
     @Override
