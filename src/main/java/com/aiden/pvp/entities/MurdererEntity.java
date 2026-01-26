@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -39,7 +40,8 @@ public class MurdererEntity extends HostileEntity {
     private static final int DEFAULT_FREEZE_DURATION = 4;
     private int enderPearlCooldownTicks;
     private static final int ENDER_PEARL_COOLDOWN = 200;
-    private static final float PEARL_VELOCITY = 1.2F;
+    private int comboHitsTaken = 0;
+    private int comboTickCount = 40;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(type, world);
@@ -67,9 +69,43 @@ public class MurdererEntity extends HostileEntity {
         if (this.enderPearlCooldownTicks > 0) {
             this.enderPearlCooldownTicks--;
         }
+
+        if (this.comboTickCount > 0) this.comboTickCount--;
+        else {
+            this.comboTickCount = 40;
+            this.comboHitsTaken = 0;
+        }
+
+        if (this.comboHitsTaken > 3 && this.getTarget() != null) {
+            if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
+                FireballEntity fireballEntity = new FireballEntity(this, this.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
+                fireballEntity.setPos(this.getX(), this.getEyeY(), this.getZ());
+
+                Vec3d targetPos = this.getTarget().getEntityPos().subtract(0, 0.5, 0);
+                Vec3d mobPos = this.getEyePos();
+                Vec3d direction = targetPos.subtract(mobPos).normalize();
+
+                this.lookAtEntity(this.getTarget(), 30.0F, 30.0F);
+
+                fireballEntity.setVelocity(
+                        1.2 * direction.x,
+                        1.2 * direction.y,
+                        1.2 * direction.z,
+                        1.2F,
+                        1.0F
+                );
+
+                serverWorld.spawnEntity(fireballEntity);
+                this.comboHitsTaken = 0;
+            }
+        }
     }
 
-
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        if (source.getAttacker() != null && source.getAttacker() instanceof LivingEntity) this.comboHitsTaken++;
+        return super.damage(world, source, amount);
+    }
 
     @Override
     protected void initGoals() {
@@ -162,7 +198,6 @@ public class MurdererEntity extends HostileEntity {
 
     static class EnderPearlTeleportGoal extends Goal {
         private final MurdererEntity mob;
-        private LivingEntity target;
 
         public EnderPearlTeleportGoal(MurdererEntity mob) {
             this.mob = mob;
@@ -171,11 +206,9 @@ public class MurdererEntity extends HostileEntity {
 
         @Override
         public boolean canStart() {
-            this.target = this.mob.getTarget();
-
-            return this.target != null
-                    && this.target.isAlive()
-                    && this.mob.squaredDistanceTo(this.target) > 400
+            return this.mob.getTarget() != null
+                    && this.mob.getTarget().isAlive()
+                    && this.mob.squaredDistanceTo(this.mob.getTarget()) > 400
                     && this.mob.enderPearlCooldownTicks <= 0
                     && !this.mob.getEntityWorld().isClient()
                     && !this.mob.isSubmergedInWater();
@@ -184,7 +217,7 @@ public class MurdererEntity extends HostileEntity {
         @Override
         public void start() {
             super.start();
-            if (this.target == null) return;
+            if (this.mob.getTarget() == null) return;
 
             World world = this.mob.getEntityWorld();
             if (world.isClient()) return;
@@ -193,7 +226,7 @@ public class MurdererEntity extends HostileEntity {
             enderPearl.setOwner(this.mob);
             enderPearl.setPos(mob.getX(), mob.getEyeY(), mob.getZ());
 
-            Vec3d targetPos = this.target.getEyePos();
+            Vec3d targetPos = this.mob.getTarget().getEyePos();
             Vec3d mobPos = this.mob.getEyePos();
             Vec3d direction = targetPos.subtract(mobPos).normalize();
 
@@ -217,12 +250,13 @@ public class MurdererEntity extends HostileEntity {
             }
 
             this.mob.playSound(SoundEvents.ENTITY_ENDER_PEARL_THROW, 1.0F, 1.0F);
-            this.mob.lookAtEntity(this.target, 30.0F, 30.0F);
+            this.mob.lookAtEntity(this.mob.getTarget(), 30.0F, 30.0F);
+
             world.spawnEntity(enderPearl);
 
             this.mob.enderPearlCooldownTicks = ENDER_PEARL_COOLDOWN;
             this.mob.getNavigation().stop();
-            this.mob.lookAtEntity(this.target, 30.0F, 30.0F);
+            this.mob.lookAtEntity(this.mob.getTarget(), 30.0F, 30.0F);
         }
 
         @Override
@@ -241,9 +275,7 @@ public class MurdererEntity extends HostileEntity {
         private double targetZ;
         private int updateCountdownTicks;
         private int cooldown;
-        private final int attackIntervalTicks = 20;
         private long lastUpdateTime;
-        private static final long MAX_ATTACK_TIME = 20L;
 
         public MeleeAttackGoal(PathAwareEntity mob, double speed, boolean pauseWhenMobIdle) {
             this.mob = mob;
