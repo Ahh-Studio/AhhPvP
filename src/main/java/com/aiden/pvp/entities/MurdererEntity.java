@@ -24,6 +24,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -38,10 +39,12 @@ import java.util.EnumSet;
 public class MurdererEntity extends HostileEntity {
     private int wTapFreezeTicks;
     private static final int DEFAULT_FREEZE_DURATION = 4;
-    private int enderPearlCooldownTicks;
+    private int enderPearlCooldownTicks = 0;
     private static final int ENDER_PEARL_COOLDOWN = 200;
     private int comboHitsTaken = 0;
     private int comboTickCount = 40;
+    private int fireballCooldownTicks = 0;
+    private static final int FIREBALL_COOLDOWN = 100;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(type, world);
@@ -68,6 +71,10 @@ public class MurdererEntity extends HostileEntity {
 
         if (this.enderPearlCooldownTicks > 0) {
             this.enderPearlCooldownTicks--;
+        }
+
+        if (this.fireballCooldownTicks > 0) {
+            this.fireballCooldownTicks--;
         }
 
         if (this.comboTickCount > 0) this.comboTickCount--;
@@ -480,6 +487,33 @@ public class MurdererEntity extends HostileEntity {
                 boolean bl = this.actor.getVisibilityCache().canSee(livingEntity);
                 boolean bl2 = this.targetSeeingTicker > 0;
                 this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
+
+                // Approach by fireball
+                if (this.actor.getHealth() >= 10 && this.actor.getEntityWorld().getBlockState(new BlockPos((int) this.actor.getEntityPos().x, ((int) this.actor.getEntityPos().y) - 1, (int) this.actor.getEntityPos().z)) != null) {
+                    if (this.actor.getRandom().nextBetween(0, 2) <= 0.5) {
+                        if (this.actor.getEntityWorld() instanceof ServerWorld serverWorld && this.actor.fireballCooldownTicks <= 0) {
+                            FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
+                            fireballEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
+
+                            this.actor.lookAtEntity(this.actor.getTarget(), 30.0F, 30.0F);
+
+                            this.actor.getMoveControl().strafeTo(5.0F, 0.0F);
+                            this.actor.setVelocity(this.actor.getVelocity().add(0.0, 0.25, 0.0));
+
+                            fireballEntity.setVelocity(
+                                    0.8 * MathHelper.sin(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180)),
+                                    -1.0,
+                                    0.8 * -MathHelper.cos(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180)),
+                                    1.2F, 0.0F
+                            );
+
+                            serverWorld.spawnEntity(fireballEntity);
+
+                            this.actor.fireballCooldownTicks = FIREBALL_COOLDOWN;
+                        }
+                    }
+                }
+
                 if (bl != bl2) {
                     this.targetSeeingTicker = 0;
                 }
