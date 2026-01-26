@@ -1,6 +1,5 @@
 package com.aiden.pvp.entities;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -23,7 +22,7 @@ public class DaggerEntity extends ProjectileEntity {
     public List<LivingEntity> hitEntities = new ArrayList<>();
 
     public DaggerEntity(EntityType<? extends DaggerEntity> entityType, World world) {
-        super(ModEntities.DAGGER, world);
+        super(ModEntityTypes.DAGGER, world);
     }
 
     @Override
@@ -111,6 +110,5 @@ public class DaggerEntity extends ProjectileEntity {
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
-
     }
 }

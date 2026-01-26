@@ -1,26 +1,19 @@
 package com.aiden.pvp.blocks;
 
-import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.entity.BossSpawnerBlockEntity;
-import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
-import com.aiden.pvp.client.PvPClient;
-import com.aiden.pvp.entities.ModEntities;
-import com.aiden.pvp.entities.MurdererEntity;
+import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.items.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.boss.ServerBossBar;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -30,8 +23,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 public class BossSpawnerBlock extends BlockWithEntity {
     private static final VoxelShape SHAPE = Block.createColumnShape(16.0, 0.0, 8.0);
@@ -98,7 +89,7 @@ public class BossSpawnerBlock extends BlockWithEntity {
 
     private void summonMurderer(World world, Vec3i pos) {
         if (world instanceof ServerWorld serverWorld) {
-            ModEntities.MURDERER.spawn(serverWorld, new BlockPos(pos), SpawnReason.EVENT);
+            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos), SpawnReason.EVENT);
         }
     }
 

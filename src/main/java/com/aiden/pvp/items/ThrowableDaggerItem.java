@@ -1,7 +1,7 @@
 package com.aiden.pvp.items;
 
 import com.aiden.pvp.entities.DaggerEntity;
-import com.aiden.pvp.entities.ModEntities;
+import com.aiden.pvp.entities.ModEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.world.ServerWorld;
@@ -19,7 +19,7 @@ public class ThrowableDaggerItem extends Item {
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         super.use(world, user, hand);
         if (world instanceof ServerWorld serverWorld) {
-            DaggerEntity daggerEntity = new DaggerEntity(ModEntities.DAGGER, world);
+            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, world);
             daggerEntity.setOwner(user);
 
             daggerEntity.setPos(user.getX(), user.getEyeY(), user.getZ());

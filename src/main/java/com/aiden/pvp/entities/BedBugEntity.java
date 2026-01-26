@@ -1,13 +1,11 @@
 package com.aiden.pvp.entities;
 
-import com.aiden.pvp.PvP;
 import com.aiden.pvp.items.ModItems;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.SilverfishEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -15,13 +13,9 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import org.joml.Vector3f;
 
-import static com.aiden.pvp.entities.ModEntities.BED_BUG;
+import static com.aiden.pvp.entities.ModEntityTypes.BED_BUG;
 
 public class BedBugEntity extends ThrownItemEntity {
     public BedBugEntity(EntityType<? extends BedBugEntity> entityType, World world) {
