@@ -1,6 +1,9 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -25,6 +28,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -43,6 +47,8 @@ public class MurdererEntity extends HostileEntity {
     private int comboTickCount = 40;
     private int fireballCooldownTicks = 0;
     private static final int FIREBALL_COOLDOWN = 100;
+    private boolean isDoingWaterBucketMLG = false;
+    private BlockPos waterBucketMLGWaterPos;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(ModEntityTypes.MURDERER, world);
@@ -102,6 +108,87 @@ public class MurdererEntity extends HostileEntity {
 
                 serverWorld.spawnEntity(fireballEntity);
                 this.comboHitsTaken = 0;
+            }
+        }
+
+        if (this.getTarget() != null) {
+            this.placeBlocksUnderFeetWhenBeBlocked();
+        }
+
+        // water bucket MLG
+        {
+            BlockState blockState = this.getEntityWorld().getBlockState(new BlockPos(
+                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                    ((int) this.getEntityPos().y) - 1,
+                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            ));
+
+            BlockState blockState1 = this.getEntityWorld().getBlockState(new BlockPos(
+                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                    ((int) this.getEntityPos().y) - 2,
+                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            ));
+
+            if (this.fallDistance > 3 && blockState.isAir() && !blockState1.isAir()) {
+                this.waterBucketMLGWaterPos = new BlockPos(
+                        this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                        ((int) this.getEntityPos().y) - 1,
+                        this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+                );
+                this.getEntityWorld().setBlockState(
+                        this.waterBucketMLGWaterPos,
+                        Blocks.WATER.getDefaultState(),
+                        6
+                );
+                this.isDoingWaterBucketMLG = true;
+            }
+
+            BlockState blockState2 = this.getEntityWorld().getBlockState(new BlockPos(
+                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                    (int) this.getEntityPos().y - 1,
+                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            ));
+
+            if (this.isDoingWaterBucketMLG
+                    && this.waterBucketMLGWaterPos != null
+                    && this.fallDistance == 0
+                    && this.getEntityWorld().getBlockState(this.waterBucketMLGWaterPos).isOf(Blocks.WATER)
+                    && !blockState2.isAir()
+            ) {
+                this.getEntityWorld().setBlockState(
+                        this.waterBucketMLGWaterPos,
+                        Blocks.AIR.getDefaultState(),
+                        6
+                );
+                this.isDoingWaterBucketMLG = false;
+                this.waterBucketMLGWaterPos = null;
+            }
+        }
+    }
+
+    private void placeBlocksUnderFeetWhenBeBlocked() {
+        if (!this.canSee(this.getTarget())) { // 看不到目标
+            if (this.getRandom().nextBetween(0, 10) <= 0.5) { // 随机，有概率不触发
+                if (this.getEntityWorld() instanceof ServerWorld serverWorld) { // 服务端运作
+                    final BlockState blockState = this.getEntityWorld().getBlockState(new BlockPos(
+                            this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                            ((int) this.getEntityPos().y) - 1,
+                            this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+                    ));
+
+                    if (!blockState.isAir()) {
+                        this.setVelocity(this.getVelocity().add(0.0, 0.5, 0.0));
+                        this.getEntityWorld().setBlockState(
+                                new BlockPos(
+                                        this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
+                                        (int) this.getEntityPos().y,
+                                        this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+                                ),
+                                Blocks.DIRT.getDefaultState(),
+                                6
+                        );
+                    }
+                }
             }
         }
     }
@@ -487,9 +574,14 @@ public class MurdererEntity extends HostileEntity {
                 this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
 
                 // Approach by fireball
-                if (this.actor.getHealth() >= 10 && this.actor.getEntityWorld().getBlockState(new BlockPos((int) this.actor.getEntityPos().x, ((int) this.actor.getEntityPos().y) - 1, (int) this.actor.getEntityPos().z)) != null) {
-                    if (this.actor.getRandom().nextBetween(0, 10) <= 0.5) {
-                        if (this.actor.getEntityWorld() instanceof ServerWorld serverWorld && this.actor.fireballCooldownTicks <= 0) {
+                BlockState blockState = this.actor.getEntityWorld().getBlockState(new BlockPos(
+                        this.actor.getEntityPos().x >= 0 ? (int) this.actor.getEntityPos().x : (int) this.actor.getEntityPos().x - 1,
+                        (int) this.actor.getEntityPos().y,
+                        this.actor.getEntityPos().z >= 0 ? (int) this.actor.getEntityPos().z : (int) this.actor.getEntityPos().z - 1
+                ));
+                if (this.actor.getHealth() >= 10 && !blockState.isAir() && this.actor.fireballCooldownTicks <= 0) { // 同时满足：血量>10、脚底方块不是空气、冷却结束
+                    if (this.actor.getRandom().nextBetween(0, 10) <= 0.5) { // 随机，有概率不触发
+                        if (this.actor.getEntityWorld() instanceof ServerWorld serverWorld) { // 服务端生成实体
                             FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
                             fireballEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
 
