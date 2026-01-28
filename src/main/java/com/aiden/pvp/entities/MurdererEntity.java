@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.Objects;
 
 public class MurdererEntity extends HostileEntity {
     private int wTapFreezeTicks;
@@ -49,6 +50,7 @@ public class MurdererEntity extends HostileEntity {
     private static final int FIREBALL_COOLDOWN = 100;
     private boolean isDoingWaterBucketMLG = false;
     private BlockPos waterBucketMLGWaterPos;
+    public boolean isInPhase2 = false;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
         super(ModEntityTypes.MURDERER, world);
@@ -68,6 +70,23 @@ public class MurdererEntity extends HostileEntity {
     @Override
     public void tick() {
         super.tick();
+
+        if ((4 * (this.getHealth() + this.getAbsorptionAmount())) < (this.getMaxHealth() + this.getAbsorptionAmount())) {
+            this.setInPhase2(true);
+        }
+
+        if (this.isInPhase2) {
+            if (this.getAttributeBaseValue(EntityAttributes.ENTITY_INTERACTION_RANGE) != 4.0) {
+                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE)).setBaseValue(4.0);
+            }
+            if (this.getAttributeBaseValue(EntityAttributes.ATTACK_DAMAGE) != 12.0) {
+                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE)).setBaseValue(12.0);
+            }
+            if (this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) != 1.0) {
+                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED)).setBaseValue(1.0);
+            }
+            return;
+        }
 
         if (this.wTapFreezeTicks > 0) {
             this.wTapFreezeTicks--;
@@ -280,6 +299,10 @@ public class MurdererEntity extends HostileEntity {
         this.equipStack(EquipmentSlot.CHEST, chestplate);
         this.equipStack(EquipmentSlot.LEGS, leggings);
         this.equipStack(EquipmentSlot.FEET, boots);
+    }
+
+    public void setInPhase2(boolean inPhase2) {
+        this.isInPhase2 = inPhase2;
     }
 
     public enum State {
