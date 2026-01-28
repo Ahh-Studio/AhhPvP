@@ -11,6 +11,6 @@ public class PvPDataGenerator implements DataGeneratorEntrypoint {
                 FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
                 pack.addProvider(PvPBlockLootTableProvider::new);
-                pack.addProvider(PvPRecipeProvider::new);
+                // pack.addProvider((output, registriesFuture) -> new PvPRecipeProvider(output, registriesFuture));
         }
 }

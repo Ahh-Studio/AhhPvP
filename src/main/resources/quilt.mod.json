@@ -1,0 +1,44 @@
+{
+    "schema_version": 1,
+    "quilt_loader": {
+        "group": "${group}",
+        "id": "pvp",
+        "version": "${version}",
+        "metadata": {
+            "name": "PvP",
+            "description": "A short description of your mod.",
+            "contributors": {
+                "Aiden": "Owner",
+                "Henry": "Member"
+            },
+            "contact": {
+                "homepage": "https://github.com/Ahh-Studio/AhhPvP",
+                "issues": "https://github.com/Ahh-Studio/AhhPvP/issues",
+                "sources": "https://github.com/Ahh-Studio/AhhPvP"
+            },
+            "icon": "assets/pvp/icon.png",
+            "modmenu": {
+            
+            }
+        },
+        "intermediate_mappings": "net.fabricmc:intermediary",
+        "entrypoints": {
+            "init": "com.aiden.pvp.PvP"
+        },
+        "depends": [
+            {
+                "id": "quilt_loader",
+                "versions": ">=0.19.1"
+            },
+            {
+                "id": "fabric_api",
+                "versions": "*"
+            },
+            {
+                "id": "minecraft",
+                "versions": "1.21.11"
+            }
+        ]
+    },
+    "mixin": "pvp.mixins.json"
+}

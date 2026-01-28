@@ -1,0 +1,29 @@
+# The latest versions are available at https://quiltmc.org/en/usage/latest-versions/
+[versions]
+minecraft = "1.21.11"
+quilt_mappings = "1.21.11+build.2"
+yarn_mappings = "1.21.11+build.2"
+
+quilt_loom = "1.7.4"
+quilt_loader = "0.26.3"
+
+quilted_fabric_api = "11.0.0-alpha.3+0.102.0-1.21"
+fabric_api = "0.139.4+1.21.11"
+quilt_standard_libraries = "10.0.0-alpha.1+1.21"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+quilt_mappings = { module = "org.quiltmc:quilt-mappings", version.ref = "quilt_mappings" }
+yarn_mappings = { module = "net.fabricmc:yarn", version.ref = "yarn_mappings" }
+quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
+
+quilt_standard_libraries = { module = "org.quiltmc:qsl", version.ref = "quilt_standard_libraries" }
+quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", version.ref = "quilted_fabric_api" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+
+# If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
+[bundles]
+quilted_fabric_api = ["quilted_fabric_api", "quilt_standard_libraries"]
+
+[plugins]
+quilt_loom = { id = "org.quiltmc.loom", version.ref = "quilt_loom" }

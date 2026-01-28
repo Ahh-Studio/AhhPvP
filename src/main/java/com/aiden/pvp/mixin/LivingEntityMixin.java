@@ -32,8 +32,8 @@ public abstract class LivingEntityMixin {
     @Inject(
             method = "takeKnockback",
             at = @At("HEAD"),
-            cancellable = true,
-            order = 999
+            cancellable = true//,
+//            order = 999
     )
     public void takeKnockback(double strength, double x, double z, CallbackInfo ci) {
         LivingEntity instance = (LivingEntity) (Object) this;
@@ -65,8 +65,8 @@ public abstract class LivingEntityMixin {
     @Inject(
             method = "damage(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;F)Z",
             at = @At("HEAD"),
-            cancellable = true,
-            order = 999
+            cancellable = true//,
+//            order = 999
     )
     public void damage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity instance = (LivingEntity) (Object) this;
