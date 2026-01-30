@@ -4,12 +4,11 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class PvpDataGenerator implements DataGeneratorEntrypoint {
-
-        @Override
-        public void onInitializeDataGenerator(FabricDataGenerator generator) {
-                FabricDataGenerator.Pack pack = generator.createPack();
-                pack.addProvider(PvPRecipeProvider::new);
-                pack.addProvider(PvPBlockLootTableProvider::new);
-                pack.addProvider(PvPAdvancementProvider::new);
-        }
+    @Override
+    public void onInitializeDataGenerator(FabricDataGenerator generator) {
+        FabricDataGenerator.Pack pack = generator.createPack();
+        pack.addProvider(PvPRecipeProvider::new);
+        pack.addProvider(PvPBlockLootTableProvider::new);
+        pack.addProvider(PvPAdvancementProvider::new);
+    }
 }
