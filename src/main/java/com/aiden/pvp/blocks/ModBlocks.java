@@ -80,7 +80,7 @@ public class ModBlocks {
     );
     public static final Block BOSS_BATTLE_HANDLER = register(
             "boss_battle_handler",
-            BossBattleHandler::new,
+            BossBattleHandlerBlock::new,
             AbstractBlock.Settings.create()
                     .mapColor(MapColor.BLACK)
                     .strength(0)
