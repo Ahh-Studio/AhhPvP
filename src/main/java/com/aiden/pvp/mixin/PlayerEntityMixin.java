@@ -3,17 +3,22 @@ package com.aiden.pvp.mixin;
 import com.aiden.pvp.entities.FishingBobberEntity;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     @Unique
     private FishingBobberEntity pvpFishHook = null;
+    @Unique
+    public boolean blocking = false;
 
     @Override
     @Unique
@@ -25,6 +30,18 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     @Unique
     public FishingBobberEntity getPvpFishHook() {
         return this.pvpFishHook;
+    }
+
+    @Override
+    @Unique
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
+    }
+
+    @Override
+    @Unique
+    public boolean isBlocking() {
+        return this.blocking;
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
@@ -49,5 +66,15 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
             this.pvpFishHook.discard();
             extension.setPvpFishHook(null);
         }
+    }
+
+    @Inject(
+            method = "shouldCancelInteraction",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void shouldCancelInteraction(CallbackInfoReturnable<Boolean> cir) {
+        PlayerEntity instance = (PlayerEntity) (Object) this;
+        cir.setReturnValue(instance.isSneaking() || instance.isBlocking());
     }
 }

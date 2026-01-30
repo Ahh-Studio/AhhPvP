@@ -3,8 +3,14 @@
     "package": "com.aiden.pvp.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
+        "AbstractChestBoatEntityMixin",
+        "AbstractHorseEntityMixin",
+        "AbstractNautilusEntityMixin",
+        "CamelEntityMixin",
         "IllusionerEntityMixin",
+        "ItemMixin",
         "LivingEntityMixin",
+        "MobEntityMixin",
         "PlayerEntityMixin",
         "accessor.LivingEntityAccessor",
         "accessor.MobEntityAccessor",
@@ -15,5 +21,10 @@
     },
     "overwrites": {
         "requireAnnotations": true
-	}
+    },
+    "client": [
+        "ClientPlayerEntityMixin",
+        "MinecraftClientMixin",
+        "invoker.ClientPlayerEntityInvoker"
+    ]
 }

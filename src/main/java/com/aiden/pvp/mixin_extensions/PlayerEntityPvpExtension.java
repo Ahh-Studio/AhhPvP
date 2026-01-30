@@ -5,4 +5,7 @@ import com.aiden.pvp.entities.FishingBobberEntity;
 public interface PlayerEntityPvpExtension {
     void setPvpFishHook(FishingBobberEntity fishingBobberEntity);
     FishingBobberEntity getPvpFishHook();
+
+    void setBlocking(boolean bl);
+    boolean isBlocking();
 }
