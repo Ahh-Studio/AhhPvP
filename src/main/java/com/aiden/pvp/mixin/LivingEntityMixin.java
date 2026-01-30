@@ -3,6 +3,7 @@ package com.aiden.pvp.mixin;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.mixin.accessor.LivingEntityAccessor;
 import com.aiden.pvp.mixin.invoker.LivingEntityInvoker;
+import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.component.DataComponentTypes;
@@ -13,6 +14,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.DamageTypeTags;
@@ -22,6 +24,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,6 +32,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+    @Shadow
+    public abstract boolean canBreatheInWater();
+
     @Inject(
             method = "takeKnockback",
             at = @At("HEAD"),
@@ -126,7 +132,14 @@ public abstract class LivingEntityMixin {
                 }
                 accessor.setLastDamageTaken(amount);
                 instance.timeUntilRegen = 2 * phdi;
-                invoker.invokedApplyDamage(world, source, amount);
+
+                if (instance instanceof PlayerEntity player) {
+                    PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
+                    if (playerEntityPvpExtension.isBlocking()) {
+                        invoker.invokedApplyDamage(world, source, amount * 0.5F);
+                    } else invoker.invokedApplyDamage(world, source, amount);
+                } else invoker.invokedApplyDamage(world, source, amount);
+
                 instance.maxHurtTime = phdi;
                 instance.hurtTime = instance.maxHurtTime;
             }
@@ -157,7 +170,13 @@ public abstract class LivingEntityMixin {
                         e = source.getPosition().getZ() - instance.getZ();
                     }
 
-                    instance.takeKnockback(0.4F, d, e);
+                    if (instance instanceof PlayerEntity player) {
+                        PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
+                        if (playerEntityPvpExtension.isBlocking()) {
+                            instance.takeKnockback(0.2F, d, e);
+                        } else instance.takeKnockback(0.4F, d, e);
+                    } else instance.takeKnockback(0.4F, d, e);
+
                     if (!bl) {
                         instance.tiltScreen(d, e);
                     }

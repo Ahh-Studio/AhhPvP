@@ -6,22 +6,22 @@ import com.aiden.pvp.commands.ModCommands;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
-import com.aiden.pvp.payloads.GetGameRulesC2SPayload;
-import com.aiden.pvp.payloads.GetGameRulesS2CPayload;
-import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
-import com.aiden.pvp.payloads.ThrowTntC2SPayload;
+import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
+import com.aiden.pvp.payloads.*;
 import com.aiden.pvp.screen.SettingsScreen;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.*;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TntEntity;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
+import net.minecraft.predicate.item.EnchantmentsPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -31,6 +31,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class PvP implements ModInitializer {
 	public static final String MOD_ID = "pvp";
@@ -123,6 +125,20 @@ public class PvP implements ModInitializer {
                 }
             });
         });
+
+        // register the client=>server packet of blocking hit
+        PayloadTypeRegistry.playC2S().register(BlockHitC2SPayload.ID, BlockHitC2SPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(BlockHitC2SPayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                Entity entity = context.player().getEntityWorld().getEntityById(payload.playerID());
+                if (entity instanceof ServerPlayerEntity serverPlayer) {
+                    PlayerEntityPvpExtension serverPlayerExt = (PlayerEntityPvpExtension) serverPlayer;
+                    serverPlayerExt.setBlocking(payload.isBlocking());
+                }
+            });
+        });
+
+
 
 		LOGGER.info("[Main] Mod Initialized Successfully! ");
 	}

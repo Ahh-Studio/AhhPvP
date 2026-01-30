@@ -71,8 +71,8 @@ public class MurdererEntity extends HostileEntity {
     public void tick() {
         super.tick();
 
-        if ((4 * (this.getHealth() + this.getAbsorptionAmount())) < (this.getMaxHealth() + this.getAbsorptionAmount())) {
-            this.setInPhase2(true);
+        if (this.wTapFreezeTicks > 0) {
+            this.wTapFreezeTicks--;
         }
 
         if (this.isInPhase2) {
@@ -86,10 +86,6 @@ public class MurdererEntity extends HostileEntity {
                 Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED)).setBaseValue(1.0);
             }
             return;
-        }
-
-        if (this.wTapFreezeTicks > 0) {
-            this.wTapFreezeTicks--;
         }
 
         if (this.enderPearlCooldownTicks > 0) {
@@ -182,6 +178,10 @@ public class MurdererEntity extends HostileEntity {
                 this.isDoingWaterBucketMLG = false;
                 this.waterBucketMLGWaterPos = null;
             }
+        }
+
+        if ((4 * (this.getHealth() + this.getAbsorptionAmount())) < (this.getMaxHealth() + this.getAbsorptionAmount())) {
+            this.setInPhase2(true);
         }
     }
 
