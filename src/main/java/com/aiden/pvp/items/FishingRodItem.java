@@ -21,6 +21,7 @@ public class FishingRodItem extends net.minecraft.item.FishingRodItem {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
+        super.use(world, user, hand);
         PlayerEntityPvpExtension userExtension = (PlayerEntityPvpExtension) user;
         ItemStack itemStack = user.getStackInHand(hand);
         if (userExtension.getPvpFishHook() != null) {
