@@ -9,8 +9,8 @@
 		"Henry"
 	],
 	"contact": {
-		"homepage": "",
-		"sources": ""
+		"homepage": "https://github.com/Ahh-Studio/AhhPvP",
+		"sources": "https://github.com/Ahh-Studio/AhhPvP"
 	},
 	"license": "MIT",
 	"icon": "assets/pvp/icon.png",
@@ -26,7 +26,7 @@
 			"com.aiden.pvp.PvPDataGenerator"
 		],
 		"modmenu": [
-			"com.aiden.pvp.modmenu.ModMenuConfigScreenHandler"
+            "com.aiden.pvp.modmenu.PvPModMenuCompat"
 		]
 	},
 	"mixins": [

@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -77,7 +76,7 @@ public class SettingsScreen extends Screen {
                         (button) -> {
                             SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2);
                             ClientPlayNetworking.send(payload);
-                            client.setScreen(null);
+                            this.close();
                         })
                 .position(this.width / 2 - 50, this.height / 2 + 50)
                 .size(100, 20)
