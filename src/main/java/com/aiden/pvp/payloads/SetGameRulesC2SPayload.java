@@ -1,25 +1,25 @@
 package com.aiden.pvp.payloads;
 
 import com.aiden.pvp.PvP;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record SetGameRulesC2SPayload(int value1, int value2) implements CustomPayload {
-    public static final Identifier SET_GAME_RULES_PAYLOAD_ID = Identifier.of(PvP.MOD_ID, "set_game_rules_c2s_payload");
-    public static final CustomPayload.Id<SetGameRulesC2SPayload> ID = new CustomPayload.Id<>(SET_GAME_RULES_PAYLOAD_ID);
-    public static final PacketCodec<RegistryByteBuf, SetGameRulesC2SPayload> CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER,
+public record SetGameRulesC2SPayload(int value1, int value2) implements CustomPacketPayload {
+    public static final Identifier SET_GAME_RULES_PAYLOAD_ID = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "set_game_rules_c2s_payload");
+    public static final CustomPacketPayload.Type<SetGameRulesC2SPayload> ID = new CustomPacketPayload.Type<>(SET_GAME_RULES_PAYLOAD_ID);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SetGameRulesC2SPayload> CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
             SetGameRulesC2SPayload::value1,
-            PacketCodecs.INTEGER,
+            ByteBufCodecs.INT,
             SetGameRulesC2SPayload::value2,
             SetGameRulesC2SPayload::new
     );
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

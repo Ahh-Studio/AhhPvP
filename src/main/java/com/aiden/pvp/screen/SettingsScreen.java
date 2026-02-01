@@ -5,10 +5,10 @@ import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class SettingsScreen extends Screen {
@@ -19,7 +19,7 @@ public class SettingsScreen extends Screen {
     private ModSliderWidget sliderWidget2;
 
     public SettingsScreen(Screen parent) {
-        super(Text.translatable("screen.pvp.settings"));
+        super(Component.translatable("screen.pvp.settings"));
         this.parent = parent;
     }
 
@@ -27,28 +27,28 @@ public class SettingsScreen extends Screen {
     protected void init() {
         super.init();
 
-        if (client.world == null) {
-            ButtonWidget closeButton = ButtonWidget.builder(
-                            Text.literal("Close"),
-                            (button) -> this.close())
-                    .position(this.width / 2 - 50, this.height / 2 + 50)
+        if (minecraft.level == null) {
+            Button closeButton = Button.builder(
+                            Component.literal("Close"),
+                            (button) -> this.onClose())
+                    .pos(this.width / 2 - 50, this.height / 2 + 50)
                     .size(100, 20)
                     .build();
-            this.addDrawableChild(closeButton);
+            this.addRenderableWidget(closeButton);
             return;
         }
 
-        if (client.player != null) {
-            GetGameRulesC2SPayload getGameRulesC2SPayload = new GetGameRulesC2SPayload(client.player.getId());
+        if (minecraft.player != null) {
+            GetGameRulesC2SPayload getGameRulesC2SPayload = new GetGameRulesC2SPayload(minecraft.player.getId());
             ClientPlayNetworking.send(getGameRulesC2SPayload);
         }
 
         sliderWidget1 = new ModSliderWidget(
                 width / 4 - 100, height / 4, 200, 20,
-                Text.literal("Fireball Explode Power: " + "[???]"), sliderValue1 / 100.0
+                Component.literal("Fireball Explode Power: " + "[???]"), sliderValue1 / 100.0
         ) {
             @Override
-            public void updateMessage() {this.setMessage(Text.literal("Fireball Explode Power: " + sliderValue1));}
+            public void updateMessage() {this.setMessage(Component.literal("Fireball Explode Power: " + sliderValue1));}
 
             @Override
             public void applyValue() {
@@ -58,9 +58,9 @@ public class SettingsScreen extends Screen {
         };
 
         sliderWidget2 = new ModSliderWidget(width / 4 * 3 - 100, height / 4, 200, 20,
-                Text.literal("Post Hit Damage Immunity: " + "[???]"), sliderValue2 / 10.0) {
+                Component.literal("Post Hit Damage Immunity: " + "[???]"), sliderValue2 / 10.0) {
             @Override
-            public void updateMessage() {this.setMessage(Text.literal("Post Hit Damage Immunity: " + sliderValue2));}
+            public void updateMessage() {this.setMessage(Component.literal("Post Hit Damage Immunity: " + sliderValue2));}
 
             @Override
             public void applyValue() {
@@ -68,32 +68,32 @@ public class SettingsScreen extends Screen {
                 if (this.value <= 0) this.value = 0.01;
             }
         };
-        this.addDrawableChild(sliderWidget1);
-        this.addDrawableChild(sliderWidget2);
+        this.addRenderableWidget(sliderWidget1);
+        this.addRenderableWidget(sliderWidget2);
 
-        ButtonWidget applyButton = ButtonWidget.builder(
-                        Text.literal("Apply"),
+        Button applyButton = Button.builder(
+                        Component.literal("Apply"),
                         (button) -> {
                             SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2);
                             ClientPlayNetworking.send(payload);
-                            this.close();
+                            this.onClose();
                         })
-                .position(this.width / 2 - 50, this.height / 2 + 50)
+                .pos(this.width / 2 - 50, this.height / 2 + 50)
                 .size(100, 20)
                 .build();
-        this.addDrawableChild(applyButton);
+        this.addRenderableWidget(applyButton);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
         super.render(context, mouseX, mouseY, deltaTicks);
-        context.drawText(this.textRenderer, title, 40, 40 - this.textRenderer.fontHeight - 10, 0xFFFFFFFF, true);
+        context.drawString(this.font, title, 40, 40 - this.font.lineHeight - 10, 0xFFFFFFFF, true);
     }
 
     @Override
-    public void close() {
-        super.close();
-        client.setScreen(this.parent);
+    public void onClose() {
+        super.onClose();
+        minecraft.setScreen(this.parent);
     }
 
     public void setSliderValues(int sliderValue1, int sliderValue2) {

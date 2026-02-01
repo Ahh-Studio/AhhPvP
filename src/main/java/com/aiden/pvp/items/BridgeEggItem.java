@@ -1,41 +1,41 @@
 package com.aiden.pvp.items;
 
 import com.aiden.pvp.entities.BridgeEggEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.EggItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.EggItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class BridgeEggItem extends EggItem {
     private static final float THROW_POWER = 1.2F;
-    public BridgeEggItem(Item.Settings settings) {
+    public BridgeEggItem(Item.Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        ItemStack itemStack = user.getItemInHand(hand);
 
         // 播放投掷声音（客户端和服务器都能听到）
         world.playSound(
                 null,
                 user.getX(), user.getY(), user.getZ(),
-                SoundEvents.ENTITY_EGG_THROW,
-                SoundCategory.PLAYERS
+                SoundEvents.EGG_THROW,
+                SoundSource.PLAYERS
         );
 
         // 仅在服务器端生成实体（确保同步到客户端）
-        if (world instanceof ServerWorld serverWorld) {
+        if (world instanceof ServerLevel serverWorld) {
             // 使用定义的投掷力度，替换原POWER
-            ProjectileEntity.spawnWithVelocity(
+            Projectile.spawnProjectileFromRotation(
                     BridgeEggEntity::new,  // 实体构造器
                     serverWorld,          // 服务器世界
                     itemStack,            // 物品栈
@@ -47,9 +47,9 @@ public class BridgeEggItem extends EggItem {
         }
 
         // 更新统计信息和物品数量
-        user.incrementStat(Stats.USED.getOrCreateStat(this));
-        itemStack.decrementUnlessCreative(1, user);
+        user.awardStat(Stats.ITEM_USED.get(this));
+        itemStack.consume(1, user);
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

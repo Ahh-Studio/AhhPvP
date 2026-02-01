@@ -3,25 +3,24 @@ package com.aiden.pvp.items;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import java.util.ArrayList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 public class SelfRescuePlatformItem extends Item {
-    public SelfRescuePlatformItem(Settings settings) {
+    public SelfRescuePlatformItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        ItemStack itemStack = user.getItemInHand(hand);
 
         ArrayList<BlockPos> blockPos = new ArrayList<BlockPos>();
         blockPos.add(blockPos(user, 0, -1, 0));
@@ -44,25 +43,25 @@ public class SelfRescuePlatformItem extends Item {
 
         for (BlockPos pos : blockPos) {
             if (
-                    world.getBlockState(pos).isOf(Blocks.AIR)
+                    world.getBlockState(pos).is(Blocks.AIR)
                             ||
-                    world.getBlockState(pos).isOf(Blocks.CAVE_AIR)
+                    world.getBlockState(pos).is(Blocks.CAVE_AIR)
             ) {
-                world.setBlockState(pos, ModBlocks.SPECIAL_SLIME_BLOCK.getDefaultState(), 6);
+                world.setBlock(pos, ModBlocks.SPECIAL_SLIME_BLOCK.defaultBlockState(), 6);
             }
         }
-        itemStack.decrementUnlessCreative(1, user);
+        itemStack.consume(1, user);
 
         for (BlockPos pos : blockPos) {
-            if (!world.isClient()) {
+            if (!world.isClientSide()) {
                 world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
                         .ifPresent(SlimeBlockEntity::startCountdown);
             }
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
-    private static BlockPos blockPos(PlayerEntity user, int i, int j, int k) {
-        return new BlockPos(user.getBlockPos().getX()+i, user.getBlockPos().getY()+j, user.getBlockPos().getZ()+k);
+    private static BlockPos blockPos(Player user, int i, int j, int k) {
+        return new BlockPos(user.blockPosition().getX()+i, user.blockPosition().getY()+j, user.blockPosition().getZ()+k);
     }
 }

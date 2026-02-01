@@ -1,32 +1,35 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.entity.*;
-import net.minecraft.entity.mob.SilverfishEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ItemStackParticleEffect;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Silverfish;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import static com.aiden.pvp.entities.ModEntityTypes.BED_BUG;
 
-public class BedBugEntity extends ThrownItemEntity {
-    public BedBugEntity(EntityType<? extends BedBugEntity> entityType, World world) {
+public class BedBugEntity extends ThrowableItemProjectile {
+    public BedBugEntity(EntityType<? extends BedBugEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public BedBugEntity(double x, double y, double z, World world, ItemStack stack) {
+    public BedBugEntity(double x, double y, double z, Level world, ItemStack stack) {
         super(BED_BUG, x, y, z, world, stack);
     }
 
-    public BedBugEntity(World world, LivingEntity owner, ItemStack stack) {
+    public BedBugEntity(Level world, LivingEntity owner, ItemStack stack) {
         super(BED_BUG, owner, world, stack);
     }
 
@@ -36,32 +39,32 @@ public class BedBugEntity extends ThrownItemEntity {
     }
 
     @Override
-    public void handleStatus(byte status) {
-        if (status == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
-            ParticleEffect particleEffect = this.getParticleParameters();
+    public void handleEntityEvent(byte status) {
+        if (status == EntityEvent.DEATH) {
+            ParticleOptions particleEffect = this.getParticleParameters();
 
             for (int i = 0; i < 8; i++) {
-                this.getEntityWorld().addParticleClient(particleEffect, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
+                this.level().addParticle(particleEffect, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
             }
         }
     }
 
     @Override
-    protected void onBlockHit(BlockHitResult blockHitResult) {
-        super.onBlockHit(blockHitResult);
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        super.onHitBlock(blockHitResult);
         this.spawnBug(
-                this.getEntityWorld(),
-                this.getX() - (this.getVelocity().x * 0.5),
-                this.getY() - (this.getVelocity().y * 0.5),
-                this.getZ() - (this.getVelocity().z * 0.5)
+                this.level(),
+                this.getX() - (this.getDeltaMovement().x * 0.5),
+                this.getY() - (this.getDeltaMovement().y * 0.5),
+                this.getZ() - (this.getDeltaMovement().z * 0.5)
         );
     }
 
     @Override
-    protected void onEntityHit(EntityHitResult entityHitResult) {
-        super.onEntityHit(entityHitResult);
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
         this.spawnBug(
-                this.getEntityWorld(),
+                this.level(),
                 this.getX(),
                 this.getY(),
                 this.getZ()
@@ -69,25 +72,25 @@ public class BedBugEntity extends ThrownItemEntity {
     }
 
     @Override
-    protected void onCollision(HitResult hitResult) {
-        super.onCollision(hitResult);
-        if (!this.getEntityWorld().isClient()) {
-            this.getEntityWorld().sendEntityStatus(this, EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES);
+    protected void onHit(HitResult hitResult) {
+        super.onHit(hitResult);
+        if (!this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, EntityEvent.DEATH);
             this.discard();
         }
     }
 
-    private void spawnBug(World world, double x, double y, double z) {
-        SilverfishEntity silverfishEntity = EntityType.SILVERFISH.create(world, SpawnReason.TRIGGERED);
+    private void spawnBug(Level world, double x, double y, double z) {
+        Silverfish silverfishEntity = EntityType.SILVERFISH.create(world, EntitySpawnReason.TRIGGERED);
         if (silverfishEntity != null) {
-            silverfishEntity.refreshPositionAndAngles(x, y, z, world.getRandom().nextFloat() * 360.0F, 0.0F);
-            world.spawnEntity(silverfishEntity);
-            silverfishEntity.playSoundIfNotSilent(SoundEvents.ENTITY_SILVERFISH_HURT);
+            silverfishEntity.snapTo(x, y, z, world.getRandom().nextFloat() * 360.0F, 0.0F);
+            world.addFreshEntity(silverfishEntity);
+            silverfishEntity.playSound(SoundEvents.SILVERFISH_HURT);
         }
     }
 
-    private ParticleEffect getParticleParameters() {
-        ItemStack itemStack = this.getStack();
-        return (itemStack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemStackParticleEffect(ParticleTypes.ITEM, itemStack));
+    private ParticleOptions getParticleParameters() {
+        ItemStack itemStack = this.getItem();
+        return (itemStack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, itemStack));
     }
 }

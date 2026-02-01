@@ -1,104 +1,107 @@
 package com.aiden.pvp.blocks;
 
 import com.aiden.pvp.PvP;
-import net.minecraft.block.*;
-import net.minecraft.block.enums.NoteBlockInstrument;
-import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import java.util.function.Function;
 
 public class ModBlocks {
     public static final Block SPECIAL_SLIME_BLOCK = register(
             "slime_block",
             SlimeBlock::new,
-            AbstractBlock.Settings.create()
-                    .mapColor(MapColor.PALE_GREEN)
-                    .slipperiness(0.8F)
-                    .sounds(BlockSoundGroup.SLIME)
-                    .nonOpaque()
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.GRASS)
+                    .friction(0.8F)
+                    .sound(SoundType.SLIME_BLOCK)
+                    .noOcclusion()
     );
     public static final Block EGG_BRIDGE = register(
             "egg_bridge",
             EggBridgeBlock::new,
-            AbstractBlock.Settings.create()
-                    .sounds(BlockSoundGroup.WOOL)
-                    .breakInstantly()
-                    .dropsNothing()
-                    .hardness(0.01F)
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.WOOL)
+                    .instabreak()
+                    .noLootTable()
+                    .destroyTime(0.01F)
     );
     public static final Block TNT = register(
             "tnt",
             TntBlock::new,
-            AbstractBlock.Settings.create()
-                    .sounds(BlockSoundGroup.GRASS)
-                    .breakInstantly()
-                    .hardness(0.01F)
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GRASS)
+                    .instabreak()
+                    .destroyTime(0.01F)
     );
     public static final Block THROWABLE_TNT = register(
             "throwable_tnt",
             TntBlock::new,
-            AbstractBlock.Settings.create()
-                    .sounds(BlockSoundGroup.GRASS)
-                    .breakInstantly()
-                    .hardness(0.01F)
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GRASS)
+                    .instabreak()
+                    .destroyTime(0.01F)
     );
     public static final Block STRONG_GLASS = register(
             "strong_glass",
             TransparentBlock::new,
-            AbstractBlock.Settings.create()
-                    .sounds(BlockSoundGroup.GLASS)
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
                     .strength(0.3F, 2147483647.0F)
-                    .nonOpaque()
+                    .noOcclusion()
                     .instrument(NoteBlockInstrument.HAT)
-                    .allowsSpawning(Blocks::never)
-                    .solidBlock(Blocks::never)
-                    .suffocates(Blocks::never)
-                    .blockVision(Blocks::never)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
     );
     public static final Block GOLDEN_HEAD = register(
             "golden_head",
             GoldenHeadBlock::new,
-            AbstractBlock.Settings.create()
+            BlockBehaviour.Properties.of()
                     .instrument(NoteBlockInstrument.CUSTOM_HEAD)
                     .strength(1200.0F)
-                    .pistonBehavior(PistonBehavior.BLOCK)
+                    .pushReaction(PushReaction.BLOCK)
     );
     public static final Block BOSS_SPAWNER = register(
             "boss_spawner",
             BossSpawnerBlock::new,
-            AbstractBlock.Settings.create()
-                    .mapColor(MapColor.BLACK)
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
                     .strength(0)
-                    .sounds(BlockSoundGroup.ANVIL)
-                    .breakInstantly()
+                    .sound(SoundType.ANVIL)
+                    .instabreak()
     );
     public static final Block BOSS_BATTLE_HANDLER = register(
             "boss_battle_handler",
             BossBattleHandlerBlock::new,
-            AbstractBlock.Settings.create()
-                    .mapColor(MapColor.BLACK)
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
                     .strength(0)
-                    .sounds(BlockSoundGroup.ANVIL)
-                    .breakInstantly()
+                    .sound(SoundType.ANVIL)
+                    .instabreak()
     );
 
-    private static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings) {
-        Identifier id = Identifier.of(PvP.MOD_ID, name);
-        RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, id);
+    private static Block register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
+        Identifier id = Identifier.fromNamespaceAndPath(PvP.MOD_ID, name);
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
         // 注册方块
-        return Registry.register(Registries.BLOCK, id, blockFactory.apply(settings.registryKey(blockKey)));
+        return Registry.register(BuiltInRegistries.BLOCK, id, blockFactory.apply(settings.setId(blockKey)));
     }
     public static void initialize() {
         try {
             PvP.LOGGER.info("[Block Initializer] Mod Blocks Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Block Initializer] An Error Occurred: " + e.getMessage());
+            PvP.LOGGER.warn("[Block Initializer] An Error Occurred: {}", e.getMessage());
         }
     }
 }

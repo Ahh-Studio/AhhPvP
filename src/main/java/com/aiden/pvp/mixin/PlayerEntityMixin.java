@@ -3,9 +3,7 @@ package com.aiden.pvp.mixin;
 import com.aiden.pvp.entities.FishingBobberEntity;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     @Unique
     private FishingBobberEntity pvpFishHook = null;
@@ -59,22 +57,22 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
             )
     )
     public void tick(CallbackInfo ci) {
-        PlayerEntity instance = (PlayerEntity) (Object) this;
+        Player instance = (Player) (Object) this;
         PlayerEntityPvpExtension extension = (PlayerEntityPvpExtension) instance;
 
-        if (!instance.getMainHandStack().isOf(ModItems.FISHING_ROD) && !instance.getOffHandStack().isOf(ModItems.FISHING_ROD) && this.pvpFishHook != null) {
+        if (!instance.getMainHandItem().is(ModItems.FISHING_ROD) && !instance.getOffhandItem().is(ModItems.FISHING_ROD) && this.pvpFishHook != null) {
             this.pvpFishHook.discard();
             extension.setPvpFishHook(null);
         }
     }
 
     @Inject(
-            method = "shouldCancelInteraction",
+            method = "isSecondaryUseActive",
             at = @At("HEAD"),
             cancellable = true
     )
     public void shouldCancelInteraction(CallbackInfoReturnable<Boolean> cir) {
-        PlayerEntity instance = (PlayerEntity) (Object) this;
-        cir.setReturnValue(instance.isSneaking() || instance.isBlocking());
+        Player instance = (Player) (Object) this;
+        cir.setReturnValue(instance.isShiftKeyDown() || instance.isBlocking());
     }
 }

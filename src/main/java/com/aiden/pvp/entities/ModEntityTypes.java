@@ -2,14 +2,14 @@ package com.aiden.pvp.entities;
 
 import com.aiden.pvp.PvP;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 public class ModEntityTypes {
     public static final EntityType<FireballEntity> FIREBALL;
@@ -20,9 +20,9 @@ public class ModEntityTypes {
     public static final EntityType<MurdererEntity> MURDERER;
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
-        return Registry.register(Registries.ENTITY_TYPE,
-                Identifier.of(PvP.MOD_ID, id),
-                entityType.build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(PvP.MOD_ID, id))));
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE,
+                Identifier.fromNamespaceAndPath(PvP.MOD_ID, id),
+                entityType.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, id))));
     }
 
     public static void initialize() {
@@ -37,62 +37,62 @@ public class ModEntityTypes {
     static {
         FIREBALL = register(
                 "fireball",
-                EntityType.Builder.<FireballEntity>create(FireballEntity::new, SpawnGroup.MISC)
-                        .dimensions(0.75F, 0.75F)
-                        .spawnBoxScale(1)
-                        .maxTrackingRange(32).trackingTickInterval(5)
-                        .vehicleAttachment(0.5F)
-                        .nameTagAttachment(0.5F)
+                EntityType.Builder.<FireballEntity>of(FireballEntity::new, MobCategory.MISC)
+                        .sized(0.75F, 0.75F)
+                        .spawnDimensionsScale(1)
+                        .clientTrackingRange(32).updateInterval(5)
+                        .ridingOffset(0.5F)
+                        .nameTagOffset(0.5F)
                         .alwaysUpdateVelocity(true)
-                        .dropsNothing()
+                        .noLootTable()
                         .eyeHeight(0.5F)
         );
         BRIDGE_EGG = register(
                 "bridge_egg",
-                EntityType.Builder.<BridgeEggEntity>create(BridgeEggEntity::new, SpawnGroup.MISC)
-                        .dimensions(0.25F, 0.25F)
-                        .spawnBoxScale(1)
-                        .maxTrackingRange(32).trackingTickInterval(5)
-                        .vehicleAttachment(0.01F)
-                        .nameTagAttachment(0.01F)
-                        .dropsNothing()
+                EntityType.Builder.<BridgeEggEntity>of(BridgeEggEntity::new, MobCategory.MISC)
+                        .sized(0.25F, 0.25F)
+                        .spawnDimensionsScale(1)
+                        .clientTrackingRange(32).updateInterval(5)
+                        .ridingOffset(0.01F)
+                        .nameTagOffset(0.01F)
+                        .noLootTable()
                         .alwaysUpdateVelocity(true)
                         .eyeHeight(0.15F)
         );
         FISHING_BOBBER = register(
                 "fishing_bobber",
-                EntityType.Builder.<FishingBobberEntity>create(FishingBobberEntity::new, SpawnGroup.MISC)
-                        .dropsNothing()
-                        .disableSaving()
-                        .disableSummon()
-                        .dimensions(0.25F, 0.25F)
-                        .maxTrackingRange(4)
-                        .trackingTickInterval(5)
+                EntityType.Builder.<FishingBobberEntity>of(FishingBobberEntity::new, MobCategory.MISC)
+                        .noLootTable()
+                        .noSave()
+                        .noSummon()
+                        .sized(0.25F, 0.25F)
+                        .clientTrackingRange(4)
+                        .updateInterval(5)
         );
         BED_BUG = register(
                 "bed_bug",
-                EntityType.Builder.<BedBugEntity>create(BedBugEntity::new, SpawnGroup.MISC)
-                        .dropsNothing()
-                        .dimensions(0.25F, 0.25F)
-                        .maxTrackingRange(4)
-                        .trackingTickInterval(10)
+                EntityType.Builder.<BedBugEntity>of(BedBugEntity::new, MobCategory.MISC)
+                        .noLootTable()
+                        .sized(0.25F, 0.25F)
+                        .clientTrackingRange(4)
+                        .updateInterval(10)
         );
         DAGGER = register(
                 "dagger",
-                EntityType.Builder.create(DaggerEntity::new, SpawnGroup.MISC)
-                        .dropsNothing()
-                        .disableSaving()
-                        .disableSummon()
-                        .dimensions(0.5F, 0.5F)
-                        .maxTrackingRange(4)
-                        .trackingTickInterval(5)
+                EntityType.Builder.of(DaggerEntity::new, MobCategory.MISC)
+                        .noLootTable()
+                        .noSave()
+                        .noSummon()
+                        .sized(0.5F, 0.5F)
+                        .clientTrackingRange(4)
+                        .updateInterval(5)
         );
         MURDERER = register(
                 "murderer",
-                EntityType.Builder.create(MurdererEntity::new, SpawnGroup.MONSTER)
-                        .dimensions(0.6F, 1.95F)
-                        .maxTrackingRange(8)
-                        .notAllowedInPeaceful()
+                EntityType.Builder.of(MurdererEntity::new, MobCategory.MONSTER)
+                        .sized(0.6F, 1.95F)
+                        .clientTrackingRange(8)
+                        .notInPeaceful()
         );
     }
 }

@@ -3,12 +3,12 @@ package com.aiden.pvp.blocks.entity;
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.NotNull;
 
 public class ModBlockEntityTypes {
@@ -24,8 +24,8 @@ public class ModBlockEntityTypes {
             Block block)
     {
          return Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                Identifier.of(PvP.MOD_ID, name),
+                BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                Identifier.fromNamespaceAndPath(PvP.MOD_ID, name),
                 FabricBlockEntityTypeBuilder.create(factory, block)
                         .addBlock(block)
                         .build()

@@ -2,12 +2,12 @@ package com.aiden.pvp.client.render.entity.model;
 
 import com.aiden.pvp.PvP;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModEntityModelLayers {
-    public static final EntityModelLayer MURDERER = new EntityModelLayer(
-            Identifier.of(PvP.MOD_ID, "murderer"),
+    public static final ModelLayerLocation MURDERER = new ModelLayerLocation(
+            Identifier.fromNamespaceAndPath(PvP.MOD_ID, "murderer"),
             "main"
     );
 
