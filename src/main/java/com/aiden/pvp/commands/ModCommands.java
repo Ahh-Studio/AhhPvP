@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class ModCommands {
     @Environment(EnvType.CLIENT)
@@ -14,8 +14,8 @@ public class ModCommands {
             commandDispatcher.register(
                     ClientCommandManager.literal("ahh-pvp-mod")
                             .executes(context -> {
-                                MinecraftClient.getInstance().execute(() -> {
-                                    MinecraftClient.getInstance().setScreen(
+                                Minecraft.getInstance().execute(() -> {
+                                    Minecraft.getInstance().setScreen(
                                             new SettingsScreen(null)
                                     );
                                 });

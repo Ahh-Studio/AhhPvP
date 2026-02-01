@@ -11,6 +11,7 @@ import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import com.aiden.pvp.payloads.BlockHitC2SPayload;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,90 +20,87 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.entity.*;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-
-import java.util.jar.Attributes;
 
 import static com.aiden.pvp.blocks.ModBlocks.*;
 import static com.aiden.pvp.client.keybinding.ModKeyBindings.*;
 
 @Environment(EnvType.CLIENT)
 public class PvPClient implements ClientModInitializer {
-    private static final Identifier BLOCK_INDICATOR = Identifier.of(PvP.MOD_ID, "block_indicator");
+    private static final Identifier BLOCK_INDICATOR = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "block_indicator");
 
     @Override
     public void onInitializeClient() {
         ModEntityModelLayers.register();
 
-        EntityRendererFactories.register(
+        EntityRenderers.register(
                 ModEntityTypes.FIREBALL,  // 你的实体类型常量
-                FlyingItemEntityRenderer::new  // 使用投掷物默认渲染器
+                ThrownItemRenderer::new  // 使用投掷物默认渲染器
         );
-        EntityRendererFactories.register(ModEntityTypes.BRIDGE_EGG, context ->
-                new FlyingItemEntityRenderer<>(context, 1.0F, true)
+        EntityRenderers.register(ModEntityTypes.BRIDGE_EGG, context ->
+                new ThrownItemRenderer<>(context, 1.0F, true)
         );
-        EntityRendererFactories.register(ModEntityTypes.BED_BUG, context ->
-                new FlyingItemEntityRenderer<>(context, 1.0F, true)
+        EntityRenderers.register(ModEntityTypes.BED_BUG, context ->
+                new ThrownItemRenderer<>(context, 1.0F, true)
         );
-        EntityRendererFactories.register(
+        EntityRenderers.register(
                 ModEntityTypes.FISHING_BOBBER,
                 FishingBobberEntityRenderer::new
         );
-        EntityRendererFactories.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
-        EntityRendererFactories.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
+        EntityRenderers.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
+        EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
 
-        BlockRenderLayerMap.putBlock(STRONG_GLASS, BlockRenderLayer.TRANSLUCENT);
-        BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, BlockRenderLayer.TRANSLUCENT);
-        BlockRenderLayerMap.putBlock(BOSS_SPAWNER, BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(STRONG_GLASS, ChunkSectionLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, ChunkSectionLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BOSS_SPAWNER, ChunkSectionLayer.TRANSLUCENT);
 
-        pvpKeyCategory = new KeyBinding.Category(Identifier.of(PvP.MOD_ID, "pvp"));
+        pvpKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "pvp"));
 
-        throwTntKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                        "key.pvp.throw_tnt", InputUtil.Type.MOUSE,
+        throwTntKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                        "key.pvp.throw_tnt", InputConstants.Type.MOUSE,
                         GLFW.GLFW_MOUSE_BUTTON_LEFT, pvpKeyCategory
         ));
-        openSettingsKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                        "key.pvp.open_settings", InputUtil.Type.KEYSYM,
+        openSettingsKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                        "key.pvp.open_settings", InputConstants.Type.KEYSYM,
                         GLFW.GLFW_KEY_F7, pvpKeyCategory
         ));
-        blockHitKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                        "key.pvp.block_hit", InputUtil.Type.MOUSE,
+        blockHitKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                        "key.pvp.block_hit", InputConstants.Type.MOUSE,
                         GLFW.GLFW_MOUSE_BUTTON_RIGHT, pvpKeyCategory
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-            while (throwTntKeyBinding.wasPressed()) {
-                ClientPlayNetworking.send(new ThrowTntC2SPayload(minecraftClient.player.getId()));
+            while (throwTntKeyBinding.consumeClick()) {
+                if (minecraftClient.player != null) {
+                    ClientPlayNetworking.send(new ThrowTntC2SPayload(minecraftClient.player.getId()));
+                }
             }
-            while (openSettingsKeyBinding.wasPressed()) {
-                MinecraftClient client = MinecraftClient.getInstance();
+            while (openSettingsKeyBinding.consumeClick()) {
+                Minecraft client = Minecraft.getInstance();
                 SettingsScreen settingsScreen = new SettingsScreen(null);
-                if (client.currentScreen == null) {
+                if (client.screen == null) {
                     client.setScreen(settingsScreen);
                     break;
                 }
-                if (client.currentScreen instanceof SettingsScreen) {
+                if (client.screen instanceof SettingsScreen) {
                     client.setScreen(null);
                 }
             }
 
-            ClientPlayerEntity player = minecraftClient.player;
+            LocalPlayer player = minecraftClient.player;
             if (player != null) {
                 PlayerEntityPvpExtension playerExt = (PlayerEntityPvpExtension) player;
-                if (player.getMainHandStack().getItem() instanceof SwordItem && blockHitKeyBinding.isPressed()) {
+                if (player.getMainHandItem().getItem() instanceof SwordItem && blockHitKeyBinding.isDown()) {
                     if (!playerExt.isBlocking()) {
                         playerExt.setBlocking(true);
                         ClientPlayNetworking.send(new BlockHitC2SPayload(player.getId(), true));
@@ -119,17 +117,17 @@ public class PvPClient implements ClientModInitializer {
         HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, BLOCK_INDICATOR, PvPClient::renderBlockIndicator);
     }
 
-    private static void renderBlockIndicator(DrawContext context, RenderTickCounter tickCounter) {
-        ClientPlayerEntity clientPlayerEntity = MinecraftClient.getInstance().player;
-        if (clientPlayerEntity != null && clientPlayerEntity.getEntityWorld() != null) {
+    private static void renderBlockIndicator(GuiGraphics context, DeltaTracker tickCounter) {
+        LocalPlayer clientPlayerEntity = Minecraft.getInstance().player;
+        if (clientPlayerEntity != null) {
             PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) clientPlayerEntity;
 
             if (playerEntityPvpExtension.isBlocking()) {
-                context.drawText(
-                        MinecraftClient.getInstance().textRenderer,
+                context.drawString(
+                        Minecraft.getInstance().font,
                         "Blocking",
-                        (context.getScaledWindowWidth() - MinecraftClient.getInstance().textRenderer.getWidth("Blocking")) / 2,
-                        context.getScaledWindowHeight() / 2 - 20,
+                        (context.guiWidth() - Minecraft.getInstance().font.width("Blocking")) / 2,
+                        context.guiHeight() / 2 - 20,
                         0xFFFFFFFF,
                         false
                 );

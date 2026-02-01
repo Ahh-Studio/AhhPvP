@@ -1,41 +1,40 @@
 package com.aiden.pvp.entities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
-public class DaggerEntity extends ProjectileEntity {
+public class DaggerEntity extends Projectile {
     public List<LivingEntity> hitEntities = new ArrayList<>();
 
-    public DaggerEntity(EntityType<? extends DaggerEntity> entityType, World world) {
+    public DaggerEntity(EntityType<? extends DaggerEntity> entityType, Level world) {
         super(ModEntityTypes.DAGGER, world);
     }
 
     @Override
-    protected void onEntityHit(EntityHitResult entityHitResult) {
-        super.onEntityHit(entityHitResult);
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
         Entity hitEntity =  entityHitResult.getEntity();
-        World entityWorld = entityHitResult.getEntity().getEntityWorld();
+        Level entityWorld = entityHitResult.getEntity().level();
 
         if (hitEntity instanceof LivingEntity hitLivingEntity) {
-            if (entityWorld instanceof ServerWorld serverWorld && getOwner() instanceof LivingEntity attacker) {
-                if (!hitEntities.contains(hitLivingEntity)) hitLivingEntity.damage(
+            if (entityWorld instanceof ServerLevel serverWorld && getOwner() instanceof LivingEntity attacker) {
+                if (!hitEntities.contains(hitLivingEntity)) hitLivingEntity.hurtServer(
                         serverWorld,
-                        this.getOwner().getDamageSources().mobProjectile(this, attacker),
+                        this.getOwner().damageSources().mobProjectile(this, attacker),
                         7.0F
                 );
                 hitEntities.add(hitLivingEntity);
@@ -44,46 +43,46 @@ public class DaggerEntity extends ProjectileEntity {
     }
 
     @Override
-    protected void onBlockHit(BlockHitResult blockHitResult) {
-        super.onBlockHit(blockHitResult);
-        BlockState hitBlockState = getEntityWorld().getBlockState(blockHitResult.getBlockPos());
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        super.onHitBlock(blockHitResult);
+        BlockState hitBlockState = level().getBlockState(blockHitResult.getBlockPos());
         if (
-                hitBlockState.isOf(Blocks.GLASS)
-                        || hitBlockState.isOf(Blocks.WHITE_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.LIGHT_GRAY_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.GRAY_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.BLACK_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.BROWN_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.RED_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.ORANGE_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.YELLOW_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.LIME_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.GREEN_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.CYAN_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.LIGHT_BLUE_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.BLUE_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.PURPLE_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.MAGENTA_STAINED_GLASS)
-                        || hitBlockState.isOf(Blocks.PINK_STAINED_GLASS)
-                || hitBlockState.isOf(Blocks.GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.WHITE_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.GRAY_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.BLACK_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.BROWN_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.RED_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.ORANGE_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.YELLOW_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.LIME_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.GREEN_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.CYAN_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.BLUE_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.PURPLE_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.MAGENTA_STAINED_GLASS_PANE)
-                        || hitBlockState.isOf(Blocks.PINK_STAINED_GLASS_PANE)
+                hitBlockState.is(Blocks.GLASS)
+                        || hitBlockState.is(Blocks.WHITE_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.LIGHT_GRAY_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.GRAY_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.BLACK_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.BROWN_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.RED_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.ORANGE_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.YELLOW_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.LIME_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.GREEN_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.CYAN_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.LIGHT_BLUE_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.BLUE_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.PURPLE_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.MAGENTA_STAINED_GLASS)
+                        || hitBlockState.is(Blocks.PINK_STAINED_GLASS)
+                || hitBlockState.is(Blocks.GLASS_PANE)
+                        || hitBlockState.is(Blocks.WHITE_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.GRAY_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.BLACK_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.BROWN_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.RED_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.ORANGE_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.YELLOW_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.LIME_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.GREEN_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.CYAN_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.BLUE_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.PURPLE_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.MAGENTA_STAINED_GLASS_PANE)
+                        || hitBlockState.is(Blocks.PINK_STAINED_GLASS_PANE)
         ) {
-            getEntityWorld().breakBlock(blockHitResult.getBlockPos(), true, this.getOwner());
+            level().destroyBlock(blockHitResult.getBlockPos(), true, this.getOwner());
             return;
         }
         this.discard();
@@ -91,24 +90,24 @@ public class DaggerEntity extends ProjectileEntity {
 
     @Override
     public void tick() {
-        HitResult hitResult = ProjectileUtil.getCollision(this, this::canHit);
-        Vec3d vec3d;
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        Vec3 vec3d;
         if (hitResult.getType() != HitResult.Type.MISS) {
-            vec3d = hitResult.getPos();
+            vec3d = hitResult.getLocation();
         } else {
-            vec3d = this.getEntityPos().add(this.getVelocity());
+            vec3d = this.position().add(this.getDeltaMovement());
         }
 
-        this.setPosition(vec3d);
+        this.setPos(vec3d);
         this.updateRotation();
-        this.tickBlockCollision();
+        this.applyEffectsFromBlocks();
         super.tick();
         if (hitResult.getType() != HitResult.Type.MISS && this.isAlive()) {
-            this.hitOrDeflect(hitResult);
+            this.hitTargetOrDeflectSelf(hitResult);
         }
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 }

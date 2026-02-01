@@ -1,38 +1,38 @@
 package com.aiden.pvp.items;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class GoldenHeadItem extends BlockItem {
-    public GoldenHeadItem(Block block, Settings settings) {
+    public GoldenHeadItem(Block block, Properties settings) {
         super(block, settings);
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        user.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 2400, 1));
-        user.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 1));
-        user.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 0));
-        user.getStackInHand(hand).decrementUnlessCreative(1, user);
-        return ActionResult.SUCCESS;
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        user.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 2400, 1));
+        user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));
+        user.addEffect(new MobEffectInstance(MobEffects.SPEED, 100, 0));
+        user.getItemInHand(hand).consume(1, user);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        PlayerEntity user = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player user = context.getPlayer();
         if (user != null) {
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 2400, 1));
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 1));
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 0));
-            user.getStackInHand(context.getHand()).decrementUnlessCreative(1, user);
+            user.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 2400, 1));
+            user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));
+            user.addEffect(new MobEffectInstance(MobEffects.SPEED, 100, 0));
+            user.getItemInHand(context.getHand()).consume(1, user);
         }
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

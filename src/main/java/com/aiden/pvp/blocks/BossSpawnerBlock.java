@@ -4,97 +4,90 @@ import com.aiden.pvp.blocks.entity.BossSpawnerBlockEntity;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.items.ModItems;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.IllusionerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.illager.Illusioner;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-public class BossSpawnerBlock extends BlockWithEntity {
-    private static final VoxelShape SHAPE = Block.createColumnShape(16.0, 0.0, 8.0);
+public class BossSpawnerBlock extends BaseEntityBlock {
+    private static final VoxelShape SHAPE = Block.column(16.0, 0.0, 8.0);
 
-    public BossSpawnerBlock(Settings settings) {
+    public BossSpawnerBlock(Properties settings) {
         super(settings);
     }
 
     @Override
-    protected MapCodec<? extends BlockWithEntity> getCodec() {
-        return createCodec(BossSpawnerBlock::new);
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return simpleCodec(BossSpawnerBlock::new);
     }
 
     @Override
-    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
-            PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (stack.isOf(ModItems.BOSS_KEY) && world instanceof ServerWorld serverWorld) {
-            if (serverWorld.getBlockState(pos.down()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east().north()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east().south()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().west().north()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().west().south()).isOf(Blocks.TNT) &&
-                    serverWorld.getBlockState(pos.down().east()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().west()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().north()).isOf(ModBlocks.STRONG_GLASS) &&
-                    serverWorld.getBlockState(pos.down().south()).isOf(ModBlocks.STRONG_GLASS)) {
+    protected @NonNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
+                                                   Player player, InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(ModItems.BOSS_KEY) && world instanceof ServerLevel serverWorld) {
+            if (serverWorld.getBlockState(pos.below()).is(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.below().east().north()).is(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.below().east().south()).is(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.below().west().north()).is(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.below().west().south()).is(Blocks.TNT) &&
+                    serverWorld.getBlockState(pos.below().east()).is(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.below().west()).is(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.below().north()).is(ModBlocks.STRONG_GLASS) &&
+                    serverWorld.getBlockState(pos.below().south()).is(ModBlocks.STRONG_GLASS)) {
                 if (world.getBlockEntity(pos) instanceof BossSpawnerBlockEntity blockEntity) {
-                    this.summonMurderer(world, pos.up());
+                    this.summonMurderer(world, pos.above());
                     blockEntity.placeStructure(serverWorld);
                 }
             }
-            stack.decrementUnlessCreative(1, player);
+            stack.consume(1, player);
         }
 
-        return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
+        return super.useItemOn(stack, state, world, pos, player, hand, hit);
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    protected @NonNull VoxelShape getCollisionShape(@NonNull BlockState state, @NonNull BlockGetter world, @NonNull BlockPos pos, @NonNull CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected VoxelShape getCullingShape(BlockState state) {
+    protected @NonNull VoxelShape getOcclusionShape(@NonNull BlockState state) {
         return SHAPE;
     }
 
     @Override
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    protected @NonNull VoxelShape getShape(@NonNull BlockState state, @NonNull BlockGetter world, @NonNull BlockPos pos, @NonNull CollisionContext context) {
         return SHAPE;
     }
 
-    private void summonIllusioner(World world, Vec3i pos) {
-        if (world instanceof ServerWorld serverWorld) {
-            IllusionerEntity illusionerEntity = new IllusionerEntity(EntityType.ILLUSIONER, world);
-            illusionerEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
-            illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 2147483647, 14));
-            illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 400, 1));
-            illusionerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 400, 10));
-
-            serverWorld.spawnEntity(illusionerEntity);
-        }
-    }
-
-    private void summonMurderer(World world, Vec3i pos) {
-        if (world instanceof ServerWorld serverWorld) {
-            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos), SpawnReason.EVENT);
+    private void summonMurderer(Level world, Vec3i pos) {
+        if (world instanceof ServerLevel serverWorld) {
+            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos), EntitySpawnReason.EVENT);
         }
     }
 
     @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BossSpawnerBlockEntity(pos, state);
     }
 }

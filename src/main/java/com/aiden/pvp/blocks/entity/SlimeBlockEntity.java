@@ -1,9 +1,9 @@
 package com.aiden.pvp.blocks.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SlimeBlockEntity extends BlockEntity {
     private int remainingTicks = 0;
@@ -15,11 +15,11 @@ public class SlimeBlockEntity extends BlockEntity {
 
     public void startCountdown() {
         this.remainingTicks = TOTAL_TICKS;
-        markDirty();
+        setChanged();
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, SlimeBlockEntity entity) {
-        if (world.isClient()) return; // 只在服务器端处理
+    public static void tick(Level world, BlockPos pos, BlockState state, SlimeBlockEntity entity) {
+        if (world.isClientSide()) return; // 只在服务器端处理
 
         if (entity.remainingTicks > 0) {
             entity.remainingTicks--;
@@ -29,7 +29,7 @@ public class SlimeBlockEntity extends BlockEntity {
                 world.removeBlock(pos, false);
             }
 
-            entity.markDirty();
+            entity.setChanged();
         }
     }
 }

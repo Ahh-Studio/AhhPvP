@@ -1,19 +1,19 @@
 package com.aiden.pvp.payloads;
 
 import com.aiden.pvp.PvP;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record ThrowTntC2SPayload(int userId) implements CustomPayload {
-    public static final Identifier THROW_TNT_PAYLOAD_ID = Identifier.of(PvP.MOD_ID, "throw_tnt_c2s_payload");
-    public static final CustomPayload.Id<ThrowTntC2SPayload> ID = new CustomPayload.Id<>(THROW_TNT_PAYLOAD_ID);
-    public static final PacketCodec<RegistryByteBuf, ThrowTntC2SPayload> CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, ThrowTntC2SPayload::userId, ThrowTntC2SPayload::new);
+public record ThrowTntC2SPayload(int userId) implements CustomPacketPayload {
+    public static final Identifier THROW_TNT_PAYLOAD_ID = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "throw_tnt_c2s_payload");
+    public static final CustomPacketPayload.Type<ThrowTntC2SPayload> ID = new CustomPacketPayload.Type<>(THROW_TNT_PAYLOAD_ID);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ThrowTntC2SPayload> CODEC = StreamCodec.composite(ByteBufCodecs.INT, ThrowTntC2SPayload::userId, ThrowTntC2SPayload::new);
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

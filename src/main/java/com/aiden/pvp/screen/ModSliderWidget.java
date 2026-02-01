@@ -1,10 +1,10 @@
 package com.aiden.pvp.screen;
 
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.network.chat.Component;
 
-public abstract class ModSliderWidget extends SliderWidget {
-    public ModSliderWidget(int x, int y, int width, int height, Text text, double value) {
+public abstract class ModSliderWidget extends AbstractSliderButton {
+    public ModSliderWidget(int x, int y, int width, int height, Component text, double value) {
         super(x, y, width, height, text, value);
     }
 

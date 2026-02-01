@@ -15,17 +15,19 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.*;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
-import net.minecraft.entity.*;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +44,8 @@ public class PvP implements ModInitializer {
 		ModEntityTypes.initialize();
 		ModCommands.initialize();
 
-        Item fireballItem = Registries.ITEM.get(Identifier.of(MOD_ID, "fireball"));
-        ProjectileDispenserBehavior projectileDispenserBehavior = new ProjectileDispenserBehavior(fireballItem);
+        Item fireballItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MOD_ID, "fireball"));
+        ProjectileDispenseBehavior projectileDispenserBehavior = new ProjectileDispenseBehavior(fireballItem);
         DispenserBlock.registerBehavior(fireballItem, projectileDispenserBehavior);
 
         LOGGER.info("[Main] Registering Packets...");
@@ -52,32 +54,32 @@ public class PvP implements ModInitializer {
 		PayloadTypeRegistry.playC2S().register(ThrowTntC2SPayload.ID, ThrowTntC2SPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ThrowTntC2SPayload.ID, ((throwTntC2SPayload, context) -> {
 			context.server().execute(() -> {
-				Entity user = context.player().getEntityWorld().getEntityById(throwTntC2SPayload.userId());
+				Entity user = context.player().level().getEntity(throwTntC2SPayload.userId());
                 if (user instanceof LivingEntity livingEntityUser) {
-					TntEntity tnt = new TntEntity(user.getEntityWorld(), user.getX(), user.getEyeY(), user.getZ(), livingEntityUser);
+					PrimedTnt tnt = new PrimedTnt(user.level(), user.getX(), user.getEyeY(), user.getZ(), livingEntityUser);
 					// Shoot
-					Vec3d vec3d = new Vec3d(
-							-MathHelper.sin(user.getYaw() * (float) (Math.PI / 180.0)) * MathHelper.cos(user.getPitch() * (float) (Math.PI / 180.0)),
-							-MathHelper.sin((user.getPitch() + 0.0F) * (float) (Math.PI / 180.0)),
-							MathHelper.cos(user.getYaw() * (float) (Math.PI / 180.0)) * MathHelper.cos(user.getPitch() * (float) (Math.PI / 180.0))
-					).normalize().add(Random.create().nextTriangular(0.0, 0.0172275 * 1.0F), Random.create().nextTriangular(0.0, 0.0172275 * 1.0F), Random.create().nextTriangular(0.0, 0.0172275 * 1.0F)).multiply(1.5F);
+					Vec3 vec3d = new Vec3(
+							-Mth.sin(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0)),
+							-Mth.sin((user.getXRot() + 0.0F) * (float) (Math.PI / 180.0)),
+							Mth.cos(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0))
+					).normalize().add(RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
 
-					tnt.setVelocity(vec3d);
-					tnt.velocityDirty = true;
-					double d = vec3d.horizontalLength();
-					tnt.setYaw((float)(MathHelper.atan2(vec3d.x, vec3d.z) * 180.0F / (float)Math.PI));
-					tnt.setPitch((float)(MathHelper.atan2(vec3d.y, d) * 180.0F / (float)Math.PI));
-					tnt.lastYaw = tnt.getYaw();
-					tnt.lastPitch = tnt.getPitch();
-					tnt.setVelocity(tnt.getVelocity().add(user.getMovement().x, user.isOnGround() ? 0.0 : user.getMovement().y, user.getMovement().z));
-					if (livingEntityUser.getMainHandStack().isOf(ModItems.THROWABLE_TNT)) {
-						user.getEntityWorld().spawnEntity(tnt);
-						livingEntityUser.getMainHandStack().decrementUnlessCreative(1, livingEntityUser);
+					tnt.setDeltaMovement(vec3d);
+					tnt.needsSync = true;
+					double d = vec3d.horizontalDistance();
+					tnt.setYRot((float)(Mth.atan2(vec3d.x, vec3d.z) * 180.0F / (float)Math.PI));
+					tnt.setXRot((float)(Mth.atan2(vec3d.y, d) * 180.0F / (float)Math.PI));
+					tnt.yRotO = tnt.getYRot();
+					tnt.xRotO = tnt.getXRot();
+					tnt.setDeltaMovement(tnt.getDeltaMovement().add(user.getKnownMovement().x, user.onGround() ? 0.0 : user.getKnownMovement().y, user.getKnownMovement().z));
+					if (livingEntityUser.getMainHandItem().is(ModItems.THROWABLE_TNT)) {
+						user.level().addFreshEntity(tnt);
+						livingEntityUser.getMainHandItem().consume(1, livingEntityUser);
 						return;
 					}
-					if (livingEntityUser.getOffHandStack().isOf(ModItems.THROWABLE_TNT)) {
-						user.getEntityWorld().spawnEntity(tnt);
-						livingEntityUser.getOffHandStack().decrementUnlessCreative(1, livingEntityUser);
+					if (livingEntityUser.getOffhandItem().is(ModItems.THROWABLE_TNT)) {
+						user.level().addFreshEntity(tnt);
+						livingEntityUser.getOffhandItem().consume(1, livingEntityUser);
 					}
                 }
             });
@@ -87,16 +89,16 @@ public class PvP implements ModInitializer {
 		PayloadTypeRegistry.playC2S().register(SetGameRulesC2SPayload.ID, SetGameRulesC2SPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(SetGameRulesC2SPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
-                ServerWorld serverWorld = context.player().getEntityWorld();
-				serverWorld.getGameRules().setValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value1(), serverWorld.getServer());
-                serverWorld.getGameRules().setValue(ModGameRules.PHDI, payload.value2(), serverWorld.getServer());
+                ServerLevel serverWorld = context.player().level();
+				serverWorld.getGameRules().set(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value1(), serverWorld.getServer());
+                serverWorld.getGameRules().set(ModGameRules.PHDI, payload.value2(), serverWorld.getServer());
 			});
 		});
 
         // register the server=>client packet of getting game rules
         PayloadTypeRegistry.playS2C().register(GetGameRulesS2CPayload.ID, GetGameRulesS2CPayload.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(GetGameRulesS2CPayload.ID, (payload, context) -> {
-            if (context.client().currentScreen instanceof SettingsScreen settingsScreen) {
+            if (context.client().screen instanceof SettingsScreen settingsScreen) {
                 settingsScreen.setSliderValues(
                         payload.value1(),
                         payload.value2()
@@ -108,13 +110,13 @@ public class PvP implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(GetGameRulesC2SPayload.ID, GetGameRulesC2SPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(GetGameRulesC2SPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
-                Entity entity = context.player().getEntityWorld().getEntityById(payload.playerId());
-                if (entity instanceof ServerPlayerEntity serverPlayer) {
+                Entity entity = context.player().level().getEntity(payload.playerId());
+                if (entity instanceof ServerPlayer serverPlayer) {
                     ServerPlayNetworking.send(
                             serverPlayer,
                             new GetGameRulesS2CPayload(
-                                    serverPlayer.getEntityWorld().getGameRules().getValue(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
-                                    serverPlayer.getEntityWorld().getGameRules().getValue(ModGameRules.PHDI)
+                                    serverPlayer.level().getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
+                                    serverPlayer.level().getGameRules().get(ModGameRules.PHDI)
                             )
                     );
                 }
@@ -125,8 +127,8 @@ public class PvP implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(BlockHitC2SPayload.ID, BlockHitC2SPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(BlockHitC2SPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
-                Entity entity = context.player().getEntityWorld().getEntityById(payload.playerID());
-                if (entity instanceof ServerPlayerEntity serverPlayer) {
+                Entity entity = context.player().level().getEntity(payload.playerID());
+                if (entity instanceof ServerPlayer serverPlayer) {
                     PlayerEntityPvpExtension serverPlayerExt = (PlayerEntityPvpExtension) serverPlayer;
                     serverPlayerExt.setBlocking(payload.isBlocking());
                 }

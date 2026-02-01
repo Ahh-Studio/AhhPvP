@@ -5,53 +5,53 @@ import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
 import com.aiden.pvp.client.render.entity.model.MurdererEntityModel;
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
 import com.aiden.pvp.entities.MurdererEntity;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 
-public class MurdererEntityRenderer extends BipedEntityRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
-    private static final Identifier TEXTURE = Identifier.of(PvP.MOD_ID, "textures/entity/murderer.png");
+public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
 
-    public MurdererEntityRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx, new MurdererEntityModel(ctx.getPart(ModEntityModelLayers.MURDERER)), 0.5F);
-        this.addFeature(new HeldItemFeatureRenderer<>(this) {
+    public MurdererEntityRenderer(EntityRendererProvider.Context ctx) {
+        super(ctx, new MurdererEntityModel(ctx.bakeLayer(ModEntityModelLayers.MURDERER)), 0.5F);
+        this.addLayer(new ItemInHandLayer<>(this) {
             @Override
-            public void render(
-                    MatrixStack matrices, OrderedRenderCommandQueue queue, int light,
+            public void submit(
+                    PoseStack matrices, SubmitNodeCollector queue, int light,
                     MurdererEntityRenderState state, float limbSwing, float limbSwingAmount
             ) {
                 if (state.attacking || !state.getMainHandItemState().isEmpty()) {
-                    super.render(matrices, queue, light, state, limbSwing, limbSwingAmount);
+                    super.submit(matrices, queue, light, state, limbSwing, limbSwingAmount);
                 }
             }
         });
-        this.addFeature(
-                new ArmorFeatureRenderer<>(
+        this.addLayer(
+                new HumanoidArmorLayer<>(
                         this,
-                        EquipmentModelData.mapToEntityModel(EntityModelLayers.PLAYER_EQUIPMENT, ctx.getEntityModels(), MurdererEntityModel::new),
+                        ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, ctx.getModelSet(), MurdererEntityModel::new),
                         ctx.getEquipmentRenderer())
         );
     }
 
     public void updateRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
-        super.updateRenderState(murdererEntity, murdererEntityRenderState, f);
-        ArmedEntityRenderState.updateRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
-        murdererEntityRenderState.hasVehicle = murdererEntity.hasVehicle();
+        super.extractRenderState(murdererEntity, murdererEntityRenderState, f);
+        ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
+        murdererEntityRenderState.hasVehicle = murdererEntity.isPassenger();
         murdererEntityRenderState.mainArm = murdererEntity.getMainArm();
-        murdererEntityRenderState.attacking = murdererEntity.isAttacking();
-        murdererEntityRenderState.handSwingProgress = murdererEntity.getHandSwingProgress(f);
+        murdererEntityRenderState.attacking = murdererEntity.isAggressive();
+        murdererEntityRenderState.handSwingProgress = murdererEntity.getAttackAnim(f);
     }
 
     @Override
-    public Identifier getTexture(MurdererEntityRenderState state) {
+    public @NonNull Identifier getTextureLocation(MurdererEntityRenderState state) {
         return TEXTURE;
     }
 

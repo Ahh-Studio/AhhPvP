@@ -13,7 +13,6 @@
         "MobEntityMixin",
         "PlayerEntityMixin",
         "accessor.LivingEntityAccessor",
-        "accessor.MobEntityAccessor",
         "invoker.LivingEntityInvoker"
     ],
     "injectors": {

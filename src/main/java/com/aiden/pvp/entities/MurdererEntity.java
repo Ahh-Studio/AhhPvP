@@ -1,45 +1,54 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.*;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Objects;
 
-public class MurdererEntity extends HostileEntity {
+public class MurdererEntity extends Monster {
     private int wTapFreezeTicks;
     private static final int DEFAULT_FREEZE_DURATION = 4;
     private int enderPearlCooldownTicks = 0;
@@ -52,7 +61,7 @@ public class MurdererEntity extends HostileEntity {
     private BlockPos waterBucketMLGWaterPos;
     public boolean isInPhase2 = false;
 
-    public MurdererEntity(EntityType<? extends MurdererEntity> type, World world) {
+    public MurdererEntity(EntityType<? extends MurdererEntity> type, Level world) {
         super(ModEntityTypes.MURDERER, world);
         this.wTapFreezeTicks = 0;
     }
@@ -63,8 +72,8 @@ public class MurdererEntity extends HostileEntity {
     }
 
     @Override
-    public boolean canMoveVoluntarily() {
-        return this.wTapFreezeTicks <= 0 && super.canMoveVoluntarily();
+    public boolean canSimulateMovement() {
+        return this.wTapFreezeTicks <= 0 && super.canSimulateMovement();
     }
 
     @Override
@@ -76,14 +85,14 @@ public class MurdererEntity extends HostileEntity {
         }
 
         if (this.isInPhase2) {
-            if (this.getAttributeBaseValue(EntityAttributes.ENTITY_INTERACTION_RANGE) != 4.0) {
-                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE)).setBaseValue(4.0);
+            if (this.getAttributeBaseValue(Attributes.ENTITY_INTERACTION_RANGE) != 4.0) {
+                Objects.requireNonNull(this.getAttribute(Attributes.ENTITY_INTERACTION_RANGE)).setBaseValue(4.0);
             }
-            if (this.getAttributeBaseValue(EntityAttributes.ATTACK_DAMAGE) != 12.0) {
-                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE)).setBaseValue(12.0);
+            if (this.getAttributeBaseValue(Attributes.ATTACK_DAMAGE) != 12.0) {
+                Objects.requireNonNull(this.getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(12.0);
             }
-            if (this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) != 1.0) {
-                Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED)).setBaseValue(1.0);
+            if (this.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) != 1.0) {
+                Objects.requireNonNull(this.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(1.0);
             }
             return;
         }
@@ -103,17 +112,17 @@ public class MurdererEntity extends HostileEntity {
         }
 
         if (this.comboHitsTaken > 3 && this.getTarget() != null) {
-            if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
-                FireballEntity fireballEntity = new FireballEntity(this, this.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
-                fireballEntity.setPos(this.getX(), this.getEyeY(), this.getZ());
+            if (this.level() instanceof ServerLevel serverWorld) {
+                FireballEntity fireballEntity = new FireballEntity(this, this.level(), ModItems.FIREBALL.getDefaultInstance());
+                fireballEntity.setPosRaw(this.getX(), this.getEyeY(), this.getZ());
 
-                Vec3d targetPos = this.getTarget().getEntityPos().subtract(0, 0.5, 0);
-                Vec3d mobPos = this.getEyePos();
-                Vec3d direction = targetPos.subtract(mobPos).normalize();
+                Vec3 targetPos = this.getTarget().position().subtract(0, 0.5, 0);
+                Vec3 mobPos = this.getEyePosition();
+                Vec3 direction = targetPos.subtract(mobPos).normalize();
 
-                this.lookAtEntity(this.getTarget(), 30.0F, 30.0F);
+                this.lookAt(this.getTarget(), 30.0F, 30.0F);
 
-                fireballEntity.setVelocity(
+                fireballEntity.shoot(
                         1.2 * direction.x,
                         1.2 * direction.y,
                         1.2 * direction.z,
@@ -121,7 +130,7 @@ public class MurdererEntity extends HostileEntity {
                         1.0F
                 );
 
-                serverWorld.spawnEntity(fireballEntity);
+                serverWorld.addFreshEntity(fireballEntity);
                 this.comboHitsTaken = 0;
             }
         }
@@ -132,47 +141,47 @@ public class MurdererEntity extends HostileEntity {
 
         // water bucket MLG
         {
-            BlockState blockState = this.getEntityWorld().getBlockState(new BlockPos(
-                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                    ((int) this.getEntityPos().y) - 1,
-                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            BlockState blockState = this.level().getBlockState(new BlockPos(
+                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    ((int) this.position().y) - 1,
+                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
             ));
 
-            BlockState blockState1 = this.getEntityWorld().getBlockState(new BlockPos(
-                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                    ((int) this.getEntityPos().y) - 2,
-                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            BlockState blockState1 = this.level().getBlockState(new BlockPos(
+                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    ((int) this.position().y) - 2,
+                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
             ));
 
             if (this.fallDistance > 3 && blockState.isAir() && !blockState1.isAir()) {
                 this.waterBucketMLGWaterPos = new BlockPos(
-                        this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                        ((int) this.getEntityPos().y) - 1,
-                        this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+                        this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                        ((int) this.position().y) - 1,
+                        this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
                 );
-                this.getEntityWorld().setBlockState(
+                this.level().setBlock(
                         this.waterBucketMLGWaterPos,
-                        Blocks.WATER.getDefaultState(),
+                        Blocks.WATER.defaultBlockState(),
                         6
                 );
                 this.isDoingWaterBucketMLG = true;
             }
 
-            BlockState blockState2 = this.getEntityWorld().getBlockState(new BlockPos(
-                    this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                    (int) this.getEntityPos().y - 1,
-                    this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+            BlockState blockState2 = this.level().getBlockState(new BlockPos(
+                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    (int) this.position().y - 1,
+                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
             ));
 
             if (this.isDoingWaterBucketMLG
                     && this.waterBucketMLGWaterPos != null
                     && this.fallDistance == 0
-                    && this.getEntityWorld().getBlockState(this.waterBucketMLGWaterPos).isOf(Blocks.WATER)
+                    && this.level().getBlockState(this.waterBucketMLGWaterPos).is(Blocks.WATER)
                     && !blockState2.isAir()
             ) {
-                this.getEntityWorld().setBlockState(
+                this.level().setBlock(
                         this.waterBucketMLGWaterPos,
-                        Blocks.AIR.getDefaultState(),
+                        Blocks.AIR.defaultBlockState(),
                         6
                 );
                 this.isDoingWaterBucketMLG = false;
@@ -186,24 +195,24 @@ public class MurdererEntity extends HostileEntity {
     }
 
     private void placeBlocksUnderFeetWhenBeBlocked() {
-        if (!this.canSee(this.getTarget())) { // 看不到目标
-            if (this.getRandom().nextBetween(0, 10) <= 0.5) { // 随机，有概率不触发
-                if (this.getEntityWorld() instanceof ServerWorld serverWorld) { // 服务端运作
-                    final BlockState blockState = this.getEntityWorld().getBlockState(new BlockPos(
-                            this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                            ((int) this.getEntityPos().y) - 1,
-                            this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+        if (!this.hasLineOfSight(this.getTarget())) { // 看不到目标
+            if (this.getRandom().nextIntBetweenInclusive(0, 10) <= 0.5) { // 随机，有概率不触发
+                if (this.level() instanceof ServerLevel serverWorld) { // 服务端运作
+                    final BlockState blockState = this.level().getBlockState(new BlockPos(
+                            this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                            ((int) this.position().y) - 1,
+                            this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
                     ));
 
                     if (!blockState.isAir()) {
-                        this.setVelocity(this.getVelocity().add(0.0, 0.5, 0.0));
-                        this.getEntityWorld().setBlockState(
+                        this.setDeltaMovement(this.getDeltaMovement().add(0.0, 0.5, 0.0));
+                        this.level().setBlock(
                                 new BlockPos(
-                                        this.getEntityPos().x >= 0 ? (int) this.getEntityPos().x : (int) this.getEntityPos().x - 1,
-                                        (int) this.getEntityPos().y,
-                                        this.getEntityPos().z >= 0 ? (int) this.getEntityPos().z : (int) this.getEntityPos().z - 1
+                                        this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                                        (int) this.position().y,
+                                        this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
                                 ),
-                                Blocks.DIRT.getDefaultState(),
+                                Blocks.DIRT.defaultBlockState(),
                                 6
                         );
                     }
@@ -213,58 +222,58 @@ public class MurdererEntity extends HostileEntity {
     }
 
     @Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
-        if (source.getAttacker() != null && source.getAttacker() instanceof LivingEntity) this.comboHitsTaken++;
-        return super.damage(world, source, amount);
+    public boolean hurtServer(ServerLevel world, DamageSource source, float amount) {
+        if (source.getEntity() != null && source.getEntity() instanceof LivingEntity) this.comboHitsTaken++;
+        return super.hurtServer(world, source, amount);
     }
 
     @Override
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new EnderPearlTeleportGoal(this));
-        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0, false));
-        this.goalSelector.add(3, new DaggerAttackGoal(this, 1.0, 20, 30.0F));
-        this.targetSelector.add(1, new RevengeGoal(this));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-        this.targetSelector.add(6, new ActiveTargetGoal<>(this, MobEntity.class, true));
-        this.goalSelector.add(4, new WanderAroundGoal(this, 0.6));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new EnderPearlTeleportGoal(this));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0, false));
+        this.goalSelector.addGoal(3, new DaggerAttackGoal(this, 1.0, 20, 30.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Mob.class, true));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
     }
 
-    public static DefaultAttributeContainer.Builder createMurdererAttributes() {
-        return new DefaultAttributeContainer.Builder()
-                .add(EntityAttributes.MAX_HEALTH, 40)
-                .add(EntityAttributes.KNOCKBACK_RESISTANCE)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.4)
-                .add(EntityAttributes.ARMOR, 0)
-                .add(EntityAttributes.ARMOR_TOUGHNESS, 4)
-                .add(EntityAttributes.MAX_ABSORPTION)
-                .add(EntityAttributes.STEP_HEIGHT)
-                .add(EntityAttributes.SCALE)
-                .add(EntityAttributes.GRAVITY)
-                .add(EntityAttributes.SAFE_FALL_DISTANCE)
-                .add(EntityAttributes.FALL_DAMAGE_MULTIPLIER)
-                .add(EntityAttributes.JUMP_STRENGTH)
-                .add(EntityAttributes.OXYGEN_BONUS)
-                .add(EntityAttributes.BURNING_TIME)
-                .add(EntityAttributes.EXPLOSION_KNOCKBACK_RESISTANCE)
-                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY)
-                .add(EntityAttributes.MOVEMENT_EFFICIENCY)
-                .add(EntityAttributes.ATTACK_KNOCKBACK)
-                .add(EntityAttributes.CAMERA_DISTANCE)
-                .add(EntityAttributes.WAYPOINT_TRANSMIT_RANGE)
-                .add(EntityAttributes.FOLLOW_RANGE, 40.0)
-                .add(EntityAttributes.ATTACK_DAMAGE, 7.0)
-                .add(EntityAttributes.ATTACK_SPEED, 10)
-                .add(EntityAttributes.ENTITY_INTERACTION_RANGE, 3);
+    public static AttributeSupplier.Builder createMurdererAttributes() {
+        return new AttributeSupplier.Builder()
+                .add(Attributes.MAX_HEALTH, 40)
+                .add(Attributes.KNOCKBACK_RESISTANCE)
+                .add(Attributes.MOVEMENT_SPEED, 0.4)
+                .add(Attributes.ARMOR, 0)
+                .add(Attributes.ARMOR_TOUGHNESS, 4)
+                .add(Attributes.MAX_ABSORPTION)
+                .add(Attributes.STEP_HEIGHT)
+                .add(Attributes.SCALE)
+                .add(Attributes.GRAVITY)
+                .add(Attributes.SAFE_FALL_DISTANCE)
+                .add(Attributes.FALL_DAMAGE_MULTIPLIER)
+                .add(Attributes.JUMP_STRENGTH)
+                .add(Attributes.OXYGEN_BONUS)
+                .add(Attributes.BURNING_TIME)
+                .add(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE)
+                .add(Attributes.WATER_MOVEMENT_EFFICIENCY)
+                .add(Attributes.MOVEMENT_EFFICIENCY)
+                .add(Attributes.ATTACK_KNOCKBACK)
+                .add(Attributes.CAMERA_DISTANCE)
+                .add(Attributes.WAYPOINT_TRANSMIT_RANGE)
+                .add(Attributes.FOLLOW_RANGE, 40.0)
+                .add(Attributes.ATTACK_DAMAGE, 7.0)
+                .add(Attributes.ATTACK_SPEED, 10)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3);
     }
 
     public State getState() {
-        if (this.isAttacking()) {
+        if (this.isAggressive()) {
             return State.ATTACKING;
         } else {
             return State.IDLE;
@@ -273,32 +282,32 @@ public class MurdererEntity extends HostileEntity {
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        EntityData entityData2 = super.initialize(world, difficulty, spawnReason, entityData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
+        SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         this.getNavigation().setCanOpenDoors(true);
-        Random random = world.getRandom();
-        this.initEquipment(random, difficulty);
-        this.updateEnchantments(world, random, difficulty);
+        RandomSource random = world.getRandom();
+        this.populateDefaultEquipmentSlots(random, difficulty);
+        this.populateDefaultEquipmentEnchantments(world, random, difficulty);
         return entityData2;
     }
 
     @Override
-    protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-        ItemStack helmet = Items.LEATHER_HELMET.getDefaultStack();
-        ItemStack chestplate = Items.LEATHER_CHESTPLATE.getDefaultStack();
-        ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultStack();
-        ItemStack boots = Items.DIAMOND_BOOTS.getDefaultStack();
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+        ItemStack helmet = Items.LEATHER_HELMET.getDefaultInstance();
+        ItemStack chestplate = Items.LEATHER_CHESTPLATE.getDefaultInstance();
+        ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultInstance();
+        ItemStack boots = Items.DIAMOND_BOOTS.getDefaultInstance();
 
-        helmet.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
-        chestplate.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
-        leggings.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
-        boots.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+        helmet.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        chestplate.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        leggings.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        boots.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
-        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
-        this.equipStack(EquipmentSlot.HEAD, helmet);
-        this.equipStack(EquipmentSlot.CHEST, chestplate);
-        this.equipStack(EquipmentSlot.LEGS, leggings);
-        this.equipStack(EquipmentSlot.FEET, boots);
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
+        this.setItemSlot(EquipmentSlot.HEAD, helmet);
+        this.setItemSlot(EquipmentSlot.CHEST, chestplate);
+        this.setItemSlot(EquipmentSlot.LEGS, leggings);
+        this.setItemSlot(EquipmentSlot.FEET, boots);
     }
 
     public void setInPhase2(boolean inPhase2) {
@@ -316,17 +325,17 @@ public class MurdererEntity extends HostileEntity {
 
         public EnderPearlTeleportGoal(MurdererEntity mob) {
             this.mob = mob;
-            this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         }
 
         @Override
-        public boolean canStart() {
+        public boolean canUse() {
             return this.mob.getTarget() != null
                     && this.mob.getTarget().isAlive()
-                    && this.mob.squaredDistanceTo(this.mob.getTarget()) > 400
+                    && this.mob.distanceToSqr(this.mob.getTarget()) > 400
                     && this.mob.enderPearlCooldownTicks <= 0
-                    && !this.mob.getEntityWorld().isClient()
-                    && !this.mob.isSubmergedInWater();
+                    && !this.mob.level().isClientSide()
+                    && !this.mob.isUnderWater();
         }
 
         @Override
@@ -334,54 +343,54 @@ public class MurdererEntity extends HostileEntity {
             super.start();
             if (this.mob.getTarget() == null) return;
 
-            World world = this.mob.getEntityWorld();
-            if (world.isClient()) return;
+            Level world = this.mob.level();
+            if (world.isClientSide()) return;
 
-            EnderPearlEntity enderPearl = new EnderPearlEntity(EntityType.ENDER_PEARL, world);
+            ThrownEnderpearl enderPearl = new ThrownEnderpearl(EntityType.ENDER_PEARL, world);
             enderPearl.setOwner(this.mob);
-            enderPearl.setPos(mob.getX(), mob.getEyeY(), mob.getZ());
+            enderPearl.setPosRaw(mob.getX(), mob.getEyeY(), mob.getZ());
 
-            Vec3d targetPos = this.mob.getTarget().getEyePos();
-            Vec3d mobPos = this.mob.getEyePos();
-            Vec3d direction = targetPos.subtract(mobPos).normalize();
+            Vec3 targetPos = this.mob.getTarget().getEyePosition();
+            Vec3 mobPos = this.mob.getEyePosition();
+            Vec3 direction = targetPos.subtract(mobPos).normalize();
 
             double i = direction.y * 1.2;
 
             if (i >= 0) {
-                enderPearl.setVelocity(
+                enderPearl.shoot(
                         1.2 * direction.x, 2.0 * i + 0.5, 1.2 * direction.z,
                         1.2F, 1.0F
                 );
             } else if (i > -0.4 && i < -0.1) {
-                enderPearl.setVelocity(
+                enderPearl.shoot(
                         1.2 * direction.x, 1 / i * -0.05, 1.2 * direction.z,
                         1.2F, 1.0F
                 );
             } else {
-                enderPearl.setVelocity(
+                enderPearl.shoot(
                         1.2 * direction.x, 0.25 * i, 1.2 * direction.z,
                         1.2F, 1.0F
                 );
             }
 
-            this.mob.playSound(SoundEvents.ENTITY_ENDER_PEARL_THROW, 1.0F, 1.0F);
-            this.mob.lookAtEntity(this.mob.getTarget(), 30.0F, 30.0F);
+            this.mob.playSound(SoundEvents.ENDER_PEARL_THROW, 1.0F, 1.0F);
+            this.mob.lookAt(this.mob.getTarget(), 30.0F, 30.0F);
 
-            world.spawnEntity(enderPearl);
+            world.addFreshEntity(enderPearl);
 
             this.mob.enderPearlCooldownTicks = ENDER_PEARL_COOLDOWN;
             this.mob.getNavigation().stop();
-            this.mob.lookAtEntity(this.mob.getTarget(), 30.0F, 30.0F);
+            this.mob.lookAt(this.mob.getTarget(), 30.0F, 30.0F);
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             return false;
         }
     }
 
     static class MeleeAttackGoal extends Goal {
-        protected final PathAwareEntity mob;
+        protected final PathfinderMob mob;
         private final double speed;
         private final boolean pauseWhenMobIdle;
         private Path path;
@@ -392,16 +401,16 @@ public class MurdererEntity extends HostileEntity {
         private int cooldown;
         private long lastUpdateTime;
 
-        public MeleeAttackGoal(PathAwareEntity mob, double speed, boolean pauseWhenMobIdle) {
+        public MeleeAttackGoal(PathfinderMob mob, double speed, boolean pauseWhenMobIdle) {
             this.mob = mob;
             this.speed = speed;
             this.pauseWhenMobIdle = pauseWhenMobIdle;
-            this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         }
 
         @Override
-        public boolean canStart() {
-            long l = this.mob.getEntityWorld().getTime();
+        public boolean canUse() {
+            long l = this.mob.level().getGameTime();
             if (l - this.lastUpdateTime < 20L) {
                 return false;
             } else {
@@ -412,30 +421,30 @@ public class MurdererEntity extends HostileEntity {
                 } else if (!livingEntity.isAlive()) {
                     return false;
                 } else {
-                    this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
-                    return (this.path != null || this.mob.isInAttackRange(livingEntity)) && this.mob.squaredDistanceTo(livingEntity) <= 100;
+                    this.path = this.mob.getNavigation().createPath(livingEntity, 0);
+                    return (this.path != null || this.mob.isWithinMeleeAttackRange(livingEntity)) && this.mob.distanceToSqr(livingEntity) <= 100;
                 }
             }
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             LivingEntity livingEntity = this.mob.getTarget();
             if (livingEntity == null) {
                 return false;
             } else if (!livingEntity.isAlive()) {
                 return false;
             } else if (!this.pauseWhenMobIdle) {
-                return !this.mob.getNavigation().isIdle();
+                return !this.mob.getNavigation().isDone();
             } else {
-                return this.mob.isInPositionTargetRange(livingEntity.getBlockPos()) && !(livingEntity instanceof PlayerEntity playerEntity && (playerEntity.isSpectator() || playerEntity.isCreative()));
+                return this.mob.isWithinHome(livingEntity.blockPosition()) && !(livingEntity instanceof Player playerEntity && (playerEntity.isSpectator() || playerEntity.isCreative()));
             }
         }
 
         @Override
         public void start() {
-            this.mob.getNavigation().startMovingAlong(this.path, this.speed);
-            this.mob.setAttacking(true);
+            this.mob.getNavigation().moveTo(this.path, this.speed);
+            this.mob.setAggressive(true);
             this.updateCountdownTicks = 0;
             this.cooldown = 0;
         }
@@ -443,16 +452,16 @@ public class MurdererEntity extends HostileEntity {
         @Override
         public void stop() {
             LivingEntity livingEntity = this.mob.getTarget();
-            if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
+            if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
                 this.mob.setTarget(null);
             }
 
-            this.mob.setAttacking(false);
+            this.mob.setAggressive(false);
             this.mob.getNavigation().stop();
         }
 
         @Override
-        public boolean shouldRunEveryTick() {
+        public boolean requiresUpdateEveryTick() {
             return true;
         }
 
@@ -460,31 +469,31 @@ public class MurdererEntity extends HostileEntity {
         public void tick() {
             LivingEntity livingEntity = this.mob.getTarget();
             if (livingEntity != null) {
-                this.mob.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+                this.mob.getLookControl().setLookAt(livingEntity, 30.0F, 30.0F);
                 this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
-                if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
+                if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity))
                         && this.updateCountdownTicks <= 0
                         && (
                         this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
-                                || livingEntity.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0
+                                || livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0
                                 || this.mob.getRandom().nextFloat() < 0.05F
                 )) {
                     this.targetX = livingEntity.getX();
                     this.targetY = livingEntity.getY();
                     this.targetZ = livingEntity.getZ();
                     this.updateCountdownTicks = 4 + this.mob.getRandom().nextInt(7);
-                    double d = this.mob.squaredDistanceTo(livingEntity);
+                    double d = this.mob.distanceToSqr(livingEntity);
                     if (d > 1024.0) {
                         this.updateCountdownTicks += 10;
                     } else if (d > 256.0) {
                         this.updateCountdownTicks += 5;
                     }
 
-                    if (!this.mob.getNavigation().startMovingTo(livingEntity, this.speed)) {
+                    if (!this.mob.getNavigation().moveTo(livingEntity, this.speed)) {
                         this.updateCountdownTicks += 15;
                     }
 
-                    this.updateCountdownTicks = this.getTickCount(this.updateCountdownTicks);
+                    this.updateCountdownTicks = this.adjustedTickDelay(this.updateCountdownTicks);
                 }
 
                 this.cooldown = Math.max(this.cooldown - 1, 0);
@@ -495,8 +504,8 @@ public class MurdererEntity extends HostileEntity {
         protected void attack(LivingEntity target) {
             if (this.canAttack(target)) {
                 this.resetCooldown();
-                this.mob.swingHand(Hand.MAIN_HAND);
-                this.mob.tryAttack(getServerWorld(this.mob), target);
+                this.mob.swing(InteractionHand.MAIN_HAND);
+                this.mob.doHurtTarget(getServerLevel(this.mob), target);
                 if (this.mob instanceof MurdererEntity murderer) {
                     murderer.triggerWTapPause();
                 }
@@ -504,9 +513,9 @@ public class MurdererEntity extends HostileEntity {
         }
 
         protected void resetCooldown() {
-            double attackSpeed = this.mob.getAttributeValue(EntityAttributes.ATTACK_SPEED);
+            double attackSpeed = this.mob.getAttributeValue(Attributes.ATTACK_SPEED);
             int dynamicCooldown = (int) (20 / attackSpeed);
-            this.cooldown = this.getTickCount(Math.max(1, dynamicCooldown));
+            this.cooldown = this.adjustedTickDelay(Math.max(1, dynamicCooldown));
         }
 
         protected boolean isCooledDown() {
@@ -514,7 +523,7 @@ public class MurdererEntity extends HostileEntity {
         }
 
         protected boolean canAttack(LivingEntity target) {
-            return this.isCooledDown() && this.mob.isInAttackRange(target) && this.mob.getVisibilityCache().canSee(target);
+            return this.isCooledDown() && this.mob.isWithinMeleeAttackRange(target) && this.mob.getSensing().hasLineOfSight(target);
         }
 
         protected int getCooldown() {
@@ -522,9 +531,9 @@ public class MurdererEntity extends HostileEntity {
         }
 
         protected int getMaxCooldown() {
-            double attackSpeed = this.mob.getAttributeValue(EntityAttributes.ATTACK_SPEED);
+            double attackSpeed = this.mob.getAttributeValue(Attributes.ATTACK_SPEED);
             int dynamicCooldown = (int) (20 / attackSpeed);
-            return this.getTickCount(Math.max(1, dynamicCooldown));
+            return this.adjustedTickDelay(Math.max(1, dynamicCooldown));
         }
     }
 
@@ -544,7 +553,7 @@ public class MurdererEntity extends HostileEntity {
             this.speed = speed;
             this.attackInterval = attackInterval;
             this.squaredRange = range * range;
-            this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         }
 
         public void setAttackInterval(int attackInterval) {
@@ -552,10 +561,10 @@ public class MurdererEntity extends HostileEntity {
         }
 
         @Override
-        public boolean canStart() {
+        public boolean canUse() {
             return this.actor.getTarget() != null && this.isHoldingDagger()
-                    && this.actor.getTarget().squaredDistanceTo(this.actor) > 100
-                    && this.actor.getTarget().squaredDistanceTo(this.actor) <= 400;
+                    && this.actor.getTarget().distanceToSqr(this.actor) > 100
+                    && this.actor.getTarget().distanceToSqr(this.actor) <= 400;
         }
 
         protected boolean isHoldingDagger() {
@@ -563,27 +572,27 @@ public class MurdererEntity extends HostileEntity {
         }
 
         @Override
-        public boolean shouldContinue() {
-            return (this.canStart() || !this.actor.getNavigation().isIdle()) && this.isHoldingDagger();
+        public boolean canContinueToUse() {
+            return (this.canUse() || !this.actor.getNavigation().isDone()) && this.isHoldingDagger();
         }
 
         @Override
         public void start() {
             super.start();
-            this.actor.setAttacking(true);
+            this.actor.setAggressive(true);
         }
 
         @Override
         public void stop() {
             super.stop();
-            this.actor.setAttacking(false);
+            this.actor.setAggressive(false);
             this.targetSeeingTicker = 0;
             this.cooldown = -1;
-            this.actor.clearActiveItem();
+            this.actor.stopUsingItem();
         }
 
         @Override
-        public boolean shouldRunEveryTick() {
+        public boolean requiresUpdateEveryTick() {
             return true;
         }
 
@@ -591,36 +600,36 @@ public class MurdererEntity extends HostileEntity {
         public void tick() {
             LivingEntity livingEntity = this.actor.getTarget();
             if (livingEntity != null) {
-                double d = this.actor.squaredDistanceTo(livingEntity); //
-                boolean bl = this.actor.getVisibilityCache().canSee(livingEntity);
+                double d = this.actor.distanceToSqr(livingEntity); //
+                boolean bl = this.actor.getSensing().hasLineOfSight(livingEntity);
                 boolean bl2 = this.targetSeeingTicker > 0;
-                this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
+                this.actor.lookAt(livingEntity, 30.0F, 30.0F);
 
                 // Approach by fireball
-                BlockState blockState = this.actor.getEntityWorld().getBlockState(new BlockPos(
-                        this.actor.getEntityPos().x >= 0 ? (int) this.actor.getEntityPos().x : (int) this.actor.getEntityPos().x - 1,
-                        (int) this.actor.getEntityPos().y,
-                        this.actor.getEntityPos().z >= 0 ? (int) this.actor.getEntityPos().z : (int) this.actor.getEntityPos().z - 1
+                BlockState blockState = this.actor.level().getBlockState(new BlockPos(
+                        this.actor.position().x >= 0 ? (int) this.actor.position().x : (int) this.actor.position().x - 1,
+                        (int) this.actor.position().y - 1,
+                        this.actor.position().z >= 0 ? (int) this.actor.position().z : (int) this.actor.position().z - 1
                 ));
                 if (this.actor.getHealth() >= 10 && !blockState.isAir() && this.actor.fireballCooldownTicks <= 0) { // 同时满足：血量>10、脚底方块不是空气、冷却结束
-                    if (this.actor.getRandom().nextBetween(0, 10) <= 0.5) { // 随机，有概率不触发
-                        if (this.actor.getEntityWorld() instanceof ServerWorld serverWorld) { // 服务端生成实体
-                            FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.getEntityWorld(), ModItems.FIREBALL.getDefaultStack());
-                            fireballEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
+                    if (this.actor.getRandom().nextIntBetweenInclusive(1, 10) <= 5) { // 随机，有概率不触发
+                        if (this.actor.level() instanceof ServerLevel serverWorld) { // 服务端生成实体
+                            FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.level(), ModItems.FIREBALL.getDefaultInstance());
+                            fireballEntity.setPosRaw(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
 
-                            this.actor.lookAtEntity(this.actor.getTarget(), 30.0F, 30.0F);
+                            this.actor.lookAt(this.actor.getTarget(), 30.0F, 30.0F);
 
-                            this.actor.getMoveControl().strafeTo(5.0F, 0.0F);
-                            this.actor.setVelocity(this.actor.getVelocity().add(0.0, 0.25, 0.0));
+                            this.actor.getMoveControl().strafe(5.0F, 0.0F);
+                            this.actor.setDeltaMovement(this.actor.getDeltaMovement().add(0.0, 0.25, 0.0));
 
-                            fireballEntity.setVelocity(
-                                    0.8 * MathHelper.sin(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180)),
+                            fireballEntity.shoot(
+                                    0.6 * Mth.sin(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180)),
                                     -1.0,
-                                    0.8 * -MathHelper.cos(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180)),
+                                    0.6 * -Mth.cos(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180)),
                                     1.2F, 0.0F
                             );
 
-                            serverWorld.spawnEntity(fireballEntity);
+                            serverWorld.addFreshEntity(fireballEntity);
 
                             this.actor.fireballCooldownTicks = FIREBALL_COOLDOWN;
                         }
@@ -663,68 +672,68 @@ public class MurdererEntity extends HostileEntity {
                         this.backward = true;
                     }
 
-                    this.actor.getMoveControl().strafeTo(this.backward ? -0.5F : 0.5F, this.movingToLeft ? 0.5F : -0.5F);
-                    if (this.actor.getControllingVehicle() instanceof MobEntity mobEntity) {
-                        mobEntity.lookAtEntity(livingEntity, 30.0F, 30.0F);
+                    this.actor.getMoveControl().strafe(this.backward ? -0.5F : 0.5F, this.movingToLeft ? 0.5F : -0.5F);
+                    if (this.actor.getControlledVehicle() instanceof Mob mobEntity) {
+                        mobEntity.lookAt(livingEntity, 30.0F, 30.0F);
                     }
 
-                    this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
+                    this.actor.lookAt(livingEntity, 30.0F, 30.0F);
                 } else {
-                    this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+                    this.actor.getLookControl().setLookAt(livingEntity, 30.0F, 30.0F);
                 }
 
                 if (this.actor.isUsingItem()) {
                     if (!bl && this.targetSeeingTicker < -60) {
-                        this.actor.clearActiveItem();
+                        this.actor.stopUsingItem();
                     } else if (bl) {
-                        int i = this.actor.getItemUseTime();
+                        int i = this.actor.getTicksUsingItem();
                         if (i >= 20) {
-                            this.actor.clearActiveItem();
+                            this.actor.stopUsingItem();
 
                             DaggerEntity daggerEntity = getDaggerEntity();
-                            this.actor.getEntityWorld().spawnEntity(daggerEntity);
+                            this.actor.level().addFreshEntity(daggerEntity);
 
-                            this.actor.playSound(SoundEvents.ITEM_CROSSBOW_SHOOT, 1.0F, 1.0F / (this.actor.getRandom().nextFloat() * 0.4F + 0.8F));
+                            this.actor.playSound(SoundEvents.CROSSBOW_SHOOT, 1.0F, 1.0F / (this.actor.getRandom().nextFloat() * 0.4F + 0.8F));
 
 
                             this.cooldown = this.attackInterval;
                         }
                     }
                 } else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {
-                    this.actor.setCurrentHand(ProjectileUtil.getHandPossiblyHolding(this.actor, ModItems.THROWABLE_DAGGER));
+                    this.actor.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.actor, ModItems.THROWABLE_DAGGER));
                 }
             }
         }
 
         private @NotNull DaggerEntity getDaggerEntity() {
-            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, this.actor.getEntityWorld());
+            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, this.actor.level());
             daggerEntity.setOwner(this.actor);
 
-            daggerEntity.setPos(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
+            daggerEntity.setPosRaw(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
 
-            float f = -MathHelper.sin(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180));
-            float g = -MathHelper.sin((this.actor.getPitch() + 0.0F) * ((float)Math.PI / 180));
-            float h = MathHelper.cos(this.actor.getYaw() * ((float)Math.PI / 180)) * MathHelper.cos(this.actor.getPitch() * ((float)Math.PI / 180));
-            daggerEntity.setVelocity(f, g, h, 1.2F, 0.0F);
+            float f = -Mth.sin(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
+            float g = -Mth.sin((this.actor.getXRot() + 0.0F) * ((float)Math.PI / 180));
+            float h = Mth.cos(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
+            daggerEntity.shoot(f, g, h, 1.2F, 0.0F);
             return daggerEntity;
         }
     }
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_VINDICATOR_AMBIENT;
+        return SoundEvents.VINDICATOR_AMBIENT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_PLAYER_DEATH;
+        return SoundEvents.PLAYER_DEATH;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_PLAYER_HURT;
+        return SoundEvents.PLAYER_HURT;
     }
 
     @Override
-    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {}
+    protected void dropCustomDeathLoot(ServerLevel world, DamageSource source, boolean causedByPlayer) {}
 }

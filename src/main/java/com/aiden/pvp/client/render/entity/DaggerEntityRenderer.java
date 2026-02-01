@@ -3,76 +3,79 @@ package com.aiden.pvp.client.render.entity;
 import com.aiden.pvp.client.render.entity.state.DaggerEntityRenderState;
 import com.aiden.pvp.entities.DaggerEntity;
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
 
 public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer<T, DaggerEntityRenderState> {
-    private final ItemModelManager itemModelManager;
+    private final ItemModelResolver itemModelManager;
     private final float scale;
     private final boolean lit;
 
-    public DaggerEntityRenderer(EntityRendererFactory.Context ctx, float scale, boolean lit) {
+    public DaggerEntityRenderer(EntityRendererProvider.Context ctx, float scale, boolean lit) {
         super(ctx);
-        this.itemModelManager = ctx.getItemModelManager();
+        this.itemModelManager = ctx.getItemModelResolver();
         this.scale = scale;
         this.lit = lit;
     }
 
-    public DaggerEntityRenderer(EntityRendererFactory.Context context) {
+    public DaggerEntityRenderer(EntityRendererProvider.Context context) {
         this(context, 1.0F, false);
     }
 
     @Override
-    protected int getBlockLight(T entity, BlockPos pos) {
-        return this.lit ? 15 : super.getBlockLight(entity, pos);
+    protected int getBlockLightLevel(T entity, @NonNull BlockPos pos) {
+        return this.lit ? 15 : super.getBlockLightLevel(entity, pos);
     }
 
-    public void render(
+    @Override
+    public void submit(
             DaggerEntityRenderState daggerEntityRenderState,
-            MatrixStack matrixStack,
-            OrderedRenderCommandQueue orderedRenderCommandQueue,
+            PoseStack matrixStack,
+            SubmitNodeCollector orderedRenderCommandQueue,
             CameraRenderState cameraRenderState
     ) {
-        matrixStack.push();
+        matrixStack.pushPose();
 
         matrixStack.translate(0.0F, 0.25F, 0.0F);
         matrixStack.scale(this.scale, this.scale, this.scale);
 
-        Vec3d velocity = daggerEntityRenderState.velocity;
-        if (velocity.lengthSquared() > 0.001) {
-            float yaw = (float) (MathHelper.atan2(velocity.getX(), velocity.getZ()) * 180.0 / Math.PI) - 90.0F;
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw - 135.0F));
+        Vec3 velocity = daggerEntityRenderState.velocity;
+        if (velocity.lengthSqr() > 0.001) {
+            float yaw = (float) (Mth.atan2(velocity.x(), velocity.z()) * 180.0 / Math.PI) - 90.0F;
+            matrixStack.mulPose(Axis.YP.rotationDegrees(yaw - 135.0F));
         }
 
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(95.0F));
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(0.0F));
+        matrixStack.mulPose(Axis.XP.rotationDegrees(95.0F));
+        matrixStack.mulPose(Axis.ZP.rotationDegrees(0.0F));
 
         daggerEntityRenderState.itemRenderState
-                .render(matrixStack, orderedRenderCommandQueue, daggerEntityRenderState.light, OverlayTexture.DEFAULT_UV, daggerEntityRenderState.outlineColor);
+                .submit(matrixStack, orderedRenderCommandQueue, daggerEntityRenderState.lightCoords, OverlayTexture.NO_OVERLAY, daggerEntityRenderState.outlineColor);
 
-        matrixStack.pop();
-        super.render(daggerEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
+        matrixStack.popPose();
+        super.submit(daggerEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
     }
 
     public DaggerEntityRenderState createRenderState() {
         return new DaggerEntityRenderState();
     }
 
-    public void updateRenderState(T entity, DaggerEntityRenderState daggerEntityRenderState, float f) {
-        super.updateRenderState(entity, daggerEntityRenderState, f);
-        daggerEntityRenderState.velocity = entity.getVelocity().multiply(-1, 1, -1);
-        this.itemModelManager.updateForNonLivingEntity(
+    @Override
+    public void extractRenderState(T entity, DaggerEntityRenderState daggerEntityRenderState, float f) {
+        super.extractRenderState(entity, daggerEntityRenderState, f);
+        daggerEntityRenderState.velocity = entity.getDeltaMovement().multiply(-1, 1, -1);
+        this.itemModelManager.updateForNonLiving(
                 daggerEntityRenderState.itemRenderState,
                 new ItemStack(ModItems.THROWABLE_DAGGER),
                 ItemDisplayContext.GROUND,

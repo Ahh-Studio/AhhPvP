@@ -1,128 +1,133 @@
 package com.aiden.pvp.client.render.entity.model;
 
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
-public class MurdererEntityModel extends BipedEntityModel<MurdererEntityRenderState> implements ModelWithArms<MurdererEntityRenderState>, ModelWithHead {
-    private final ModelPart head;
-    private final ModelPart body;
-    private final ModelPart leftLeg;
-    private final ModelPart rightLeg;
-    private final ModelPart rightArm;
-    private final ModelPart leftArm;
+public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
+    private final net.minecraft.client.model.geom.ModelPart head;
+    private final net.minecraft.client.model.geom.ModelPart body;
+    private final net.minecraft.client.model.geom.ModelPart leftLeg;
+    private final net.minecraft.client.model.geom.ModelPart rightLeg;
+    private final net.minecraft.client.model.geom.ModelPart rightArm;
+    private final net.minecraft.client.model.geom.ModelPart leftArm;
 
-    public MurdererEntityModel(ModelPart modelPart) {
+    public MurdererEntityModel(net.minecraft.client.model.geom.ModelPart modelPart) {
         super(modelPart);
-        this.head = modelPart.getChild(EntityModelPartNames.HEAD);
-        this.body = modelPart.getChild(EntityModelPartNames.BODY);
-        this.leftLeg = modelPart.getChild(EntityModelPartNames.LEFT_LEG);
-        this.rightLeg = modelPart.getChild(EntityModelPartNames.RIGHT_LEG);
-        this.leftArm = modelPart.getChild(EntityModelPartNames.LEFT_ARM);
-        this.rightArm = modelPart.getChild(EntityModelPartNames.RIGHT_ARM);
+        this.head = modelPart.getChild(PartNames.HEAD);
+        this.body = modelPart.getChild(PartNames.BODY);
+        this.leftLeg = modelPart.getChild(PartNames.LEFT_LEG);
+        this.rightLeg = modelPart.getChild(PartNames.RIGHT_LEG);
+        this.leftArm = modelPart.getChild(PartNames.LEFT_ARM);
+        this.rightArm = modelPart.getChild(PartNames.RIGHT_ARM);
     }
 
-    public static TexturedModelData getTexturedModelData() {
-        ModelData modelData = new ModelData();
-        ModelPartData root = modelData.getRoot();
+    public static LayerDefinition getTexturedModelData() {
+        MeshDefinition modelData = new MeshDefinition();
+        PartDefinition root = modelData.getRoot();
 
-        ModelPartData head = root.addChild(
-                EntityModelPartNames.HEAD,
-                ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F),
-                ModelTransform.origin(0.0F, 0.0F, 0.0F)
+        PartDefinition head = root.addOrReplaceChild(
+                PartNames.HEAD,
+                CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
-        head.addChild(
-                EntityModelPartNames.HAT,
-                ModelPartBuilder.create(),
-                ModelTransform.NONE
+        head.addOrReplaceChild(
+                PartNames.HAT,
+                CubeListBuilder.create(),
+                PartPose.ZERO
         );
-        root.addChild(
-                EntityModelPartNames.HEAD,
-                ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F),
-                ModelTransform.origin(0.0F, 0.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.HEAD,
+                CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
-        root.addChild(
-                EntityModelPartNames.BODY,
-                ModelPartBuilder.create().uv(16, 16).cuboid(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F),
-                ModelTransform.origin(0.0F, 0.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.BODY,
+                CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
-        root.addChild(
-                EntityModelPartNames.RIGHT_ARM,
-                ModelPartBuilder.create().uv(40, 16).cuboid(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
-                ModelTransform.origin(-5.0F, 2.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.RIGHT_ARM,
+                CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(-5.0F, 2.0F, 0.0F)
         );
-        root.addChild(
-                EntityModelPartNames.LEFT_ARM,
-                ModelPartBuilder.create().uv(32, 48).cuboid(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
-                ModelTransform.origin(5.0F, 2.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.LEFT_ARM,
+                CubeListBuilder.create().texOffs(32, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(5.0F, 2.0F, 0.0F)
         );
-        root.addChild(
-                EntityModelPartNames.RIGHT_LEG,
-                ModelPartBuilder.create().uv(0, 16).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
-                ModelTransform.origin(-1.9F, 12.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.RIGHT_LEG,
+                CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(-1.9F, 12.0F, 0.0F)
         );
-        root.addChild(
-                EntityModelPartNames.LEFT_LEG,
-                ModelPartBuilder.create().uv(0, 16).mirrored().cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
-                ModelTransform.origin(1.9F, 12.0F, 0.0F)
+        root.addOrReplaceChild(
+                PartNames.LEFT_LEG,
+                CubeListBuilder.create().texOffs(0, 16).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(1.9F, 12.0F, 0.0F)
         );
-        return TexturedModelData.of(modelData, 64, 64);
+        return LayerDefinition.create(modelData, 64, 64);
     }
 
     @Override
-    public void setAngles(MurdererEntityRenderState state) {
-        super.setAngles(state);
-        this.head.yaw = state.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE;
-        this.head.pitch = state.pitch * MathHelper.RADIANS_PER_DEGREE;
-        this.body.yaw = 0.0F;
-        this.body.pitch = 0.0F;
+    public void setupAnim(MurdererEntityRenderState state) {
+        super.setupAnim(state);
+        this.head.yRot = state.yRot * Mth.DEG_TO_RAD;
+        this.head.xRot = state.xRot * Mth.DEG_TO_RAD;
+        this.body.yRot = 0.0F;
+        this.body.xRot = 0.0F;
 
         if (state.hasVehicle) {
-            this.rightArm.pitch = -1.309F;
-            this.leftArm.pitch = -1.309F;
-            this.rightLeg.pitch = -1.414F;
-            this.leftLeg.pitch = -1.414F;
+            this.rightArm.xRot = -1.309F;
+            this.leftArm.xRot = -1.309F;
+            this.rightLeg.xRot = -1.414F;
+            this.leftLeg.xRot = -1.414F;
         } else {
-            float swing = state.limbSwingAnimationProgress;
-            float swingAmount = state.limbSwingAmplitude;
+            float swing = state.walkAnimationPos;
+            float swingAmount = state.walkAnimationSpeed;
 
-            this.rightArm.pitch = MathHelper.cos(swing * 0.6662F + MathHelper.PI) * 2.0F * swingAmount * 0.5F;
-            this.leftArm.pitch = MathHelper.cos(swing * 0.6662F) * 2.0F * swingAmount * 0.5F;
+            this.rightArm.xRot = Mth.cos(swing * 0.6662F + Mth.PI) * 2.0F * swingAmount * 0.5F;
+            this.leftArm.xRot = Mth.cos(swing * 0.6662F) * 2.0F * swingAmount * 0.5F;
 
             if (swingAmount < 0.1F) {
-                this.rightArm.pitch = 0.0F;
-                this.leftArm.pitch = 0.0F;
+                this.rightArm.xRot = 0.0F;
+                this.leftArm.xRot = 0.0F;
             }
 
-            this.rightLeg.pitch = MathHelper.cos(swing * 0.6662F) * 1.4F * swingAmount;
-            this.leftLeg.pitch = MathHelper.cos(swing * 0.6662F + MathHelper.PI) * 1.4F * swingAmount;
+            this.rightLeg.xRot = Mth.cos(swing * 0.6662F) * 1.4F * swingAmount;
+            this.leftLeg.xRot = Mth.cos(swing * 0.6662F + Mth.PI) * 1.4F * swingAmount;
         }
 
         if (state.attacking) {
-            ArmPosing.swingArm(state.mainArm == Arm.LEFT ? this.leftArm : this.rightArm, state.age, state.mainArm == Arm.LEFT ? -1.0F : 1.0F);
+            AnimationUtils.bobModelPart(state.mainArm == HumanoidArm.LEFT ? this.leftArm : this.rightArm, state.ageInTicks, state.mainArm == HumanoidArm.LEFT ? -1.0F : 1.0F);
         }
     }
 
-    private ModelPart getAttackingArm(Arm arm) {
-        return arm == Arm.LEFT ? this.leftArm : this.rightArm;
+    private net.minecraft.client.model.geom.ModelPart getAttackingArm(HumanoidArm arm) {
+        return arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
     }
 
-    public ModelPart getBody() {
+    public net.minecraft.client.model.geom.ModelPart getBody() {
         return this.body;
     }
 
     @Override
-    public ModelPart getHead() {
+    public net.minecraft.client.model.geom.ModelPart getHead() {
         return this.head;
     }
 
     @Override
-    public void setArmAngle(MurdererEntityRenderState murdererEntityRenderState, Arm arm, MatrixStack matrixStack) {
-        this.root.applyTransform(matrixStack);
-        (arm == Arm.RIGHT ? this.rightArm : this.leftArm).applyTransform(matrixStack);
+    public void translateToHand(MurdererEntityRenderState murdererEntityRenderState, HumanoidArm arm, PoseStack matrixStack) {
+        this.root.translateAndRotate(matrixStack);
+        (arm == HumanoidArm.RIGHT ? this.rightArm : this.leftArm).translateAndRotate(matrixStack);
     }
 }
