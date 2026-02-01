@@ -2,13 +2,17 @@ package com.aiden.pvp.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.aiden.pvp.items.ModItems;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
 
 public class DaggerEntity extends Projectile {
     public List<LivingEntity> hitEntities = new ArrayList<>();
@@ -85,6 +90,14 @@ public class DaggerEntity extends Projectile {
             level().destroyBlock(blockHitResult.getBlockPos(), true, this.getOwner());
             return;
         }
+        if (hitBlockState.is(Blocks.SCULK_SHRIEKER)) {
+            level().destroyBlock(blockHitResult.getBlockPos(), false, this.getOwner());
+            if (level() instanceof ServerLevel serverLevel) {
+                ItemEntity itemEntity = new ItemEntity(level(), this.getX(), this.getY(), this.getZ(), new ItemStack(ModItems.BOSS_SPAWNER, 1));
+                serverLevel.addFreshEntity(itemEntity);
+            }
+            return;
+        }
         this.discard();
     }
 
@@ -108,6 +121,6 @@ public class DaggerEntity extends Projectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
     }
 }
