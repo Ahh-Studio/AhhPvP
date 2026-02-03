@@ -39,6 +39,7 @@ public class PvPZhCnLangProvider extends FabricLanguageProvider {
         builder.add("item.pvp.iron_rune", "铁化符文");
         builder.add("item.pvp.iron_sword", "铁剑");
         builder.add("item.pvp.murderer_spawn_egg", "杀手刷怪蛋");
+        builder.add("item.pvp.return_scroll", "回城卷轴");
         builder.add("item.pvp.self-res_platform", "救援平台");
         builder.add("item.pvp.stone_sword", "石剑");
         builder.add("item.pvp.throwable_dagger", "飞刀");
