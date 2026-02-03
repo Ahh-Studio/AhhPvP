@@ -38,6 +38,7 @@ public class PvPEnGbLangProvider extends FabricLanguageProvider {
         builder.add("item.pvp.iron_rune", "Iron Rune");
         builder.add("item.pvp.iron_sword", "Iron Sword");
         builder.add("item.pvp.murderer_spawn_egg", "Murderer Spawn Egg");
+        builder.add("item.pvp.return_scroll", "Return Scroll");
         builder.add("item.pvp.self-res_platform", "Self-res Platform");
         builder.add("item.pvp.stone_sword", "Stone Sword");
         builder.add("item.pvp.throwable_dagger", "Throwable Dagger");
