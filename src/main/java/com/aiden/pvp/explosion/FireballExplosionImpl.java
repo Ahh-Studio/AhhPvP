@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ExplosionParticleInfo;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -116,40 +118,54 @@ public class FireballExplosionImpl implements Explosion {
             float f = this.power * 2.5F;
             int i = Mth.floor(this.pos.x - f - 1.0);
             int j = Mth.floor(this.pos.x + f + 1.0);
-            int k = Mth.floor(this.pos.y - f - 1.0);
+            int k = Mth.floor(this.pos.y - f - 2.0);
             int l = Mth.floor(this.pos.y + f + 1.0);
             int m = Mth.floor(this.pos.z - f - 1.0);
             int n = Mth.floor(this.pos.z + f + 1.0);
 
-            for (net.minecraft.world.entity.Entity entity : this.world.getEntities(this.entity, new AABB(i, k, m, j, l, n))) {
-                if (!entity.ignoreExplosion(this)) {
-                    double d = Math.sqrt(entity.distanceToSqr(this.pos)) / f; // 距离除以强度的2.5倍
+            for (Entity entity : this.world.getEntities(this.entity, new AABB(i, k, m, j, l, n))) {
+                if (!entity.ignoreExplosion(this) && !(entity instanceof ItemEntity)) {
+                    double d;
+                    if (entity.getY() - this.pos.y < 0) {
+                        d = Math.sqrt(this.pos.distanceTo(entity.position().add(0.0, entity.getEyeHeight(), 0.0))) / f;
+                    } else {
+                        d = Math.sqrt(entity.distanceToSqr(this.pos)) / f; // 距离除以强度的2.5倍
+                    }
                     if (!(d > 1.0)) { // 距离小于等于强度的2.5倍
-                        Vec3 vec3d = entity instanceof PrimedTnt ? entity.position() : entity.getEyePosition(); // 实体眼睛的位置
-                        Vec3 vec3d2 = vec3d.subtract(this.pos).normalize(); // 位置差（距离向量）
+                        Vec3 vec3 = entity instanceof PrimedTnt ? entity.position() : entity.getEyePosition(); // 实体眼睛的位置
+                        Vec3 vec32 = vec3.subtract(this.pos).normalize(); // 位置差（距离向量）
                         boolean bl = this.behavior.shouldDamageEntity(this, entity);
-                        float g = this.behavior.getKnockbackMultiplier(entity);
+                        float g = this.behavior.getKnockbackMultiplier(entity) * (0.5F + this.power * 0.75F);
                         float h = !bl && g == 0.0F ? 0.0F : calculateReceivedDamage(this.pos, entity);
-                        if (bl) entity.hurtServer(this.world, this.damageSource, this.behavior.getEntityDamageAmount(this, entity, h));
+                        if (bl) entity.hurtServer(this.world, this.damageSource, this.behavior.getEntityDamageAmount(this, entity, h) / 600);
 
                         double e = entity instanceof net.minecraft.world.entity.LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE) : 0.0;
-                        double o = (1.0 - d) * h * g * (1.0 - e); // 最终乘数 =  强度的2.5倍减距离 * 伤害 * 击退乘数 * (1.0 - 击退抗性，没有属性值则为0.0)
+                        double o = (1.0 - d) * h * g * (1.0 - e); // 最终乘数 = 强度的2.5倍减距离 * 伤害 * 击退乘数 * (1.0 - 击退抗性，没有属性值则为0.0)
                         double p = h == 0 ? 0.5 * (1.0 - d) * g * (1.0 - e) : o; // 防止动量为0，修正动量
 
-                        Vec3 vec3d3 = new Vec3(
-                                vec3d2.x * 2,
-                                vec3d2.y * 0.5 + 0.1,
-                                vec3d2.z * 2
-                        );
+                        Vec3 vec33;
 
-                        Vec3 vec3d4 = vec3d3.scale(p);
-                        entity.push(vec3d4);
+                        if (vec32.y > 0) {
+                            vec33 = new Vec3(
+                                    vec32.x * 2,
+                                    Math.min(vec32.y * 0.7, 0.5),
+                                    vec32.z * 2
+                            ).scale(p);
+                        } else {
+                            double q = (double) ((int) (100 / vec32.y)) / 100;
+                            vec33 = new Vec3(
+                                    vec32.x * q * 0.8,
+                                    vec32.y * 0.3 + 0.8,
+                                    vec32.z * q * 0.8
+                            ).scale(p);
+                        }
+                        entity.push(vec33);
                         if (entity.getType().is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectileEntity) {
                             projectileEntity.setOwner(this.damageSource.getEntity());
                         } else if (entity instanceof Player playerEntity
                                 && !playerEntity.isSpectator()
                                 && (!playerEntity.isCreative() || !playerEntity.getAbilities().flying)) {
-                            this.knockbackByPlayer.put(playerEntity, vec3d4);
+                            this.knockbackByPlayer.put(playerEntity, vec33);
                         }
 
                         entity.onExplosionHit(this.entity);
@@ -172,7 +188,7 @@ public class FireballExplosionImpl implements Explosion {
                         d /= g;
                         e /= g;
                         f /= g;
-                        float h = this.radius() * (0.7F + this.level().random.nextFloat() * 0.6F);
+                        float h = this.radius() / 3 * (0.7F + this.level().random.nextFloat() * 0.6F);
                         double m = this.center().x;
                         double n = this.center().y;
                         double o = this.center().z;
@@ -209,7 +225,6 @@ public class FireballExplosionImpl implements Explosion {
     public static void createExplosion(
             Level world, @Nullable Entity entity, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator behavior,
             double x, double y, double z, float power, boolean createFire, Level.ExplosionInteraction explosionSourceType,
-            ParticleOptions smallParticle, ParticleOptions largeParticle, WeightedList<ExplosionParticleInfo> blockParticles,
             Holder<SoundEvent> soundEvent
     ) {
         ServerLevel serverWorld = (ServerLevel) world;
@@ -225,23 +240,30 @@ public class FireballExplosionImpl implements Explosion {
         Vec3 vec3d = new Vec3(x, y, z);
         FireballExplosionImpl explosionImpl = new FireballExplosionImpl(serverWorld, entity, damageSource, behavior, vec3d, power, createFire, destructionType);
         int i = explosionImpl.explode();
-        ParticleOptions particleEffect = explosionImpl.isSmall() ? smallParticle : largeParticle;
+        ParticleOptions particleEffect = ParticleTypes.EXPLOSION_EMITTER;
 
         for (ServerPlayer serverPlayerEntity : serverWorld.players()) {
             if (serverPlayerEntity.distanceToSqr(vec3d) < 4096.0) {
                 Optional<Vec3> optional = Optional.ofNullable(explosionImpl.knockbackByPlayer.get(serverPlayerEntity));
-                serverPlayerEntity.connection.send(new ClientboundExplodePacket(vec3d, power, i, optional, particleEffect, soundEvent, blockParticles));
+                serverPlayerEntity.connection.send(new ClientboundExplodePacket(
+                        vec3d, power * 7.5F, i * 3, optional,
+                        particleEffect, soundEvent,
+                        WeightedList.<ExplosionParticleInfo>builder()
+                                .add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
+                                .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
+                                .build()
+                ));
             }
         }
     }
 
     @Override
-    public ServerLevel level() {
+    public @NonNull ServerLevel level() {
         return this.world;
     }
 
     @Override
-    public BlockInteraction getBlockInteraction() {
+    public @NonNull BlockInteraction getBlockInteraction() {
         return this.destructionType;
     }
 
@@ -261,7 +283,7 @@ public class FireballExplosionImpl implements Explosion {
     }
 
     @Override
-    public Vec3 center() {
+    public @NonNull Vec3 center() {
         return this.pos;
     }
 
@@ -319,10 +341,6 @@ public class FireballExplosionImpl implements Explosion {
         } else {
             return 0.0F;
         }
-    }
-
-    public boolean isSmall() {
-        return this.power < 2.0F || !this.shouldDestroyBlocks();
     }
 
     private static void addDroppedItem(List<DroppedItem> droppedItemsOut, ItemStack item, BlockPos pos) {
