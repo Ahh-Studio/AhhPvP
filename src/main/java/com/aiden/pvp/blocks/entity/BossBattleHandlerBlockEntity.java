@@ -41,13 +41,13 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
     private void tick(Level world, BlockPos pos, BlockState state, BossBattleHandlerBlockEntity blockEntity) {
         int x= pos.getX(); int y = pos.getY(); int z = pos.getZ();
         AABB box = new AABB(
-                x + 17, y + 6, z + 17,
-                x - 17, y, z - 17
+                x + 25, y + 12, z + 25,
+                x - 25, y, z - 25
         );
         ArrayList<Entity> murderers = (ArrayList<Entity>) world.getEntities(
                 (Entity) null,
                 box,
-                entity -> entity instanceof MurdererEntity
+                entity -> entity instanceof MurdererEntity && entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) <= 700
         );
 
         if (murderers.isEmpty()) {
@@ -69,16 +69,16 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
             }
         }
 
-        this.bossBar.setProgress(bossHP <= 80 ? (float) (bossHP / 80.0) : 1);
+        this.bossBar.setProgress(bossHP <= 40 ? (float) (bossHP / 40.0) : 1);
 
         AABB box2 = new AABB(
-                x + 17, y + 6, z + 17,
-                x - 17, y, z - 17
+                x + 25, y + 12, z + 25,
+                x - 25, y, z - 25
         );
 
         for (Entity entity : players) {
             if (entity instanceof ServerPlayer serverPlayer) {
-                if (entity.distanceToSqr(x, y, z) <= 17 * 17 && serverPlayer.position().y() - y <= 6 && serverPlayer.position().y() - y > 0) {
+                if (entity.distanceToSqr(x, y, z) <= 700 && serverPlayer.position().y() - y <= 12 && serverPlayer.position().y() - y > 0) {
                     this.bossBar.addPlayer(serverPlayer);
                     serverPlayer.setGameMode(GameType.ADVENTURE);
                 } else {
@@ -113,6 +113,24 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
     private void summonChest(Level world, BlockPos pos, BlockState state, BossBattleHandlerBlockEntity blockEntity) {
         world.setBlock(pos.above(), Blocks.BARREL.defaultBlockState(), 6);
         if (world.getBlockEntity(pos.above()) instanceof BarrelBlockEntity barrelBlockEntity) {
+            Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
+            ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+        }
+        world.setBlock(pos.above().north(), Blocks.BARREL.defaultBlockState(), 6);
+        if (world.getBlockEntity(pos.above().north()) instanceof BarrelBlockEntity barrelBlockEntity) {
+            Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
+            ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+        }
+        world.setBlock(pos.above().west(), Blocks.BARREL.defaultBlockState(), 6);
+        if (world.getBlockEntity(pos.above().west()) instanceof BarrelBlockEntity barrelBlockEntity) {
+            Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
+            ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+        }
+        world.setBlock(pos.above().north().west(), Blocks.BARREL.defaultBlockState(), 6);
+        if (world.getBlockEntity(pos.above().north().west()) instanceof BarrelBlockEntity barrelBlockEntity) {
             Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
             ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
             barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
