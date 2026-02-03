@@ -13,6 +13,8 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.jspecify.annotations.NonNull;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
@@ -40,5 +42,10 @@ public class PvPBlockLootTableProvider extends SimpleFabricLootTableProvider {
                                         SetItemCountFunction.setCount(
                                                 ConstantValue
                                                         .exactly(1.0F))))));
+    }
+
+    @Override
+    public @NonNull String getName() {
+        return "BlockLootTable";
     }
 }

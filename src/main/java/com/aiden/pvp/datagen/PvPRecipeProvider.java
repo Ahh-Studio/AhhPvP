@@ -111,6 +111,6 @@ public class PvPRecipeProvider extends FabricRecipeProvider {
 
     @Override
     public String getName() {
-        return "Recipes";
+        return "Recipe";
     }
 }
