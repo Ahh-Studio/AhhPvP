@@ -9,3 +9,4 @@ build/
 run/
 .vscode/settings.json
 /src/main/generated/.cache/
+src/main/resources/assets/pvp/items/.DS_Store
