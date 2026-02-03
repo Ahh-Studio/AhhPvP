@@ -9,13 +9,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SimpleExplosionDamageCalculator;
 import net.minecraft.world.phys.BlockHitResult;
@@ -65,25 +63,7 @@ public class FireballEntity extends ThrowableItemProjectile {
         Level var3 = this.level();
         if (var3 instanceof ServerLevel serverWorld) {
             explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
-            // fire
-            this.explode(
-                    0.5F, true, false, true, 0F, 1.0F,
-                    WeightedList.<ExplosionParticleInfo>builder().build(), 0, 0, 0
-            );
-            // particle
-            this.explode(
-                    12F, false, false, false, 0F, 0F,
-                    WeightedList.<ExplosionParticleInfo>builder()
-                            .add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
-                            .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
-                            .build(), 0, 0, 0
-            );
-            // kb and damage
-            this.explode(
-                    this.explosionPower, false, true, false, (float) 1 / 600, 1.0F,
-                    WeightedList.<ExplosionParticleInfo>builder().build(),
-                    0, 0, 0
-            );
+            this.explode(this.explosionPower);
             this.discard();
         }
     }
@@ -93,30 +73,7 @@ public class FireballEntity extends ThrowableItemProjectile {
         super.onHitEntity(entityHitResult);
         if (this.level() instanceof ServerLevel serverWorld) {
             explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
-            this.explode(
-                    0.5F,
-                    true, false, true,
-                    0F, 1.0F,
-                    WeightedList.<ExplosionParticleInfo>builder().build(),
-                    0, 0, 0
-            );
-            this.explode(
-                    12F,
-                    false, false, false,
-                    0F, 0F,
-                    WeightedList.<ExplosionParticleInfo>builder()
-                            .add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
-                            .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
-                            .build(),
-                    0, 0, 0
-            );
-            this.explode(
-                    this.explosionPower,
-                    false, true, false,
-                    (float) 1 / 600, 1.0F,
-                    WeightedList.<ExplosionParticleInfo>builder().build(),
-                    0, 0, 0
-            );
+            this.explode(this.explosionPower);
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.hurtServer(serverWorld, damageSources().explosion(this, this.getOwner()), 2.0F);
             }
@@ -132,37 +89,24 @@ public class FireballEntity extends ThrowableItemProjectile {
     protected void applyGravity() {
     }
 
-    private void explode(float power, boolean destroyBlocks, boolean damageEntities, boolean createFire, float damageFactor, float kbModifierFactor, WeightedList<ExplosionParticleInfo> blockParticles, double dx, double dy, double dz) {
+    private void explode(float power) {
         if (level() instanceof ServerLevel serverWorld) {
             FireballExplosionImpl.createExplosion(
                     this.level(),
                     this,
                     serverWorld.damageSources().explosion(this, this.getOwner()),
                     new SimpleExplosionDamageCalculator(
-                            destroyBlocks,
-                            damageEntities,
+                            true,
+                            true,
                             Optional.of(explosionDamage),
                             Optional.empty()
-                    ) {
-                        @Override
-                        public float getEntityDamageAmount(Explosion explosion, Entity entity, float amount) {
-                            return super.getEntityDamageAmount(explosion, entity, amount) * damageFactor;
-                        }
-
-                        @Override
-                        public float getKnockbackMultiplier(Entity entity) {
-                            return super.getKnockbackMultiplier(entity) * kbModifierFactor;
-                        }
-                    },
-                    this.getX() + dx,
-                    this.getY() + dy,
-                    this.getZ() + dz,
+                    ),
+                    this.getX() + (double) 0,
+                    this.getY() + (double) 0,
+                    this.getZ() + (double) 0,
                     power,
-                    createFire,
+                    true,
                     Level.ExplosionInteraction.MOB,
-                    ParticleTypes.EXPLOSION,
-                    ParticleTypes.EXPLOSION_EMITTER,
-                    blockParticles,
                     SoundEvents.GENERIC_EXPLODE
 
             );
