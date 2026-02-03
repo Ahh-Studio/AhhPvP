@@ -23,7 +23,7 @@
 			"com.aiden.pvp.client.PvPClient"
 		],
 		"fabric-datagen": [
-			"com.aiden.pvp.PvPDataGenerator"
+			"com.aiden.pvp.datagen.PvPDataGenerator"
 		],
 		"modmenu": [
             "com.aiden.pvp.modmenu.PvPModMenuCompat"
