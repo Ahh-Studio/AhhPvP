@@ -9,17 +9,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     public static final MapCodec<SlimeBlock> CODEC = simpleCodec(SlimeBlock::new);
+    public static final IntegerProperty VANISH_COUNTDOWN = IntegerProperty.create("vanish_countdown", 0, 400);
 
     @Override
     public MapCodec<SlimeBlock> codec() {
@@ -28,6 +32,7 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
 
     public SlimeBlock(Properties settings) {
         super(settings);
+        registerDefaultState(defaultBlockState().setValue(VANISH_COUNTDOWN, 400));
     }
 
     @Override
@@ -89,5 +94,11 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
         return world.isClientSide() ? null : (w, p, s, be) -> SlimeBlockEntity.tick(w, p, s, (SlimeBlockEntity) be);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(VANISH_COUNTDOWN);
     }
 }
