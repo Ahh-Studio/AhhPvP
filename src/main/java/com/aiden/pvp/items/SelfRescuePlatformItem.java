@@ -5,9 +5,7 @@ import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
 import java.util.ArrayList;
 
-import com.aiden.pvp.items.component.ModDataComponentTypes;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
 public class SelfRescuePlatformItem extends Item {
@@ -31,7 +28,7 @@ public class SelfRescuePlatformItem extends Item {
     @Override
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
         PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) user;
-        if (playerEntityPvpExtension.getSelfRescuePlatformCooldown() <= 0) {
+        if (playerEntityPvpExtension.AhhPvP$getSelfRescuePlatformCooldown() <= 0) {
             ItemStack itemStack = user.getItemInHand(hand);
 
             ArrayList<BlockPos> blockPos = new ArrayList<>();
@@ -67,11 +64,11 @@ public class SelfRescuePlatformItem extends Item {
                 }
             }
 
-            playerEntityPvpExtension.setSelfRescuePlatformCooldown(400);
+            playerEntityPvpExtension.AhhPvP$setSelfRescuePlatformCooldown(400);
             return InteractionResult.SUCCESS;
         } else {
             if (user instanceof ServerPlayer serverPlayer) {
-                serverPlayer.sendSystemMessage(Component.literal("This item is in cooldown: " + playerEntityPvpExtension.getSelfRescuePlatformCooldown() + " ticks"));
+                serverPlayer.sendSystemMessage(Component.literal("This item is in cooldown: " + playerEntityPvpExtension.AhhPvP$getSelfRescuePlatformCooldown() + " ticks"));
             }
             return InteractionResult.FAIL;
         }
@@ -83,8 +80,8 @@ public class SelfRescuePlatformItem extends Item {
 
         if (entity instanceof Player player) {
             PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
-            if (playerEntityPvpExtension.getSelfRescuePlatformCooldown() > 0) {
-                playerEntityPvpExtension.setSelfRescuePlatformCooldown(playerEntityPvpExtension.getSelfRescuePlatformCooldown() - 1);
+            if (playerEntityPvpExtension.AhhPvP$getSelfRescuePlatformCooldown() > 0) {
+                playerEntityPvpExtension.AhhPvP$setSelfRescuePlatformCooldown(playerEntityPvpExtension.AhhPvP$getSelfRescuePlatformCooldown() - 1);
             }
         }
     }

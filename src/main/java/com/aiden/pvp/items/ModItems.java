@@ -4,7 +4,6 @@ import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.items.component.ModDataComponentTypes;
-import com.aiden.pvp.items.component.ReturnScrollComponent;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
@@ -29,7 +28,7 @@ public abstract class ModItems {
     public static final Item BRIDGE_EGG = register("bridge_egg", BridgeEggItem::new, new Item.Properties().stacksTo(64).fireResistant());
     public static final Item FISHING_ROD = register("fishing_rod", FishingRodItem::new, new Item.Properties().stacksTo(1).fireResistant().durability(64));
     public static final Item BED_BUG = register("bed_bug", BedBugItem::new, new Item.Properties().stacksTo(16));
-    public static final Item RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1).component(ModDataComponentTypes.RETURN_SCROLL, new ReturnScrollComponent(false, 0)));
+    public static final Item RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1).component(ModDataComponentTypes.IS_TELEPORTING, false));
 
     public static final Item CARBON_RUNE = register("carbon_rune", CarbonRuneItem::new, new Item.Properties().stacksTo(64));
     public static final Item IRON_RUNE = register("iron_rune", IronRuneItem::new, new Item.Properties().stacksTo(64));

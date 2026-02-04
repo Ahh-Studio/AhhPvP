@@ -1,9 +1,7 @@
 package com.aiden.pvp.items;
 
 import com.aiden.pvp.items.component.ModDataComponentTypes;
-import com.aiden.pvp.items.component.ReturnScrollComponent;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
+import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,18 +12,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.w3c.dom.Text;
-
-import java.util.Objects;
-import java.util.function.Consumer;
 
 public class ReturnScrollItem extends Item {
+    private Entity entity;
 
     public ReturnScrollItem(Properties properties) {
         super(properties);
@@ -34,12 +27,19 @@ public class ReturnScrollItem extends Item {
     @Override
     public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel serverLevel, @NonNull Entity entity, @Nullable EquipmentSlot equipmentSlot) {
         super.inventoryTick(itemStack, serverLevel, entity, equipmentSlot);
-        ReturnScrollComponent component = itemStack.get(ModDataComponentTypes.RETURN_SCROLL);
-        if (entity instanceof Player player && component != null) {
-            if (component.teleporting() && component.teleportTime() > 0) {
-                itemStack.set(ModDataComponentTypes.RETURN_SCROLL, new ReturnScrollComponent(true, component.teleportTime() - 1));
+        Boolean isTeleporting = itemStack.get(ModDataComponentTypes.IS_TELEPORTING);
+        this.entity = entity;
+        if (entity instanceof Player player && isTeleporting != null) {
+            PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
+            if (isTeleporting && playerEntityPvpExtension.AhhPvP$getReturnScrollTeleportCountDown() > 0) {
+                if (player.getKnownMovement().horizontalDistanceSqr() + player.getKnownMovement().y() * player.getKnownMovement().y() == 0) { // 模长
+                    playerEntityPvpExtension.AhhPvP$setReturnScrollTeleportCountDown(playerEntityPvpExtension.AhhPvP$getReturnScrollTeleportCountDown() - 1);
+                } else {
+                    playerEntityPvpExtension.AhhPvP$setReturnScrollTeleportCountDown(100);
+                    itemStack.set(ModDataComponentTypes.IS_TELEPORTING, false);
+                }
             }
-            if (component.teleporting() && component.teleportTime() == 0) {
+            if (isTeleporting && playerEntityPvpExtension.AhhPvP$getReturnScrollTeleportCountDown() == 0) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BLACK_BED)
                             || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BLUE_BED)
@@ -71,7 +71,7 @@ public class ReturnScrollItem extends Item {
                         );
                     }
                 }
-                itemStack.set(ModDataComponentTypes.RETURN_SCROLL, new ReturnScrollComponent(false, 0));
+                itemStack.set(ModDataComponentTypes.IS_TELEPORTING, false);
                 itemStack.consume(1, player);
             }
         }
@@ -84,19 +84,24 @@ public class ReturnScrollItem extends Item {
     public InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand interactionHand) {
         super.use(level, player, interactionHand);
         ItemStack stack = player.getItemInHand(interactionHand);
-        if (stack.get(ModDataComponentTypes.RETURN_SCROLL) != null) {
-            boolean bl = Objects.requireNonNull(stack.get(ModDataComponentTypes.RETURN_SCROLL)).teleporting();
-            stack.set(ModDataComponentTypes.RETURN_SCROLL, new ReturnScrollComponent(!bl, 100));
+        PlayerEntityPvpExtension playerPvpExtension = (PlayerEntityPvpExtension) player;
+        if (stack.get(ModDataComponentTypes.IS_TELEPORTING) != null) {
+            boolean bl = Boolean.TRUE.equals(stack.get(ModDataComponentTypes.IS_TELEPORTING));
+            playerPvpExtension.AhhPvP$setReturnScrollTeleportCountDown(100);
+            stack.set(ModDataComponentTypes.IS_TELEPORTING, !bl);
         }
 
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
-        consumer.accept(
-                Component.literal(Objects.requireNonNull(itemStack.get(ModDataComponentTypes.RETURN_SCROLL)).teleporting()
-                ? "Teleport in " + itemStack.get(ModDataComponentTypes.RETURN_SCROLL).teleportTime() + " ticks" : "Use to teleport"
-        ));
+    public @NonNull Component getName(@NonNull ItemStack itemStack) {
+        if (this.entity instanceof Player player) {
+            PlayerEntityPvpExtension playerPvpExtension = (PlayerEntityPvpExtension) player;
+            return Component.literal(super.getName(itemStack).getString() +
+                    (Boolean.TRUE.equals(itemStack.get(ModDataComponentTypes.IS_TELEPORTING)) ?
+                    " (Teleport in " + playerPvpExtension.AhhPvP$getReturnScrollTeleportCountDown() + " ticks)" : "")
+            );
+        } else return super.getName(itemStack);
     }
 }

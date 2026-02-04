@@ -14,7 +14,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.*;
 import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -122,20 +121,6 @@ public class PvP implements ModInitializer {
                 }
             });
         });
-
-        // register the client=>server packet of blocking hit
-        PayloadTypeRegistry.playC2S().register(BlockHitC2SPayload.ID, BlockHitC2SPayload.CODEC);
-        ServerPlayNetworking.registerGlobalReceiver(BlockHitC2SPayload.ID, (payload, context) -> {
-            context.server().execute(() -> {
-                Entity entity = context.player().level().getEntity(payload.playerID());
-                if (entity instanceof ServerPlayer serverPlayer) {
-                    PlayerEntityPvpExtension serverPlayerExt = (PlayerEntityPvpExtension) serverPlayer;
-                    serverPlayerExt.setBlocking(payload.isBlocking());
-                }
-            });
-        });
-
-
 
 		LOGGER.info("[Main] Mod Initialized Successfully! ");
 	}
