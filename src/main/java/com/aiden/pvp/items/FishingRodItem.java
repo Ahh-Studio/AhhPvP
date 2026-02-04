@@ -24,14 +24,14 @@ public class FishingRodItem extends net.minecraft.world.item.FishingRodItem {
         super.use(world, user, hand);
         PlayerEntityPvpExtension userExtension = (PlayerEntityPvpExtension) user;
         ItemStack itemStack = user.getItemInHand(hand);
-        if (userExtension.getPvpFishHook() != null) {
+        if (userExtension.AhhPvP$getPvpFishHook() != null) {
             if (!world.isClientSide()) {
-                if (userExtension.getPvpFishHook().shouldDamageStack) itemStack.hurtAndBreak(1, user, hand.asEquipmentSlot());
-                userExtension.getPvpFishHook().discard();
+                if (userExtension.AhhPvP$getPvpFishHook().shouldDamageStack) itemStack.hurtAndBreak(1, user, hand.asEquipmentSlot());
+                userExtension.AhhPvP$getPvpFishHook().discard();
             }
 
             world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.NEUTRAL, 1.0F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
-            userExtension.setPvpFishHook(null);
+            userExtension.AhhPvP$setPvpFishHook(null);
             user.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
         } else {
             //Play Sound
@@ -42,7 +42,7 @@ public class FishingRodItem extends net.minecraft.world.item.FishingRodItem {
             if (world instanceof ServerLevel serverWorld) {
                 FishingBobberEntity fishingBobberEntity = new FishingBobberEntity(world, user);
                 Projectile.spawnProjectile(fishingBobberEntity, serverWorld, itemStack);
-                userExtension.setPvpFishHook(fishingBobberEntity);
+                userExtension.AhhPvP$setPvpFishHook(fishingBobberEntity);
             }
 
             //-Item

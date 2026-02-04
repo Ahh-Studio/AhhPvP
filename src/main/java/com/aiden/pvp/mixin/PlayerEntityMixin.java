@@ -17,44 +17,46 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     @Unique
     private FishingBobberEntity pvpFishHook = null;
+
     @Unique
     public boolean blocking = false;
 
     @Unique
     public int selfRescuePlatformCooldown = 0;
 
+    @Unique
+    public int returnScrollTeleportCountDown = 100;
+
     @Override
     @Unique
-    public void setPvpFishHook(FishingBobberEntity fishingBobberEntity) {
+    public void AhhPvP$setPvpFishHook(FishingBobberEntity fishingBobberEntity) {
         pvpFishHook = fishingBobberEntity;
     }
 
     @Override
     @Unique
-    public FishingBobberEntity getPvpFishHook() {
+    public FishingBobberEntity AhhPvP$getPvpFishHook() {
         return this.pvpFishHook;
     }
 
     @Override
-    @Unique
-    public void setBlocking(boolean blocking) {
-        this.blocking = blocking;
-    }
-
-    @Override
-    @Unique
-    public boolean isBlocking() {
-        return this.blocking;
-    }
-
-    @Override
-    public void setSelfRescuePlatformCooldown(int cooldown) {
+    public void AhhPvP$setSelfRescuePlatformCooldown(int cooldown) {
         this.selfRescuePlatformCooldown = cooldown;
     }
 
     @Override
-    public int getSelfRescuePlatformCooldown() {
+    public int AhhPvP$getSelfRescuePlatformCooldown() {
         return this.selfRescuePlatformCooldown;
+    }
+
+    @Override
+    public void AhhPvP$setReturnScrollTeleportCountDown(int countDown) {
+        this.returnScrollTeleportCountDown = countDown;
+    }
+
+    @Override
+    public int AhhPvP$getReturnScrollTeleportCountDown() {
+        return this.returnScrollTeleportCountDown;
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
@@ -77,7 +79,7 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
 
         if (!instance.getMainHandItem().is(ModItems.FISHING_ROD) && !instance.getOffhandItem().is(ModItems.FISHING_ROD) && this.pvpFishHook != null) {
             this.pvpFishHook.discard();
-            extension.setPvpFishHook(null);
+            extension.AhhPvP$setPvpFishHook(null);
         }
     }
 
@@ -99,6 +101,7 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     )
     public void addAdditionalSaveData(ValueOutput valueOutput, CallbackInfo ci) {
         valueOutput.putInt("SelfRescuePlatformCooldown", this.selfRescuePlatformCooldown);
+        valueOutput.putInt("ReturnScrollTeleportCountDown", this.returnScrollTeleportCountDown);
     }
 
     @Inject(
@@ -109,5 +112,6 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     )
     public void readAdditionalSaveData(ValueInput valueInput, CallbackInfo ci) {
         this.selfRescuePlatformCooldown = valueInput.getIntOr("SelfRescuePlatformCooldown", 0);
+        this.returnScrollTeleportCountDown = valueInput.getIntOr("ReturnScrollTeleportCountDown", 100);
     }
 }

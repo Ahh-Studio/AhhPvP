@@ -154,9 +154,9 @@ public class FireballExplosionImpl implements Explosion {
                         } else {
                             double q = (double) ((int) (100 / vec32.y)) / 100;
                             vec33 = new Vec3(
-                                    vec32.x * q * 0.8,
+                                    vec32.x * -q * 0.1,
                                     vec32.y * 0.3 + 0.8,
-                                    vec32.z * q * 0.8
+                                    vec32.z * -q * 0.1
                             ).scale(p);
                         }
 
