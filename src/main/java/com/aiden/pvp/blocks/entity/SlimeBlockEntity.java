@@ -1,34 +1,32 @@
 package com.aiden.pvp.blocks.entity;
 
+import com.aiden.pvp.blocks.SlimeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SlimeBlockEntity extends BlockEntity {
-    private int remainingTicks = 0;
-    private static final int TOTAL_TICKS = 400;
-
     public SlimeBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.SLIME_BLOCK_ENTITY, pos, state);
     }
 
     public void startCountdown() {
-        this.remainingTicks = TOTAL_TICKS;
-        setChanged();
+        this.getBlockState().setValue(SlimeBlock.VANISH_COUNTDOWN, 400);
+        this.setChanged();
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, SlimeBlockEntity entity) {
-        if (world.isClientSide()) return; // 只在服务器端处理
+        if (world.isClientSide()) return;
 
-        if (entity.remainingTicks > 0) {
-            entity.remainingTicks--;
+        int i = state.getValue(SlimeBlock.VANISH_COUNTDOWN);
 
-            if (entity.remainingTicks <= 0) {
-                // 时间到，移除方块
-                world.removeBlock(pos, false);
-            }
-
+        if (i > 0) {
+            BlockState newState = state.setValue(SlimeBlock.VANISH_COUNTDOWN, i - 1);
+            world.setBlock(pos, newState, 3);
+            entity.setChanged();
+        } else {
+            world.removeBlock(pos, false);
             entity.setChanged();
         }
     }
