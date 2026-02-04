@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 public abstract class ModItems {
     public static final Item FIREBALL = register("fireball", FireballItem::new, new Item.Properties().stacksTo(64).fireResistant().useCooldown(0.1F));
-    public static final Item SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).useCooldown(20.0F).craftRemainder(Items.BLAZE_ROD));
+    public static final Item SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).craftRemainder(Items.BLAZE_ROD));
     public static final Item BRIDGE_EGG = register("bridge_egg", BridgeEggItem::new, new Item.Properties().stacksTo(64).fireResistant());
     public static final Item FISHING_ROD = register("fishing_rod", FishingRodItem::new, new Item.Properties().stacksTo(1).fireResistant().durability(64));
     public static final Item BED_BUG = register("bed_bug", BedBugItem::new, new Item.Properties().stacksTo(16));

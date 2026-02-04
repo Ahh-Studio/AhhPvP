@@ -4,6 +4,8 @@ import com.aiden.pvp.entities.FishingBobberEntity;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +19,9 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     private FishingBobberEntity pvpFishHook = null;
     @Unique
     public boolean blocking = false;
+
+    @Unique
+    public int selfRescuePlatformCooldown = 0;
 
     @Override
     @Unique
@@ -40,6 +45,16 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     @Unique
     public boolean isBlocking() {
         return this.blocking;
+    }
+
+    @Override
+    public void setSelfRescuePlatformCooldown(int cooldown) {
+        this.selfRescuePlatformCooldown = cooldown;
+    }
+
+    @Override
+    public int getSelfRescuePlatformCooldown() {
+        return this.selfRescuePlatformCooldown;
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
@@ -74,5 +89,25 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     public void shouldCancelInteraction(CallbackInfoReturnable<Boolean> cir) {
         Player instance = (Player) (Object) this;
         cir.setReturnValue(instance.isShiftKeyDown() || instance.isBlocking());
+    }
+
+    @Inject(
+            method = "addAdditionalSaveData",
+            at = @At(
+                    value = "RETURN"
+            )
+    )
+    public void addAdditionalSaveData(ValueOutput valueOutput, CallbackInfo ci) {
+        valueOutput.putInt("SelfRescuePlatformCooldown", this.selfRescuePlatformCooldown);
+    }
+
+    @Inject(
+            method = "readAdditionalSaveData",
+            at = @At(
+                    value = "RETURN"
+            )
+    )
+    public void readAdditionalSaveData(ValueInput valueInput, CallbackInfo ci) {
+        this.selfRescuePlatformCooldown = valueInput.getIntOr("SelfRescuePlatformCooldown", 0);
     }
 }
