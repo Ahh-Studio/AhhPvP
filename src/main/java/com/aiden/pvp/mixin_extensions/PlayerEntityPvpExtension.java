@@ -8,4 +8,7 @@ public interface PlayerEntityPvpExtension {
 
     void setBlocking(boolean bl);
     boolean isBlocking();
+
+    void setSelfRescuePlatformCooldown(int cooldown);
+    int getSelfRescuePlatformCooldown();
 }

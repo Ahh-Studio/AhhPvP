@@ -139,7 +139,7 @@ public class FireballExplosionImpl implements Explosion {
                         float h = !bl && g == 0.0F ? 0.0F : calculateReceivedDamage(this.pos, entity);
                         if (bl) entity.hurtServer(this.world, this.damageSource, this.behavior.getEntityDamageAmount(this, entity, h) / 600);
 
-                        double e = entity instanceof net.minecraft.world.entity.LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE) : 0.0;
+                        double e = entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE) : 0.0;
                         double o = (1.0 - d) * h * g * (1.0 - e); // 最终乘数 = 强度的2.5倍减距离 * 伤害 * 击退乘数 * (1.0 - 击退抗性，没有属性值则为0.0)
                         double p = h == 0 ? 0.5 * (1.0 - d) * g * (1.0 - e) : o; // 防止动量为0，修正动量
 
@@ -159,6 +159,19 @@ public class FireballExplosionImpl implements Explosion {
                                     vec32.z * q * 0.8
                             ).scale(p);
                         }
+
+                        vec33 = new Vec3(
+                                Math.min(vec33.x, 3.0),
+                                Math.min(vec33.y, 3.0),
+                                Math.min(vec33.z, 3.0)
+                        );
+
+                        vec33 = new Vec3(
+                                Math.max(vec33.x, -3.0),
+                                Math.max(vec33.y, -3.0),
+                                Math.max(vec33.z, -3.0)
+                        );
+
                         entity.push(vec33);
                         if (entity.getType().is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectileEntity) {
                             projectileEntity.setOwner(this.damageSource.getEntity());
