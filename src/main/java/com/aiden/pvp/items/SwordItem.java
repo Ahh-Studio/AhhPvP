@@ -1,28 +1,24 @@
 package com.aiden.pvp.items;
 
-import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.component.BlocksAttacks;
+import net.minecraft.world.item.component.UseEffects;
+
+import java.util.List;
+import java.util.Optional;
 
 public class SwordItem extends Item {
     public SwordItem(Properties settings) {
-        super(settings);
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        if (context.getPlayer() != null) {
-            return ((PlayerEntityPvpExtension) context.getPlayer()).isBlocking() ? InteractionResult.FAIL : super.useOn(context);
-        } else return InteractionResult.FAIL;
-    }
-
-    @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
-        return ((PlayerEntityPvpExtension) user).isBlocking() ? InteractionResult.FAIL : super.interactLivingEntity(stack, user, entity, hand);
+        super(settings.component(DataComponents.BLOCKS_ATTACKS, new BlocksAttacks(
+                0F, 0.0F,
+                List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0, 0.5F)),
+                new BlocksAttacks.ItemDamageFunction(0F, 0F, 0F),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
+        )).component(DataComponents.USE_EFFECTS, new UseEffects(
+                false, true, 0.5F
+        )));
     }
 }

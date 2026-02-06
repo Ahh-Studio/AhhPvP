@@ -1,9 +1,9 @@
 package com.aiden.pvp.mixin;
 
 import com.aiden.pvp.gamerules.ModGameRules;
+import com.aiden.pvp.items.SwordItem;
 import com.aiden.pvp.mixin.accessor.LivingEntityAccessor;
 import com.aiden.pvp.mixin.invoker.LivingEntityInvoker;
-import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
@@ -18,7 +18,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BlocksAttacks;
@@ -45,28 +44,25 @@ public abstract class LivingEntityMixin {
         LivingEntity instance = (LivingEntity) (Object) this;
 
         strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-        if (!(strength <= 0.0)) {
+        if (strength > 0.0) {
             instance.needsSync = true;
-            Vec3 vec3d = instance.getDeltaMovement();
+            Vec3 vec3 = instance.getDeltaMovement();
 
             while (x * x + z * z < 1.0E-5F) {
                 x = (Math.random() - Math.random()) * 0.01;
                 z = (Math.random() - Math.random()) * 0.01;
             }
 
-            Vec3 vec3d2 = new Vec3(x, 0.0, z).normalize().scale(strength);
+            Vec3 vec32 = new Vec3(x, 0.0, z).normalize().scale(strength);
             instance.setDeltaMovement(
-                    vec3d.x / 2.0 - vec3d2.x,
-                    instance.onGround() ? Math.min(0.4, vec3d.y / 2.0 + strength) : Math.min(0.2, vec3d.y / 4.0 + strength / 2),
-                    vec3d.z / 2.0 - vec3d2.z);
+                    vec3.x / 2.0 - vec32.x,
+                    instance.onGround() ? Math.min(0.4, vec3.y / 2.0 + strength) : Math.min(0.2, vec3.y / 4.0 + strength / 2),
+                    vec3.z / 2.0 - vec32.z);
         }
+
         ci.cancel();
     }
 
-    /**
-     * @author Aiden
-     * @reason Changed PHDI
-     */
     @Inject(
             method = "hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z",
             at = @At("HEAD"),
@@ -101,6 +97,11 @@ public abstract class LivingEntityMixin {
             float g = instance.applyItemBlocking(world, source, amount);
             amount -= g;
             boolean bl = g > 0.0F;
+
+            if (instance.getItemBlockingWith() != null) {
+                bl = bl && !(instance.getItemBlockingWith().getItem() instanceof SwordItem);
+            }
+
             if (source.is(DamageTypeTags.IS_FREEZING) && instance.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
                 amount *= 5.0F;
             }
@@ -132,12 +133,7 @@ public abstract class LivingEntityMixin {
                 accessor.setLastDamageTaken(amount);
                 instance.invulnerableTime = 2 * phdi;
 
-                if (instance instanceof Player player) {
-                    PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
-                    if (playerEntityPvpExtension.isBlocking()) {
-                        invoker.invokedApplyDamage(world, source, amount * 0.5F);
-                    } else invoker.invokedApplyDamage(world, source, amount);
-                } else invoker.invokedApplyDamage(world, source, amount);
+                invoker.invokedApplyDamage(world, source, amount);
 
                 instance.hurtDuration = phdi;
                 instance.hurtTime = instance.hurtDuration;
@@ -169,12 +165,15 @@ public abstract class LivingEntityMixin {
                         e = source.getSourcePosition().z() - instance.getZ();
                     }
 
-                    if (instance instanceof Player player) {
-                        PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) player;
-                        if (playerEntityPvpExtension.isBlocking()) {
-                            instance.knockback(0.2F, d, e);
-                        } else instance.knockback(0.4F, d, e);
-                    } else instance.knockback(0.4F, d, e);
+                    boolean bl3 = false;
+
+                    if (instance.getItemBlockingWith() != null) {
+                        if (instance.getItemBlockingWith().getItem() instanceof SwordItem) {
+                            bl3 = true;
+                        }
+                    }
+
+                    instance.knockback(bl3 ? 0.2F : 0.4F, d, e);
 
                     if (!bl) {
                         instance.indicateDamage(d, e);
@@ -218,7 +217,6 @@ public abstract class LivingEntityMixin {
             }
 
             cir.setReturnValue(bl3);
-            return;
         }
     }
 }

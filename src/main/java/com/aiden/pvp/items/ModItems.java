@@ -3,8 +3,6 @@ package com.aiden.pvp.items;
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.entities.ModEntityTypes;
-import com.aiden.pvp.items.component.ModDataComponentTypes;
-import com.aiden.pvp.items.component.ReturnScrollComponent;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
@@ -20,16 +18,20 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+
 import java.util.List;
 import java.util.function.Function;
 
 public abstract class ModItems {
     public static final Item FIREBALL = register("fireball", FireballItem::new, new Item.Properties().stacksTo(64).fireResistant().useCooldown(0.1F));
-    public static final Item SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).useCooldown(20.0F).craftRemainder(Items.BLAZE_ROD));
+    public static final Item SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).craftRemainder(Items.BLAZE_ROD));
     public static final Item BRIDGE_EGG = register("bridge_egg", BridgeEggItem::new, new Item.Properties().stacksTo(64).fireResistant());
     public static final Item FISHING_ROD = register("fishing_rod", FishingRodItem::new, new Item.Properties().stacksTo(1).fireResistant().durability(64));
     public static final Item BED_BUG = register("bed_bug", BedBugItem::new, new Item.Properties().stacksTo(16));
-    public static final Item RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1).component(ModDataComponentTypes.RETURN_SCROLL, new ReturnScrollComponent(false, 0)));
+    public static final Item RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1));
+    public static final Item CHICKEN_DEFENSE = register("chicken_defense", ChickenDefenseItem::new, new Item.Properties().stacksTo(64).fireResistant());
+
 
     public static final Item CARBON_RUNE = register("carbon_rune", CarbonRuneItem::new, new Item.Properties().stacksTo(64));
     public static final Item IRON_RUNE = register("iron_rune", IronRuneItem::new, new Item.Properties().stacksTo(64));
@@ -100,6 +102,7 @@ public abstract class ModItems {
                 i.accept(ModItems.FISHING_ROD);
                 i.accept(ModItems.BED_BUG);
                 i.accept(ModItems.RETURN_SCROLL);
+                i.accept(ModItems.CHICKEN_DEFENSE);
                 i.accept(ModItems.TNT);
                 i.accept(ModItems.THROWABLE_TNT);
                 i.accept(ModItems.STRONG_GLASS);
@@ -119,8 +122,13 @@ public abstract class ModItems {
             ItemTooltipCallback.EVENT.register((i, context, type, list) -> {
                 if (i.is(FIREBALL)) list.add(Component.literal("Use it... and watch it explode!"));
                 if (i.is(SELF_RES_PLATFORM)) list.add(Component.literal("Breaking the fall!"));
-                if (i.is(WOODEN_SWORD) || i.is(STONE_SWORD) || i.is(IRON_SWORD) || i.is(DIAMOND_SWORD)) list.add(Component.literal("No attack CD"));
+                if (i.getItem() instanceof SwordItem) list.add(Component.literal("No attack CD"));
                 if (i.is(GOLDEN_HEAD)) list.add(Component.literal("Powerful! "));
+                if (i.is(RETURN_SCROLL)) {
+                    list.add(Component.literal("Teleport you to your spawn point"));
+                    list.add(Component.literal("It won't teleport you to the").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+                    list.add(Component.literal("right place in the wrong dimension!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+                }
             });
             PvP.LOGGER.info("[Item Initializer] Mod Items Initialized! ");
         } catch (Exception e) {
