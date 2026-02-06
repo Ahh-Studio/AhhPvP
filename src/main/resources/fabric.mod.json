@@ -3,14 +3,16 @@
 	"id": "pvp",
 	"version": "${version}",
 	"name": "PvP",
-	"description": "PvPMod",
+	"description": "AhhPvP",
 	"authors": [
 		"Aiden",
 		"Henry"
 	],
 	"contact": {
 		"homepage": "https://github.com/Ahh-Studio/AhhPvP",
-		"sources": "https://github.com/Ahh-Studio/AhhPvP"
+		"sources": "https://github.com/Ahh-Studio/AhhPvP",
+		"issues": "https://github.com/Ahh-Studio/AhhPvP/issues",
+		"wiki": "https://github.com/Ahh-Studio/AhhPvP/wiki"
 	},
 	"license": "MIT",
 	"icon": "assets/pvp/icon.png",

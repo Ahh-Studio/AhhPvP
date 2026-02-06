@@ -4,6 +4,7 @@ import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -43,9 +44,9 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     }
 
     @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter world, Entity entity) {
+    public void updateEntityMovementAfterFallOn(BlockGetter blockGetter, Entity entity) {
         if (entity.isSuppressingBounce()) {
-            super.updateEntityMovementAfterFallOn(world, entity);
+            super.updateEntityMovementAfterFallOn(blockGetter, entity);
         } else {
             this.bounce(entity);
         }
@@ -84,7 +85,6 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
             ItemStack itemStack)
     {
         super.setPlacedBy(world, pos, state, placer, itemStack);
-        // 方块放置时，在服务器端启动计时
         if (!world.isClientSide()) {
             world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
                     .ifPresent(SlimeBlockEntity::startCountdown);
