@@ -11,4 +11,7 @@ public interface PlayerEntityPvpExtension {
 
     void AhhPvP$setReturnScrollTeleportCountDown(int countDown);
     int AhhPvP$getReturnScrollTeleportCountDown();
+
+    void AhhPvP$setTeleportingUsingReturnScroll(boolean isTeleportingUsingReturnScroll);
+    boolean AhhPvP$isTeleportingUsingReturnScroll();
 }
