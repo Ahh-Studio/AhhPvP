@@ -10,8 +10,13 @@ public class ModEntityModelLayers {
             Identifier.fromNamespaceAndPath(PvP.MOD_ID, "murderer"),
             "main"
     );
+    public static final ModelLayerLocation CHICKEN_DEFENSE = new ModelLayerLocation(
+            Identifier.fromNamespaceAndPath(PvP.MOD_ID, "chicken_defense"),
+            "main"
+    );
 
     public static void register() {
         EntityModelLayerRegistry.registerModelLayer(MURDERER, MurdererEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(CHICKEN_DEFENSE, ChickenDefenseEntityModel::createBodyLayer);
     }
 }
