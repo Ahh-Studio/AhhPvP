@@ -1,9 +1,11 @@
 package com.aiden.pvp.client;
 
 import com.aiden.pvp.PvP;
+import com.aiden.pvp.client.render.entity.ChickenDefenseEntityRenderer;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
+import com.aiden.pvp.client.render.entity.model.ChickenDefenseEntityModel;
 import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.items.SwordItem;
@@ -58,6 +60,7 @@ public class PvPClient implements ClientModInitializer {
         );
         EntityRenderers.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
+        EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
 
         BlockRenderLayerMap.putBlock(STRONG_GLASS, ChunkSectionLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, ChunkSectionLayer.TRANSLUCENT);

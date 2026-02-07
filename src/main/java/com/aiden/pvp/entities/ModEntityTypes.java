@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.phys.Vec3;
 
 public class ModEntityTypes {
     public static final EntityType<FireballEntity> FIREBALL;
@@ -18,6 +19,7 @@ public class ModEntityTypes {
     public static final EntityType<BedBugEntity> BED_BUG;
     public static final EntityType<DaggerEntity> DAGGER;
     public static final EntityType<MurdererEntity> MURDERER;
+    public static final EntityType<ChickenDefenseEntity> CHICKEN_DEFENSE;
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
         return Registry.register(BuiltInRegistries.ENTITY_TYPE,
@@ -28,6 +30,7 @@ public class ModEntityTypes {
     public static void initialize() {
         try {
             FabricDefaultAttributeRegistry.register(MURDERER, MurdererEntity.createMurdererAttributes().build());
+            FabricDefaultAttributeRegistry.register(CHICKEN_DEFENSE, ChickenDefenseEntity.createAttributes().build());
             PvP.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
         } catch (Exception e) {
             PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: " + e.getMessage());
@@ -93,6 +96,14 @@ public class ModEntityTypes {
                         .sized(0.6F, 1.95F)
                         .clientTrackingRange(8)
                         .notInPeaceful()
+        );
+        CHICKEN_DEFENSE = register(
+                "chicken",
+                EntityType.Builder.of(ChickenDefenseEntity::new, MobCategory.MISC)
+                        .sized(0.4F, 0.7F)
+                        .eyeHeight(0.644F)
+                        .passengerAttachments(new Vec3(0.0, 0.7, -0.1))
+                        .clientTrackingRange(10)
         );
     }
 }

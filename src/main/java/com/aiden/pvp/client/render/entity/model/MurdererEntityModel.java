@@ -3,6 +3,7 @@ package com.aiden.pvp.client.render.entity.model;
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.*;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -11,6 +12,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import org.jspecify.annotations.NonNull;
 
 public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
     private final net.minecraft.client.model.geom.ModelPart head;
@@ -112,16 +114,16 @@ public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState
         }
     }
 
-    private net.minecraft.client.model.geom.ModelPart getAttackingArm(HumanoidArm arm) {
+    private ModelPart getAttackingArm(HumanoidArm arm) {
         return arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
     }
 
-    public net.minecraft.client.model.geom.ModelPart getBody() {
+    public ModelPart getBody() {
         return this.body;
     }
 
     @Override
-    public net.minecraft.client.model.geom.ModelPart getHead() {
+    public @NonNull ModelPart getHead() {
         return this.head;
     }
 
