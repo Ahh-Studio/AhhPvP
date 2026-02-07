@@ -33,7 +33,7 @@ public class ModEntityTypes {
             FabricDefaultAttributeRegistry.register(CHICKEN_DEFENSE, ChickenDefenseEntity.createAttributes().build());
             PvP.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: " + e.getMessage());
+            PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: {}", e.getMessage());
         }
     }
 

@@ -1,19 +1,13 @@
 package com.aiden.pvp.client.render.entity.model;
 
 import com.aiden.pvp.client.render.entity.state.ChickenDefenseEntityRenderState;
-import net.minecraft.client.model.BabyModelTransform;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
 
-import java.util.Set;
-
 public class ChickenDefenseEntityModel extends EntityModel<ChickenDefenseEntityRenderState> {
-    public static final String RED_THING = "red_thing";
-    public static final float Y_OFFSET = 16.0F;
-    public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(false, 5.0F, 2.0F, 2.0F, 1.99F, 24.0F, Set.of("head", "beak", "red_thing"));
     private final ModelPart head;
     private final ModelPart rightLeg;
     private final ModelPart leftLeg;

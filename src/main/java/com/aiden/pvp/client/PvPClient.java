@@ -5,11 +5,8 @@ import com.aiden.pvp.client.render.entity.ChickenDefenseEntityRenderer;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
-import com.aiden.pvp.client.render.entity.model.ChickenDefenseEntityModel;
 import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
 import com.aiden.pvp.entities.ModEntityTypes;
-import com.aiden.pvp.items.SwordItem;
-import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -20,26 +17,19 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 import static com.aiden.pvp.blocks.ModBlocks.*;
 import static com.aiden.pvp.client.keybinding.ModKeyBindings.*;
 
 @Environment(EnvType.CLIENT)
 public class PvPClient implements ClientModInitializer {
-    private static final Identifier BLOCK_INDICATOR = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "block_indicator");
-
     @Override
     public void onInitializeClient() {
         ModEntityModelLayers.register();
