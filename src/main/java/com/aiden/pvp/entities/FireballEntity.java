@@ -25,10 +25,6 @@ public class FireballEntity extends ThrowableItemProjectile {
     private float explosionPower = 12.0F;
     private final float explosionDamage = 2.0F;
 
-    public FireballEntity(double x, double y, double z, Level world, ItemStack stack) {
-        super(ModEntityTypes.FIREBALL, x, y, z, world, stack);
-    }
-
     public FireballEntity(LivingEntity owner, Level world, ItemStack stack) {
         super(ModEntityTypes.FIREBALL, owner, world, stack);
     }

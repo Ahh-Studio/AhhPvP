@@ -1,5 +1,6 @@
 package com.aiden.pvp.entities;
 
+import com.aiden.pvp.items.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -12,22 +13,30 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.EnumSet;
+
 public class ChickenDefenseEntity extends Animal {
+    private static final Logger log = LogManager.getLogger(ChickenDefenseEntity.class);
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
     private float nextFlap = 1.0F;
+    private int attackCoolDown = 0;
 
     public ChickenDefenseEntity(EntityType<? extends ChickenDefenseEntity> entityType, Level level) {
         super(entityType, level);
@@ -37,17 +46,94 @@ public class ChickenDefenseEntity extends Animal {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, true));
+        this.goalSelector.addGoal(2, new EggllitAttackGoal(this));
+        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 4.0).add(Attributes.MOVEMENT_SPEED, 0.0);
+        return Animal.createAnimalAttributes()
+                .add(Attributes.MAX_HEALTH, 4.0)
+                .add(Attributes.MOVEMENT_SPEED, 0.0)
+                .add(Attributes.FOLLOW_RANGE, 20.0);
+    }
+
+    static class EggllitAttackGoal extends Goal {
+        private final ChickenDefenseEntity actor;
+
+        public EggllitAttackGoal(ChickenDefenseEntity actor) {
+            this.actor = actor;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            return this.actor.getTarget() != null && this.actor.getTarget().isAlive()
+                    && this.actor.getTarget().distanceToSqr(this.actor) <= 400
+                    && this.actor.attackCoolDown <= 0;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return this.canUse();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.actor.setAggressive(true);
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            this.actor.setAggressive(false);
+            this.actor.stopUsingItem();
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            LivingEntity target = this.actor.getTarget();
+            if (target == null || !target.isAlive()) return;
+
+            this.actor.lookAt(target, 30.0F, 30.0F);
+            this.shootEgg();
+        }
+
+        private void shootEgg() {
+            this.actor.attackCoolDown = 4;
+
+            float f = -Mth.sin(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
+            float g = -Mth.sin((this.actor.getXRot() + 0.0F) * ((float)Math.PI / 180));
+            float h = Mth.cos(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
+
+            EggllitEntity eggllitEntity = new EggllitEntity(ModEntityTypes.EGGLLIT,
+                    this.actor.getX(), this.actor.getEyeY(), this.actor.getZ(),
+                    this.actor.level(), ModItems.EGGLLIT.getDefaultInstance()
+            );
+
+            eggllitEntity.setOwner(this.actor);
+            eggllitEntity.shoot(f, g, h, 1.2F, 0.0F);
+
+            this.actor.level().addFreshEntity(eggllitEntity);
+
+            this.actor.playSound(SoundEvents.EGG_THROW, 1.0F, 1.0F / (this.actor.getRandom().nextFloat() * 0.4F + 0.8F));
+        }
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
+
+        if (this.attackCoolDown > 0) {
+            this.attackCoolDown--;
+        }
+
         this.oFlap = this.flap;
         this.oFlapSpeed = this.flapSpeed;
         this.flapSpeed = this.flapSpeed + (this.onGround() ? -1.0F : 4.0F) * 0.3F;

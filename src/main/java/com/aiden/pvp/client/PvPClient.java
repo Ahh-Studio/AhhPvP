@@ -48,6 +48,10 @@ public class PvPClient implements ClientModInitializer {
                 ModEntityTypes.FISHING_BOBBER,
                 FishingBobberEntityRenderer::new
         );
+        EntityRenderers.register(
+                ModEntityTypes.EGGLLIT,
+                ThrownItemRenderer::new
+        );
         EntityRenderers.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
