@@ -21,7 +21,12 @@ public class PvPModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerators) {
         itemModelGenerators.generateFlatItem(ModItems.RETURN_SCROLL, ModelTemplates.FLAT_ITEM);
+<<<<<<< Updated upstream
         itemModelGenerators.generateFlatItem(ModItems.EGGLLET, ModelTemplates.FLAT_ITEM);
+=======
+        itemModelGenerators.generateFlatItem(ModItems.EGGLLIT, ModelTemplates.FLAT_ITEM);
+        itemModelGenerators.generateFlatItem(ModItems.CHICKEN_DEFENSE, ModelTemplates.FLAT_ITEM);
+>>>>>>> Stashed changes
     }
 
     @Override
