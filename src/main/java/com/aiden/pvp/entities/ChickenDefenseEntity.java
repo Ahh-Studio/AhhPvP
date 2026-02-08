@@ -112,15 +112,15 @@ public class ChickenDefenseEntity extends Animal {
             float g = -Mth.sin((this.actor.getXRot() + 0.0F) * ((float)Math.PI / 180));
             float h = Mth.cos(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
 
-            EggllitEntity eggllitEntity = new EggllitEntity(ModEntityTypes.EGGLLIT,
+            EgglletEntity egglletEntity = new EgglletEntity(ModEntityTypes.EGGLLIT,
                     this.actor.getX(), this.actor.getEyeY(), this.actor.getZ(),
-                    this.actor.level(), ModItems.EGGLLIT.getDefaultInstance()
+                    this.actor.level(), ModItems.EGGLLET.getDefaultInstance()
             );
 
-            eggllitEntity.setOwner(this.actor);
-            eggllitEntity.shoot(f, g, h, 1.2F, 0.0F);
+            egglletEntity.setOwner(this.actor);
+            egglletEntity.shoot(f, g, h, 1.2F, 0.0F);
 
-            this.actor.level().addFreshEntity(eggllitEntity);
+            this.actor.level().addFreshEntity(egglletEntity);
 
             this.actor.playSound(SoundEvents.EGG_THROW, 1.0F, 1.0F / (this.actor.getRandom().nextFloat() * 0.4F + 0.8F));
         }

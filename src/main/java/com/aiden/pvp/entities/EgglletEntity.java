@@ -14,18 +14,18 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.NonNull;
 
-public class EggllitEntity extends ThrowableItemProjectile {
+public class EgglletEntity extends ThrowableItemProjectile {
     public int age = 200;
 
-    public EggllitEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+    public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public EggllitEntity(EntityType<? extends ThrowableItemProjectile> entityType, double d, double e, double f, Level level, ItemStack itemStack) {
+    public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, double d, double e, double f, Level level, ItemStack itemStack) {
         super(ModEntityTypes.EGGLLIT, d, e, f, level, itemStack);
     }
 
-    public EggllitEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity livingEntity, Level level, ItemStack itemStack) {
+    public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity livingEntity, Level level, ItemStack itemStack) {
         super(ModEntityTypes.EGGLLIT, livingEntity, level, itemStack);
     }
 
@@ -63,7 +63,7 @@ public class EggllitEntity extends ThrowableItemProjectile {
 
     @Override
     protected @NonNull Item getDefaultItem() {
-        return ModItems.EGGLLIT;
+        return ModItems.EGGLLET;
     }
 
     @Override
