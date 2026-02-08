@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "pvp:item/eggllit"
+    "layer0": "pvp:item/eggllet"
   }
 }
