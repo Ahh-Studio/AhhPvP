@@ -20,6 +20,7 @@ public class ModEntityTypes {
     public static final EntityType<DaggerEntity> DAGGER;
     public static final EntityType<MurdererEntity> MURDERER;
     public static final EntityType<ChickenDefenseEntity> CHICKEN_DEFENSE;
+    public static final EntityType<EggllitEntity> EGGLLIT;
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
         return Registry.register(BuiltInRegistries.ENTITY_TYPE,
@@ -104,6 +105,14 @@ public class ModEntityTypes {
                         .eyeHeight(0.644F)
                         .passengerAttachments(new Vec3(0.0, 0.7, -0.1))
                         .clientTrackingRange(10)
+        );
+        EGGLLIT = register(
+                "eggllit",
+                EntityType.Builder.<EggllitEntity>of(EggllitEntity::new, MobCategory.MISC)
+                        .noLootTable()
+                        .sized(0.25F, 0.25F)
+                        .clientTrackingRange(4)
+                        .updateInterval(10)
         );
     }
 }

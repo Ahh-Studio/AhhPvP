@@ -31,7 +31,7 @@ public abstract class ModItems {
     public static final Item BED_BUG = register("bed_bug", BedBugItem::new, new Item.Properties().stacksTo(16));
     public static final Item RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1));
     public static final Item CHICKEN_DEFENSE = register("chicken_defense", ChickenDefenseItem::new, new Item.Properties().stacksTo(64).fireResistant());
-
+    public static final Item EGGLLIT = register("eggllit", Item::new, new Item.Properties().stacksTo(64).fireResistant());
 
     public static final Item CARBON_RUNE = register("carbon_rune", CarbonRuneItem::new, new Item.Properties().stacksTo(64));
     public static final Item IRON_RUNE = register("iron_rune", IronRuneItem::new, new Item.Properties().stacksTo(64));
