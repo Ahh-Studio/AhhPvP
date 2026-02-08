@@ -17,8 +17,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 
 import java.util.List;
 import java.util.function.Function;
@@ -118,6 +118,10 @@ public abstract class ModItems {
                 i.accept(ModItems.THROWABLE_DAGGER);
                 i.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
                 i.accept(ModItems.MURDERER_SPAWN_EGG);
+                i.getContext().holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
+                        .filter(potionReference -> potionReference.value().isEnabled(i.getEnabledFeatures()) && (potionReference.value() == LONG_INVISIBILITY_POTION || potionReference.value() == SHORT_INVISIBILITY_POTION))
+                        .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
+                        .forEach(itemStack -> i.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
             });
             ItemTooltipCallback.EVENT.register((i, context, type, list) -> {
                 if (i.is(FIREBALL)) list.add(Component.literal("Use it... and watch it explode!"));
