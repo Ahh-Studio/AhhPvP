@@ -99,7 +99,7 @@ public class ModEntityTypes {
                         .notInPeaceful()
         );
         CHICKEN_DEFENSE = register(
-                "chicken",
+                "chicken_defense",
                 EntityType.Builder.of(ChickenDefenseEntity::new, MobCategory.MISC)
                         .sized(0.4F, 0.7F)
                         .eyeHeight(0.644F)
