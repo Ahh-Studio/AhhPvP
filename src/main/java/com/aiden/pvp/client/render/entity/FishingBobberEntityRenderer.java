@@ -129,7 +129,8 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         return new FishingBobberEntityRenderState();
     }
 
-    public void updateRenderState(FishingBobberEntity fishingBobberEntity, FishingBobberEntityRenderState fishingBobberEntityRenderState, float f) {
+    @Override
+    public void extractRenderState(FishingBobberEntity fishingBobberEntity, FishingBobberEntityRenderState fishingBobberEntityRenderState, float f) {
         super.extractRenderState(fishingBobberEntity, fishingBobberEntityRenderState, f);
         Player playerEntity = fishingBobberEntity.getPlayerOwner();
         if (playerEntity == null) {
