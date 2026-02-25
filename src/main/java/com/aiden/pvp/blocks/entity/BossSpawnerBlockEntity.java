@@ -17,7 +17,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 public class BossSpawnerBlockEntity extends BlockEntity {
     public BossSpawnerBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntityTypes.BOSS_SPAWNER_BLOCK_ENTITY, pos, state);
+        super(ModBlockEntityTypes.BOSS_SPAWNER_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void placeStructure(ServerLevel world) {

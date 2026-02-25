@@ -1,0 +1,39 @@
+license="${mod_license}"
+issueTrackerURL="https://github.com/Ahh-Studio/AhhPvP/issues" #optional
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+displayURL="https://github.com/Ahh-Studio/AhhPvP"
+logoFile="icon.png"
+#credits=""
+authors="Aiden, ZCM"
+description='''
+Fireballs, TNTs, Self-res Platform, Bridge Egg, Strong Glass and Short/Long Invisibility Potion and much more!
+'''
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+# The [[accessTransformers]] block allows you to declare where your AT file is.
+# If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
+#[[accessTransformers]]
+#file="META-INF/accesstransformer.cfg"
+
+### Dependencies ###
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+# Here's another dependency
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

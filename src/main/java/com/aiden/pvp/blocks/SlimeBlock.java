@@ -86,7 +86,7 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     {
         super.setPlacedBy(world, pos, state, placer, itemStack);
         if (!world.isClientSide()) {
-            world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
+            world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY.get())
                     .ifPresent(SlimeBlockEntity::startCountdown);
         }
     }

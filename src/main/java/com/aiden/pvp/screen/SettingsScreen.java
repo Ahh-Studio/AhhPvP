@@ -2,15 +2,12 @@ package com.aiden.pvp.screen;
 
 import com.aiden.pvp.payloads.GetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-@Environment(EnvType.CLIENT)
 public class SettingsScreen extends Screen {
     private Screen parent;
     private int sliderValue1;
@@ -40,7 +37,7 @@ public class SettingsScreen extends Screen {
 
         if (minecraft.player != null) {
             GetGameRulesC2SPayload getGameRulesC2SPayload = new GetGameRulesC2SPayload(minecraft.player.getId());
-            ClientPlayNetworking.send(getGameRulesC2SPayload);
+            ClientPacketDistributor.sendToServer(getGameRulesC2SPayload);
         }
 
         sliderWidget1 = new ModSliderWidget(
@@ -75,7 +72,7 @@ public class SettingsScreen extends Screen {
                         Component.literal("Apply"),
                         (button) -> {
                             SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2);
-                            ClientPlayNetworking.send(payload);
+                            ClientPacketDistributor.sendToServer(payload);
                             this.onClose();
                         })
                 .pos(this.width / 2 - 50, this.height / 2 + 50)

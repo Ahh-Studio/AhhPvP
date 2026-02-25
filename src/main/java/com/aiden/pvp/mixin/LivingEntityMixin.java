@@ -1,7 +1,6 @@
 package com.aiden.pvp.mixin;
 
 import com.aiden.pvp.gamerules.ModGameRules;
-import com.aiden.pvp.items.SwordItem;
 import com.aiden.pvp.mixin.accessor.LivingEntityAccessor;
 import com.aiden.pvp.mixin.invoker.LivingEntityInvoker;
 import it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair;
@@ -69,154 +68,146 @@ public abstract class LivingEntityMixin {
             cancellable = true,
             order = 999
     )
-    public void damage(ServerLevel world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    public void damage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity instance = (LivingEntity) (Object) this;
         LivingEntityAccessor accessor = (LivingEntityAccessor) instance;
         LivingEntityInvoker invoker = (LivingEntityInvoker) instance;
 
-        if (instance.isInvulnerableTo(world, source)) {
-            cir.setReturnValue(false);
-            return;
+        if (instance.isInvulnerableTo(level, source)) {
+            cir.setReturnValue(false); return;
         } else if (instance.isDeadOrDying()) {
-            cir.setReturnValue(false);
-            return;
+            cir.setReturnValue(false); return;
         } else if (source.is(DamageTypeTags.IS_FIRE) && instance.hasEffect(MobEffects.FIRE_RESISTANCE)) {
-            cir.setReturnValue(false);
-            return;
+            cir.setReturnValue(false); return;
         } else {
+            accessor.getDamageContainers().push(new net.neoforged.neoforge.common.damagesource.DamageContainer(source, amount));
+            if (net.neoforged.neoforge.common.CommonHooks.onEntityIncomingDamage(instance, accessor.getDamageContainers().peek())) {
+                cir.setReturnValue(false); return;
+            }
             if (instance.isSleeping()) {
                 instance.stopSleeping();
             }
 
             instance.setNoActionTime(0);
+            amount = accessor.getDamageContainers().peek().getNewDamage(); //Neo: enforce damage container as source of truth for damage amount
             if (amount < 0.0F) {
                 amount = 0.0F;
             }
 
-            ItemStack itemStack = instance.getUseItem();
-            float g = instance.applyItemBlocking(world, source, amount);
-            amount -= g;
-            boolean bl = g > 0.0F;
-
-            if (instance.getItemBlockingWith() != null) {
-                bl = bl && !(instance.getItemBlockingWith().getItem() instanceof SwordItem);
-            }
-
+            ItemStack itemstack = instance.getUseItem();
+            float f = instance.applyItemBlocking(level, source, amount);
+            amount -= f;
+            boolean flag = f > 0.0F;
             if (source.is(DamageTypeTags.IS_FREEZING) && instance.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
                 amount *= 5.0F;
             }
 
             if (source.is(DamageTypeTags.DAMAGES_HELMET) && !instance.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-                instance.hurtHelmet(source, amount);
+                invoker.invokedHurtHelmet(source, amount);
                 amount *= 0.75F;
             }
 
             if (Float.isNaN(amount) || Float.isInfinite(amount)) {
                 amount = Float.MAX_VALUE;
             }
+            accessor.getDamageContainers().peek().setNewDamage(amount); //update container with vanilla changes
 
-            boolean bl2 = true;
+            boolean flag1 = true;
             if (instance.invulnerableTime > 10.0F && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
                 if (amount <= accessor.getLastHurt()) {
+                    accessor.getDamageContainers().pop();
                     cir.setReturnValue(false);
                     return;
                 }
 
-                invoker.invokedApplyDamage(world, source, amount - accessor.getLastHurt());
+                accessor.getDamageContainers().peek().setReduction(net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction.INVULNERABILITY, accessor.getLastHurt());
+                invoker.invokedApplyDamage(level, source, amount - accessor.getLastHurt());
                 accessor.setLastDamageTaken(amount);
-                bl2 = false;
+                flag1 = false;
             } else {
                 int phdi = 10;
                 if (instance.level() instanceof ServerLevel serverWorld) {
-                    phdi = serverWorld.getGameRules().get(ModGameRules.PHDI);
+                    phdi = serverWorld.getGameRules().get(ModGameRules.PHDI.get());
                 }
                 accessor.setLastDamageTaken(amount);
+                instance.invulnerableTime = accessor.getDamageContainers().peek().getPostAttackInvulnerabilityTicks();
                 instance.invulnerableTime = 2 * phdi;
-
-                invoker.invokedApplyDamage(world, source, amount);
-
+                invoker.invokedApplyDamage(level, source, amount);
                 instance.hurtDuration = phdi;
                 instance.hurtTime = instance.hurtDuration;
             }
 
+            amount = accessor.getDamageContainers().peek().getNewDamage(); //update local with container value
             invoker.invokedBecomeAngry(source);
             invoker.invokedSetAttackingPlayer(source);
-            if (bl2) {
-                BlocksAttacks blocksAttacksComponent = itemStack.get(DataComponents.BLOCKS_ATTACKS);
-                if (bl && blocksAttacksComponent != null) {
-                    blocksAttacksComponent.onBlocked(world, instance);
+            if (flag1) {
+                BlocksAttacks blocksattacks = itemstack.get(DataComponents.BLOCKS_ATTACKS);
+                if (flag && blocksattacks != null) {
+                    blocksattacks.onBlocked(level, instance);
                 } else {
-                    world.broadcastDamageEvent(instance, source);
+                    level.broadcastDamageEvent(instance, source);
                 }
 
-                if (!source.is(DamageTypeTags.NO_IMPACT) && (!bl || amount > 0.0F)) {
+                if (!source.is(DamageTypeTags.NO_IMPACT) && (!flag || amount > 0.0F)) {
                     instance.hurtMarked = true;
                 }
 
                 if (!source.is(DamageTypeTags.NO_KNOCKBACK)) {
-                    double d = 0.0;
-                    double e = 0.0;
-                    if (source.getDirectEntity() instanceof Projectile projectileEntity) {
-                        DoubleDoubleImmutablePair doubleDoubleImmutablePair = projectileEntity.calculateHorizontalHurtKnockbackDirection(instance, source);
-                        d = -doubleDoubleImmutablePair.leftDouble();
-                        e = -doubleDoubleImmutablePair.rightDouble();
+                    double d0 = 0.0;
+                    double d1 = 0.0;
+                    if (source.getDirectEntity() instanceof Projectile projectile) {
+                        DoubleDoubleImmutablePair doubledoubleimmutablepair = projectile.calculateHorizontalHurtKnockbackDirection(instance, source);
+                        d0 = -doubledoubleimmutablepair.leftDouble();
+                        d1 = -doubledoubleimmutablepair.rightDouble();
                     } else if (source.getSourcePosition() != null) {
-                        d = source.getSourcePosition().x() - instance.getX();
-                        e = source.getSourcePosition().z() - instance.getZ();
+                        d0 = source.getSourcePosition().x() - instance.getX();
+                        d1 = source.getSourcePosition().z() - instance.getZ();
                     }
 
-                    boolean bl3 = false;
-
-                    if (instance.getItemBlockingWith() != null) {
-                        if (instance.getItemBlockingWith().getItem() instanceof SwordItem) {
-                            bl3 = true;
-                        }
-                    }
-
-                    instance.knockback(bl3 ? 0.2F : 0.4F, d, e);
-
-                    if (!bl) {
-                        instance.indicateDamage(d, e);
+                    instance.knockback(0.4F, d0, d1);
+                    if (!flag) {
+                        instance.indicateDamage(d0, d1);
                     }
                 }
             }
 
             if (instance.isDeadOrDying()) {
                 if (!invoker.invokedTryUseDeathProtector(source)) {
-                    if (bl2) {
+                    if (flag1) {
                         instance.makeSound(invoker.invokedGetDeathSound());
                         invoker.invokedPlayThornsSound(source);
                     }
 
                     instance.die(source);
                 }
-            } else if (bl2) {
+            } else if (flag1) {
                 invoker.invokedPlayHurtSound(source);
                 invoker.invokedPlayThornsSound(source);
             }
 
-            boolean bl3 = !bl || amount > 0.0F;
-            if (bl3) {
+            boolean flag2 = !flag || amount > 0.0F;
+            if (flag2) {
                 accessor.setLastDamageSource(source);
-                accessor.setLastDamageTime(instance.level().getGameTime());
+                accessor.setLastDamageTaken(instance.level().getGameTime());
 
-                for (MobEffectInstance statusEffectInstance : instance.getActiveEffects()) {
-                    statusEffectInstance.onMobHurt(world, instance, source, amount);
+                for (MobEffectInstance mobeffectinstance : instance.getActiveEffects()) {
+                    mobeffectinstance.onMobHurt(level, instance, source, amount);
                 }
             }
 
-            if (instance instanceof ServerPlayer serverPlayerEntity) {
-                CriteriaTriggers.ENTITY_HURT_PLAYER.trigger(serverPlayerEntity, source, amount, amount, bl);
-                if (g > 0.0F && g < 3.4028235E37F) {
-                    serverPlayerEntity.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(g * 10.0F));
+            if (instance instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ENTITY_HURT_PLAYER.trigger(serverPlayer, source, amount, amount, flag);
+                if (f > 0.0F && f < 3.4028235E37F) {
+                    serverPlayer.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(f * 10.0F));
                 }
             }
 
-            if (source.getEntity() instanceof ServerPlayer serverPlayerEntity) {
-                CriteriaTriggers.PLAYER_HURT_ENTITY.trigger(serverPlayerEntity, instance, source, amount, amount, bl);
+            if (source.getEntity() instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.PLAYER_HURT_ENTITY.trigger(serverPlayer, instance, source, amount, amount, flag);
             }
 
-            cir.setReturnValue(bl3);
+            accessor.getDamageContainers().pop();
+            cir.setReturnValue(flag2);
         }
     }
 }

@@ -1,28 +1,24 @@
 package com.aiden.pvp.datagen;
 
+import com.aiden.pvp.PvP;
 import com.aiden.pvp.items.ModItems;
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.data.PackOutput;
 import org.jspecify.annotations.NonNull;
 
-public class PvPModelProvider extends FabricModelProvider {
-    public PvPModelProvider(FabricDataOutput output) {
-        super(output);
+public class PvPModelProvider extends ModelProvider {
+    public PvPModelProvider(PackOutput output) {
+        super(output, PvP.MOD_ID);
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
-
-    }
-
-    @Override
-    public void generateItemModels(ItemModelGenerators itemModelGenerators) {
-        itemModelGenerators.generateFlatItem(ModItems.RETURN_SCROLL, ModelTemplates.FLAT_ITEM);
-        itemModelGenerators.generateFlatItem(ModItems.EGGLLET, ModelTemplates.FLAT_ITEM);
-        itemModelGenerators.generateFlatItem(ModItems.CHICKEN_DEFENSE, ModelTemplates.FLAT_ITEM);
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        itemModels.generateFlatItem(ModItems.RETURN_SCROLL.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.EGGLLET.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.CHICKEN_DEFENSE.get(), ModelTemplates.FLAT_ITEM);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.aiden.pvp.items;
 
+import com.aiden.pvp.blocks.ModBlocks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public class GoldenHeadItem extends BlockItem {
-    public GoldenHeadItem(Block block, Properties settings) {
-        super(block, settings);
+    public GoldenHeadItem(Properties settings) {
+        super(ModBlocks.GOLDEN_HEAD.get(), settings);
     }
 
     @Override

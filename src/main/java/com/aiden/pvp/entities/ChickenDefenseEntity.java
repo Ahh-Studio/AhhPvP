@@ -112,9 +112,9 @@ public class ChickenDefenseEntity extends Animal {
             float g = -Mth.sin((this.actor.getXRot() + 0.0F) * ((float)Math.PI / 180));
             float h = Mth.cos(this.actor.getYRot() * ((float)Math.PI / 180)) * Mth.cos(this.actor.getXRot() * ((float)Math.PI / 180));
 
-            EgglletEntity egglletEntity = new EgglletEntity(ModEntityTypes.EGGLLIT,
+            EgglletEntity egglletEntity = new EgglletEntity(ModEntityTypes.EGGLLIT.get(),
                     this.actor.getX(), this.actor.getEyeY(), this.actor.getZ(),
-                    this.actor.level(), ModItems.EGGLLET.getDefaultInstance()
+                    this.actor.level(), ModItems.EGGLLET.get().getDefaultInstance()
             );
 
             egglletEntity.setOwner(this.actor);
@@ -183,7 +183,7 @@ public class ChickenDefenseEntity extends Animal {
 
     @Nullable
     public ChickenDefenseEntity getBreedOffspring(@NonNull ServerLevel serverLevel, @NonNull AgeableMob ageableMob) {
-        return ModEntityTypes.CHICKEN_DEFENSE.create(serverLevel, EntitySpawnReason.BREEDING);
+        return ModEntityTypes.CHICKEN_DEFENSE.get().create(serverLevel, EntitySpawnReason.BREEDING);
     }
 
     @Override

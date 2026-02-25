@@ -4,11 +4,9 @@ import com.aiden.pvp.explosion.FireballExplosionImpl;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
 import java.util.Optional;
-import net.minecraft.core.particles.ExplosionParticleInfo;
-import net.minecraft.core.particles.ParticleTypes;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
@@ -26,7 +24,7 @@ public class FireballEntity extends ThrowableItemProjectile {
     private final float explosionDamage = 2.0F;
 
     public FireballEntity(LivingEntity owner, Level world, ItemStack stack) {
-        super(ModEntityTypes.FIREBALL, owner, world, stack);
+        super(ModEntityTypes.FIREBALL.get(), owner, world, stack);
     }
 
     public FireballEntity(EntityType<? extends FireballEntity> entityType, Level world) {
@@ -34,12 +32,12 @@ public class FireballEntity extends ThrowableItemProjectile {
     }
 
     public FireballEntity(Level world, double x, double y, double z, ItemStack stack) {
-        super(ModEntityTypes.FIREBALL, x, y, z, world, stack);
+        super(ModEntityTypes.FIREBALL.get(), x, y, z, world, stack);
     }
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.FIREBALL;
+        return ModItems.FIREBALL.get();
     }
 
     @Override
@@ -58,7 +56,7 @@ public class FireballEntity extends ThrowableItemProjectile {
         super.onHitBlock(blockHitResult);
         Level var3 = this.level();
         if (var3 instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_EXPLODE_POWER.get()) / 10;
             this.explode(this.explosionPower);
             this.discard();
         }
@@ -68,7 +66,7 @@ public class FireballEntity extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (this.level() instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_EXPLODE_POWER.get()) / 10;
             this.explode(this.explosionPower);
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.hurtServer(serverWorld, damageSources().explosion(this, this.getOwner()), 2.0F);

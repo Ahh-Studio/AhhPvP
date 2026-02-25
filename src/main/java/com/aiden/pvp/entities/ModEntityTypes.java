@@ -1,7 +1,6 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.PvP;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -11,27 +10,32 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 public class ModEntityTypes {
-    public static final EntityType<FireballEntity> FIREBALL;
-    public static final EntityType<BridgeEggEntity> BRIDGE_EGG;
-    public static final EntityType<FishingBobberEntity> FISHING_BOBBER;
-    public static final EntityType<BedBugEntity> BED_BUG;
-    public static final EntityType<DaggerEntity> DAGGER;
-    public static final EntityType<MurdererEntity> MURDERER;
-    public static final EntityType<ChickenDefenseEntity> CHICKEN_DEFENSE;
-    public static final EntityType<EgglletEntity> EGGLLIT;
+    public static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(PvP.MOD_ID);
 
-    public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
-        return Registry.register(BuiltInRegistries.ENTITY_TYPE,
-                Identifier.fromNamespaceAndPath(PvP.MOD_ID, id),
-                entityType.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, id))));
+    public static final Supplier<EntityType<FireballEntity>> FIREBALL;
+    public static final Supplier<EntityType<BridgeEggEntity>> BRIDGE_EGG;
+    public static final Supplier<EntityType<FishingBobberEntity>> FISHING_BOBBER;
+    public static final Supplier<EntityType<BedBugEntity>> BED_BUG;
+    public static final Supplier<EntityType<DaggerEntity>> DAGGER;
+    public static final Supplier<EntityType<MurdererEntity>> MURDERER;
+    public static final Supplier<EntityType<ChickenDefenseEntity>> CHICKEN_DEFENSE;
+    public static final Supplier<EntityType<EgglletEntity>> EGGLLIT;
+
+    public static <T extends Entity> Supplier<EntityType<T>> register(String id, EntityType.Builder<T> entityTypeBuilder) {
+        return ENTITY_TYPES.register(id, () -> entityTypeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, id))));
     }
 
-    public static void initialize() {
+    public static void initialize(IEventBus modBus) {
         try {
-            FabricDefaultAttributeRegistry.register(MURDERER, MurdererEntity.createMurdererAttributes().build());
-            FabricDefaultAttributeRegistry.register(CHICKEN_DEFENSE, ChickenDefenseEntity.createAttributes().build());
+            ENTITY_TYPES.register(modBus);
             PvP.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
         } catch (Exception e) {
             PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: {}", e.getMessage());
@@ -47,7 +51,7 @@ public class ModEntityTypes {
                         .clientTrackingRange(32).updateInterval(5)
                         .ridingOffset(0.5F)
                         .nameTagOffset(0.5F)
-                        .alwaysUpdateVelocity(true)
+                        .setShouldReceiveVelocityUpdates(true)
                         .noLootTable()
                         .eyeHeight(0.5F)
         );
@@ -60,7 +64,7 @@ public class ModEntityTypes {
                         .ridingOffset(0.01F)
                         .nameTagOffset(0.01F)
                         .noLootTable()
-                        .alwaysUpdateVelocity(true)
+                        .setShouldReceiveVelocityUpdates(true)
                         .eyeHeight(0.15F)
         );
         FISHING_BOBBER = register(
@@ -114,5 +118,11 @@ public class ModEntityTypes {
                         .clientTrackingRange(4)
                         .updateInterval(10)
         );
+    }
+
+    @SubscribeEvent
+    public static void createAttributes(EntityAttributeCreationEvent event) {
+        event.put(MURDERER.get(), MurdererEntity.createMurdererAttributes().build());
+        event.put(CHICKEN_DEFENSE.get(), ChickenDefenseEntity.createAttributes().build());
     }
 }

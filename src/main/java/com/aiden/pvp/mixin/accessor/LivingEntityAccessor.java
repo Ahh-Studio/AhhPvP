@@ -1,9 +1,13 @@
 package com.aiden.pvp.mixin.accessor;
 
+import net.minecraft.server.commands.DamageCommand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+import java.util.Stack;
 
 @Mixin(LivingEntity.class)
 public interface LivingEntityAccessor {
@@ -18,4 +22,10 @@ public interface LivingEntityAccessor {
 
     @Accessor("lastDamageStamp")
     void setLastDamageTime(long lastDamageTime);
+
+    @Accessor("damageContainers")
+    Stack<DamageContainer> getDamageContainers();
+
+    @Accessor("damageContainers")
+    void setDamageContainers(Stack<DamageContainer> damageContainers);
 }

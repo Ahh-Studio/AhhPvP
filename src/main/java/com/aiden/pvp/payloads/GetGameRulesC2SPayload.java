@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 
 public record GetGameRulesC2SPayload(int playerId) implements CustomPacketPayload {
     public static final Identifier GET_GAME_RULES_PAYLOAD_ID = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "get_game_rules_c2s_payload");
-    public static final CustomPacketPayload.Type<GetGameRulesC2SPayload> ID = new Type<>(GET_GAME_RULES_PAYLOAD_ID);
+    public static final CustomPacketPayload.Type<GetGameRulesC2SPayload> TYPE = new Type<>(GET_GAME_RULES_PAYLOAD_ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, GetGameRulesC2SPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,
             GetGameRulesC2SPayload::playerId,
@@ -18,6 +18,6 @@ public record GetGameRulesC2SPayload(int playerId) implements CustomPacketPayloa
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
-        return ID;
+        return TYPE;
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SlimeBlockEntity extends BlockEntity {
     public SlimeBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntityTypes.SLIME_BLOCK_ENTITY, pos, state);
+        super(ModBlockEntityTypes.SLIME_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void startCountdown() {

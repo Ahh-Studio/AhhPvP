@@ -8,18 +8,19 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.Level;
 
 public class ThrowableDaggerItem extends Item {
     public ThrowableDaggerItem(Properties settings) {
-        super(settings);
+        super(settings.sword(ToolMaterial.IRON, 2, 251));
     }
 
     @Override
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
         super.use(world, user, hand);
         if (world instanceof ServerLevel serverWorld) {
-            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, world);
+            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER.get(), world);
             daggerEntity.setOwner(user);
 
             daggerEntity.setPosRaw(user.getX(), user.getEyeY(), user.getZ());

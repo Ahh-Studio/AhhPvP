@@ -26,7 +26,7 @@ public class DaggerEntity extends Projectile {
     public List<LivingEntity> hitEntities = new ArrayList<>();
 
     public DaggerEntity(EntityType<? extends DaggerEntity> entityType, Level world) {
-        super(ModEntityTypes.DAGGER, world);
+        super(ModEntityTypes.DAGGER.get(), world);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DaggerEntity extends Projectile {
         if (hitBlockState.is(Blocks.SCULK_SHRIEKER)) {
             level().destroyBlock(blockHitResult.getBlockPos(), false, this.getOwner());
             if (level() instanceof ServerLevel serverLevel) {
-                ItemEntity itemEntity = new ItemEntity(level(), this.getX(), this.getY(), this.getZ(), new ItemStack(ModItems.BOSS_SPAWNER, 1));
+                ItemEntity itemEntity = new ItemEntity(level(), this.getX(), this.getY(), this.getZ(), new ItemStack(ModItems.BOSS_SPAWNER.get(), 1));
                 serverLevel.addFreshEntity(itemEntity);
             }
             return;

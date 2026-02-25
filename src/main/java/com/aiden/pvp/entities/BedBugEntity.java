@@ -26,16 +26,16 @@ public class BedBugEntity extends ThrowableItemProjectile {
     }
 
     public BedBugEntity(double x, double y, double z, Level world, ItemStack stack) {
-        super(BED_BUG, x, y, z, world, stack);
+        super(BED_BUG.get(), x, y, z, world, stack);
     }
 
     public BedBugEntity(Level world, LivingEntity owner, ItemStack stack) {
-        super(BED_BUG, owner, world, stack);
+        super(BED_BUG.get(), owner, world, stack);
     }
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.BED_BUG;
+        return ModItems.BED_BUG.get();
     }
 
     @Override

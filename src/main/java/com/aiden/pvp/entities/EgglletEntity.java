@@ -22,11 +22,11 @@ public class EgglletEntity extends ThrowableItemProjectile {
     }
 
     public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, double d, double e, double f, Level level, ItemStack itemStack) {
-        super(ModEntityTypes.EGGLLIT, d, e, f, level, itemStack);
+        super(ModEntityTypes.EGGLLIT.get(), d, e, f, level, itemStack);
     }
 
     public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity livingEntity, Level level, ItemStack itemStack) {
-        super(ModEntityTypes.EGGLLIT, livingEntity, level, itemStack);
+        super(ModEntityTypes.EGGLLIT.get(), livingEntity, level, itemStack);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class EgglletEntity extends ThrowableItemProjectile {
         super.onHit(hitResult);
         if (this.level() instanceof ServerLevel serverLevel) {
             if (this.random.nextInt(200) == 0) {
-                ChickenDefenseEntity chickenDefenseEntity = ModEntityTypes.CHICKEN_DEFENSE.spawn(
+                ChickenDefenseEntity chickenDefenseEntity = ModEntityTypes.CHICKEN_DEFENSE.get().spawn(
                         serverLevel,
                         new BlockPos((int) this.position().x, (int) this.position().y, (int) this.position().z),
                         EntitySpawnReason.TRIGGERED
@@ -63,7 +63,7 @@ public class EgglletEntity extends ThrowableItemProjectile {
 
     @Override
     protected @NonNull Item getDefaultItem() {
-        return ModItems.EGGLLET;
+        return ModItems.EGGLLET.get();
     }
 
     @Override

@@ -82,7 +82,7 @@ public class BossSpawnerBlock extends BaseEntityBlock {
 
     private void summonMurderer(Level world, Vec3i pos) {
         if (world instanceof ServerLevel serverWorld) {
-            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos), EntitySpawnReason.EVENT);
+            ModEntityTypes.MURDERER.get().spawn(serverWorld, new BlockPos(pos), EntitySpawnReason.EVENT);
         }
     }
 

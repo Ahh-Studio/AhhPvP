@@ -1,23 +1,35 @@
 package com.aiden.pvp.datagen;
 
-import com.aiden.pvp.datagen.lang.PvPEnGbLangProvider;
-import com.aiden.pvp.datagen.lang.PvPEnUsLangProvider;
-import com.aiden.pvp.datagen.lang.PvPZhCnLangProvider;
-import com.aiden.pvp.datagen.lang.PvPZhTwLangProvider;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import com.aiden.pvp.datagen.lang.*;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-public class PvPDataGenerator implements DataGeneratorEntrypoint {
-    @Override
-    public void onInitializeDataGenerator(FabricDataGenerator generator) {
-        FabricDataGenerator.Pack pack = generator.createPack();
-        pack.addProvider(PvPRecipeProvider::new);
-        pack.addProvider(PvPBlockLootTableProvider::new);
-        pack.addProvider(PvPAdvancementProvider::new);
-        pack.addProvider(PvPModelProvider::new);
-        pack.addProvider(PvPEnUsLangProvider::new);
-        pack.addProvider(PvPZhCnLangProvider::new);
-        pack.addProvider(PvPZhTwLangProvider::new);
-        pack.addProvider(PvPEnGbLangProvider::new);
+import java.util.List;
+import java.util.Set;
+
+public class PvPDataGenerator {
+
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent.Client event) {
+        event.createProvider(PvPRecipeProvider.Runner::new);
+        event.createProvider((output, lookupProvider) -> new LootTableProvider(
+                output,
+                Set.of(),
+                List.of(new LootTableProvider.SubProviderEntry(PvPBlockLootTableProvider::new, LootContextParamSets.BLOCK)),
+                lookupProvider
+        ));
+        event.createProvider((output, lookupProvider) -> new AdvancementProvider(output, lookupProvider,
+                List.of(
+                        new PvPAdvancementProvider()
+                )
+        ));
+        event.createProvider(PvPModelProvider::new);
+        event.createProvider(PvPEnUsLangProvider::new);
+        event.createProvider(PvPEnGbLangProvider::new);
+        event.createProvider(PvPZhCnLangProvider::new);
+        event.createProvider(PvPZhTwLangProvider::new);
     }
 }

@@ -1,12 +1,10 @@
 package com.aiden.pvp.client.render.entity.state;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.world.entity.animal.chicken.ChickenVariant;
-import org.jspecify.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ChickenDefenseEntityRenderState extends LivingEntityRenderState {
     public float flap;
     public float flapSpeed;

@@ -3,7 +3,10 @@ package com.aiden.pvp.client.render.entity.state;
 import com.aiden.pvp.entities.MurdererEntity;
 import net.minecraft.client.renderer.entity.state.UndeadRenderState;
 import net.minecraft.world.entity.HumanoidArm;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class MurdererEntityRenderState extends UndeadRenderState {
     public boolean hasVehicle;
     public boolean attacking;

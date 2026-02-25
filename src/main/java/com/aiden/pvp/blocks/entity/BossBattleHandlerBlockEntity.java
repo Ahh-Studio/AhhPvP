@@ -31,7 +31,7 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
     );
 
     public BossBattleHandlerBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntityTypes.BOSS_BATTLE_HANDLER_BLOCK_ENTITY, pos, state);
+        super(ModBlockEntityTypes.BOSS_BATTLE_HANDLER_BLOCK_ENTITY.get(), pos, state);
     }
 
     public <T extends BlockEntity> void tick(Level world, BlockPos pos, BlockState state, T entity) {

@@ -31,18 +31,18 @@ public class BridgeEggEntity extends ThrowableItemProjectile {
     }
 
     public BridgeEggEntity(Level world, LivingEntity owner, ItemStack stack) {
-        super(ModEntityTypes.BRIDGE_EGG, owner, world, stack);
+        super(ModEntityTypes.BRIDGE_EGG.get(), owner, world, stack);
     }
 
     public BridgeEggEntity(Level world, double x, double y, double z, ItemStack stack) {
-        super(ModEntityTypes.BRIDGE_EGG, x, y, z, world, stack);
+        super(ModEntityTypes.BRIDGE_EGG.get(), x, y, z, world, stack);
     }
 
 
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.BRIDGE_EGG;
+        return ModItems.BRIDGE_EGG.get();
     }
 
     @Override
@@ -155,7 +155,7 @@ public class BridgeEggEntity extends ThrowableItemProjectile {
     private void placeBlocks(int i, int j, int k) {
         level().setBlock(
                 this.blockPos(i, j, k),
-                ModBlocks.EGG_BRIDGE.defaultBlockState(),
+                ModBlocks.EGG_BRIDGE.get().defaultBlockState(),
                 6
         );
     }

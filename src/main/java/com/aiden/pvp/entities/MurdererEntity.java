@@ -62,7 +62,7 @@ public class MurdererEntity extends Monster {
     public boolean isInPhase2 = false;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, Level world) {
-        super(ModEntityTypes.MURDERER, world);
+        super(ModEntityTypes.MURDERER.get(), world);
         this.wTapFreezeTicks = 0;
     }
 
@@ -113,7 +113,7 @@ public class MurdererEntity extends Monster {
 
         if (this.comboHitsTaken > 3 && this.getTarget() != null) {
             if (this.level() instanceof ServerLevel serverWorld) {
-                FireballEntity fireballEntity = new FireballEntity(this, this.level(), ModItems.FIREBALL.getDefaultInstance());
+                FireballEntity fireballEntity = new FireballEntity(this, this.level(), ModItems.FIREBALL.get().getDefaultInstance());
                 fireballEntity.setPosRaw(this.getX(), this.getEyeY(), this.getZ());
 
                 Vec3 targetPos = this.getTarget().position().subtract(0, 0.5, 0);
@@ -303,7 +303,7 @@ public class MurdererEntity extends Monster {
         leggings.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         boots.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER.get()));
         this.setItemSlot(EquipmentSlot.HEAD, helmet);
         this.setItemSlot(EquipmentSlot.CHEST, chestplate);
         this.setItemSlot(EquipmentSlot.LEGS, leggings);
@@ -568,7 +568,7 @@ public class MurdererEntity extends Monster {
         }
 
         protected boolean isHoldingDagger() {
-            return this.actor.isHolding(ModItems.THROWABLE_DAGGER);
+            return this.actor.isHolding(ModItems.THROWABLE_DAGGER.get());
         }
 
         @Override
@@ -614,7 +614,7 @@ public class MurdererEntity extends Monster {
                 if (this.actor.getHealth() >= 10 && !blockState.isAir() && this.actor.fireballCooldownTicks <= 0) { // 同时满足：血量>10、脚底方块不是空气、冷却结束
                     if (this.actor.getRandom().nextIntBetweenInclusive(1, 10) <= 5) { // 随机，有概率不触发
                         if (this.actor.level() instanceof ServerLevel serverWorld) { // 服务端生成实体
-                            FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.level(), ModItems.FIREBALL.getDefaultInstance());
+                            FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.level(), ModItems.FIREBALL.get().getDefaultInstance());
                             fireballEntity.setPosRaw(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());
 
                             this.actor.lookAt(this.actor.getTarget(), 30.0F, 30.0F);
@@ -700,13 +700,13 @@ public class MurdererEntity extends Monster {
                         }
                     }
                 } else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {
-                    this.actor.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.actor, ModItems.THROWABLE_DAGGER));
+                    this.actor.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.actor, ModItems.THROWABLE_DAGGER.get()));
                 }
             }
         }
 
         private @NotNull DaggerEntity getDaggerEntity() {
-            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER, this.actor.level());
+            DaggerEntity daggerEntity = new DaggerEntity(ModEntityTypes.DAGGER.get(), this.actor.level());
             daggerEntity.setOwner(this.actor);
 
             daggerEntity.setPosRaw(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());

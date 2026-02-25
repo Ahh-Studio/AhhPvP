@@ -30,4 +30,7 @@ public interface LivingEntityInvoker {
 
     @Invoker("playHurtSound")
     void invokedPlayHurtSound(DamageSource source);
+
+    @Invoker("hurtHelmet")
+    void invokedHurtHelmet(DamageSource damageSource, float damageAmount);
 }

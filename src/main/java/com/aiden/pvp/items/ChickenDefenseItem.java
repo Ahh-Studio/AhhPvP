@@ -48,7 +48,7 @@ public class ChickenDefenseItem extends Item {
     }
 
     private InteractionResult spawnEntity(LivingEntity livingEntity, ItemStack itemStack, ServerLevel level, BlockPos blockPos, boolean bl2) {
-        ChickenDefenseEntity chicken = ModEntityTypes.CHICKEN_DEFENSE.spawn(level, itemStack, livingEntity, blockPos, EntitySpawnReason.SPAWN_ITEM_USE, true, bl2);
+        ChickenDefenseEntity chicken = ModEntityTypes.CHICKEN_DEFENSE.get().spawn(level, itemStack, livingEntity, blockPos, EntitySpawnReason.SPAWN_ITEM_USE, true, bl2);
         if (chicken != null) {
             itemStack.consume(1, livingEntity);
             level.gameEvent(livingEntity, GameEvent.ENTITY_PLACE, blockPos);

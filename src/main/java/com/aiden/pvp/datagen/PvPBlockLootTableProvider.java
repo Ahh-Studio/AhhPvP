@@ -1,30 +1,45 @@
 package com.aiden.pvp.datagen;
 
+import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.items.ModItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.jspecify.annotations.NonNull;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class PvPBlockLootTableProvider extends SimpleFabricLootTableProvider {
-    public PvPBlockLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
-        super(output, registryLookup, LootContextParamSets.BLOCK);
-    }
-
+public class PvPBlockLootTableProvider extends BlockLootSubProvider {
     public static final ResourceKey<LootTable> SPAWNER_BLOCK = ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("blocks/spawner"));
     public static final ResourceKey<LootTable> TRIAL_SPAWNER_BLOCK = ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("blocks/trial_spawner"));
+
+    public PvPBlockLootTableProvider(HolderLookup.Provider lookupProvider) {
+        super(Set.of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
+    }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return ModBlocks.BLOCKS.getEntries()
+                .stream()
+                .map(e -> (Block) e.value())
+                .toList();
+    }
+
+    @Override
+    protected void generate() {
+
+    }
 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> lootTableBiConsumer) {
@@ -42,10 +57,5 @@ public class PvPBlockLootTableProvider extends SimpleFabricLootTableProvider {
                                         SetItemCountFunction.setCount(
                                                 ConstantValue
                                                         .exactly(1.0F))))));
-    }
-
-    @Override
-    public @NonNull String getName() {
-        return "BlockLootTable";
     }
 }

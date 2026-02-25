@@ -16,8 +16,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.NonNull;
 
+@OnlyIn(Dist.CLIENT)
 public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer<T, DaggerEntityRenderState> {
     private final ItemModelResolver itemModelManager;
     private final float scale;
@@ -77,7 +80,7 @@ public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer
         daggerEntityRenderState.velocity = entity.getDeltaMovement().multiply(-1, 1, -1);
         this.itemModelManager.updateForNonLiving(
                 daggerEntityRenderState.itemRenderState,
-                new ItemStack(ModItems.THROWABLE_DAGGER),
+                new ItemStack(ModItems.THROWABLE_DAGGER.get()),
                 ItemDisplayContext.GROUND,
                 entity
         );

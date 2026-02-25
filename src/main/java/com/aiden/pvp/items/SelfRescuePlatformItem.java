@@ -49,14 +49,14 @@ public class SelfRescuePlatformItem extends Item {
 
             for (BlockPos pos : blockPos) {
                 if (world.getBlockState(pos).isAir() && !world.isClientSide()) {
-                    world.setBlock(pos, ModBlocks.SPECIAL_SLIME_BLOCK.defaultBlockState(), 6);
+                    world.setBlock(pos, ModBlocks.SPECIAL_SLIME_BLOCK.get().defaultBlockState(), 6);
                 }
             }
             itemStack.consume(1, user);
 
             for (BlockPos pos : blockPos) {
                 if (!world.isClientSide()) {
-                    world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
+                    world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY.get())
                             .ifPresent(SlimeBlockEntity::startCountdown);
                 }
             }

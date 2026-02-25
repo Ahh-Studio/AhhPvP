@@ -6,14 +6,14 @@ import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.NonNull;
 
+@OnlyIn(Dist.CLIENT)
 public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
     private final net.minecraft.client.model.geom.ModelPart head;
     private final net.minecraft.client.model.geom.ModelPart body;
@@ -77,7 +77,7 @@ public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState
                 CubeListBuilder.create().texOffs(0, 16).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
                 PartPose.offset(1.9F, 12.0F, 0.0F)
         );
-        return LayerDefinition.create(modelData, 64, 64);
+        return LayerDefinition.create(modelData, 64, 64).apply(MeshTransformer.scaling(0.9375F));
     }
 
     @Override

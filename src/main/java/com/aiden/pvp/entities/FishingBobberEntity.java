@@ -30,7 +30,7 @@ public class FishingBobberEntity extends Projectile {
     }
 
     public FishingBobberEntity(Level world, Player thrower){
-        this(ModEntityTypes.FISHING_BOBBER, world);
+        this(ModEntityTypes.FISHING_BOBBER.get(), world);
         this.setOwner(thrower);
         float f = thrower.getXRot();
         float g = thrower.getYRot();
