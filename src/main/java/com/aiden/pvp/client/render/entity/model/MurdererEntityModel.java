@@ -13,7 +13,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.NonNull;
 
-@OnlyIn(Dist.CLIENT)
 public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
     private final net.minecraft.client.model.geom.ModelPart head;
     private final net.minecraft.client.model.geom.ModelPart body;

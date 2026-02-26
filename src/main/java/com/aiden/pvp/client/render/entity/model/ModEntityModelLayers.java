@@ -11,7 +11,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@OnlyIn(Dist.CLIENT)
 public class ModEntityModelLayers {
     public static final ModelLayerLocation MURDERER = new ModelLayerLocation(
             Identifier.fromNamespaceAndPath(PvP.MOD_ID, "murderer"),

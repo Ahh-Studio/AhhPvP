@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 public class PvPDataGenerator {
-
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         event.createProvider(PvPRecipeProvider.Runner::new);

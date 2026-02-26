@@ -6,8 +6,13 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NonNull;
+
+import java.util.stream.Stream;
 
 public class PvPModelProvider extends ModelProvider {
     public PvPModelProvider(PackOutput output) {
@@ -22,7 +27,12 @@ public class PvPModelProvider extends ModelProvider {
     }
 
     @Override
-    public @NonNull String getName() {
-        return "Model";
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return Stream.empty();
+    }
+
+    @Override
+    protected Stream<? extends Holder<Item>> getKnownItems() {
+        return Stream.of(ModItems.RETURN_SCROLL, ModItems.EGGLLET, ModItems.CHICKEN_DEFENSE);
     }
 }

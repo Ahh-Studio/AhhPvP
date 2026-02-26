@@ -5,13 +5,10 @@ import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.entities.ModEntityTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
@@ -19,19 +16,14 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.tools.Tool;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class ModItems {
@@ -39,19 +31,19 @@ public abstract class ModItems {
     public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, PvP.MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, PvP.MOD_ID);
 
-    public static final DeferredItem<Item> FIREBALL = register("fireball", FireballItem::new, new Item.Properties().stacksTo(64).fireResistant().useCooldown(0.1F));
-    public static final DeferredItem<Item> SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).craftRemainder(Items.BLAZE_ROD));
-    public static final DeferredItem<Item> BRIDGE_EGG = register("bridge_egg", BridgeEggItem::new, new Item.Properties().stacksTo(64).fireResistant());
-    public static final DeferredItem<Item> FISHING_ROD = register("fishing_rod", FishingRodItem::new, new Item.Properties().stacksTo(1).fireResistant().durability(64));
-    public static final DeferredItem<Item> BED_BUG = register("bed_bug", BedBugItem::new, new Item.Properties().stacksTo(16));
-    public static final DeferredItem<Item> RETURN_SCROLL = register("return_scroll", ReturnScrollItem::new, new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> CHICKEN_DEFENSE = register("chicken_defense", ChickenDefenseItem::new, new Item.Properties().stacksTo(64).fireResistant());
-    public static final DeferredItem<Item> EGGLLET = register("eggllet", Item::new, new Item.Properties().stacksTo(64).fireResistant());
+    public static final DeferredItem<Item> FIREBALL = ITEMS.registerItem("fireball", FireballItem::new, props -> props.stacksTo(64).fireResistant().useCooldown(0.1F));
+    public static final DeferredItem<Item> SELF_RES_PLATFORM = ITEMS.registerItem("self-res_platform", SelfRescuePlatformItem::new, props -> props.stacksTo(64).craftRemainder(Items.BLAZE_ROD));
+    public static final DeferredItem<Item> BRIDGE_EGG = ITEMS.registerItem("bridge_egg", BridgeEggItem::new, props -> props.stacksTo(64).fireResistant());
+    public static final DeferredItem<Item> FISHING_ROD = ITEMS.registerItem("fishing_rod", FishingRodItem::new, props -> props.stacksTo(1).fireResistant().durability(64));
+    public static final DeferredItem<Item> BED_BUG = ITEMS.registerItem("bed_bug", BedBugItem::new, props -> props.stacksTo(16));
+    public static final DeferredItem<Item> RETURN_SCROLL = ITEMS.registerItem("return_scroll", ReturnScrollItem::new, props -> props.stacksTo(1));
+    public static final DeferredItem<Item> CHICKEN_DEFENSE = ITEMS.registerItem("chicken_defense", ChickenDefenseItem::new, props -> props.stacksTo(64).fireResistant());
+    public static final DeferredItem<Item> EGGLLET = ITEMS.registerItem("eggllet", Item::new, props -> props.stacksTo(64).fireResistant());
 
-    public static final DeferredItem<Item> CARBON_RUNE = register("carbon_rune", CarbonRuneItem::new, new Item.Properties().stacksTo(64));
-    public static final DeferredItem<Item> IRON_RUNE = register("iron_rune", IronRuneItem::new, new Item.Properties().stacksTo(64));
-    public static final DeferredItem<Item> BOSS_KEY = register("boss_key", Item::new, new Item.Properties().stacksTo(64));
-    public static final DeferredItem<Item> BBU_UPGRADE_SMITHING_TEMPLATE = register("bbu_upgrade_smithing_template",
+    public static final DeferredItem<Item> CARBON_RUNE = ITEMS.registerItem("carbon_rune", CarbonRuneItem::new, props -> props.stacksTo(64));
+    public static final DeferredItem<Item> IRON_RUNE = ITEMS.registerItem("iron_rune", IronRuneItem::new, props -> props.stacksTo(64));
+    public static final DeferredItem<Item> BOSS_KEY = ITEMS.registerItem("boss_key", Item::new, props -> props.stacksTo(64));
+    public static final DeferredItem<Item> BBU_UPGRADE_SMITHING_TEMPLATE = ITEMS.registerItem("bbu_upgrade_smithing_template",
             settings -> new SmithingTemplateItem(
                     Component.translatable("item.pvp.smithing_template.bbu_upgrade.applies_to").withStyle(ChatFormatting.BLUE),
                     Component.translatable("item.pvp.smithing_template.bbu_upgrade.ingredients").withStyle(ChatFormatting.BLUE),
@@ -61,26 +53,26 @@ public abstract class ModItems {
                     List.of(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "container/slot/null")),
                     settings
             ),
-            new Item.Properties()
+            props -> props
     );
 
-    public static final DeferredItem<BlockItem> TNT = registerBlockItem("tnt", TntBlockItem::new, new Item.Properties().stacksTo(64));
-    public static final DeferredItem<BlockItem> THROWABLE_TNT = registerBlockItem("throwable_tnt", ThrowableTntBlockItem::new, new Item.Properties().stacksTo(64).overrideDescription("block.pvp.throwable_tnt"));
-    public static final DeferredItem<BlockItem> STRONG_GLASS = registerBlockItem("strong_glass", properties -> new BlockItem(ModBlocks.STRONG_GLASS.get(), properties), new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.strong_glass"));
-    public static final DeferredItem<BlockItem> GOLDEN_HEAD = registerBlockItem("golden_head", GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
-    public static final DeferredItem<BlockItem> BOSS_SPAWNER = registerBlockItem("boss_spawner", properties -> new BlockItem(ModBlocks.BOSS_SPAWNER.get(), properties), new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
+    public static final DeferredItem<BlockItem> TNT = ITEMS.registerItem("tnt", TntBlockItem::new, props -> props.stacksTo(64).rarity(Rarity.EPIC).useBlockDescriptionPrefix());
+    public static final DeferredItem<BlockItem> THROWABLE_TNT = ITEMS.registerItem("throwable_tnt", ThrowableTntBlockItem::new, props -> props.stacksTo(64).useBlockDescriptionPrefix().rarity(Rarity.EPIC));
+    public static final DeferredItem<BlockItem> STRONG_GLASS = ITEMS.registerSimpleBlockItem("strong_glass", ModBlocks.STRONG_GLASS, props -> props.rarity(Rarity.EPIC).stacksTo(64).useBlockDescriptionPrefix());
+    public static final DeferredItem<BlockItem> GOLDEN_HEAD = ITEMS.registerItem("golden_head", GoldenHeadItem::new, props -> props.rarity(Rarity.EPIC).stacksTo(2).rarity(Rarity.EPIC).useBlockDescriptionPrefix());
+    public static final DeferredItem<BlockItem> BOSS_SPAWNER = ITEMS.registerSimpleBlockItem("boss_spawner", ModBlocks.BOSS_SPAWNER, props -> props.rarity(Rarity.EPIC).stacksTo(64).useBlockDescriptionPrefix());
 
-    public static final DeferredItem<Item> WOODEN_SWORD = register("wooden_sword", properties -> new SwordItem(properties, ToolMaterial.WOOD), new Item.Properties());
-    public static final DeferredItem<Item> STONE_SWORD = register("stone_sword", properties -> new SwordItem(properties, ToolMaterial.STONE), new Item.Properties());
-    public static final DeferredItem<Item> IRON_SWORD = register("iron_sword", properties -> new SwordItem(properties, ToolMaterial.IRON), new Item.Properties());
-    public static final DeferredItem<Item> DIAMOND_SWORD = register("diamond_sword", properties -> new SwordItem(properties, ToolMaterial.DIAMOND), new Item.Properties());
+    public static final DeferredItem<Item> WOODEN_SWORD = ITEMS.registerItem("wooden_sword", properties -> new SwordItem(properties, ToolMaterial.WOOD), props -> props);
+    public static final DeferredItem<Item> STONE_SWORD = ITEMS.registerItem("stone_sword", properties -> new SwordItem(properties, ToolMaterial.STONE), props -> props);
+    public static final DeferredItem<Item> IRON_SWORD = ITEMS.registerItem("iron_sword", properties -> new SwordItem(properties, ToolMaterial.IRON), props -> props);
+    public static final DeferredItem<Item> DIAMOND_SWORD = ITEMS.registerItem("diamond_sword", properties -> new SwordItem(properties, ToolMaterial.DIAMOND), props -> props);
 
-    public static final DeferredItem<Item> THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Properties().useCooldown(5));
+    public static final DeferredItem<Item> THROWABLE_DAGGER = ITEMS.registerItem("throwable_dagger", ThrowableDaggerItem::new, props -> props.useCooldown(5));
 
     public static final Holder<Potion> SHORT_INVISIBILITY_POTION = POTIONS.register("short_invisibility_potion", identifier -> new Potion(identifier.getPath(), new MobEffectInstance(MobEffects.INVISIBILITY, 600, 0)));
     public static final Holder<Potion> LONG_INVISIBILITY_POTION = POTIONS.register("long_invisibility_potion", identifier -> new Potion(identifier.getPath(), new MobEffectInstance(MobEffects.INVISIBILITY, 12000, 0)));
 
-    public static final DeferredItem<Item> MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Properties());
+    public static final DeferredItem<Item> MURDERER_SPAWN_EGG = ITEMS.registerItem("murderer_spawn_egg", SpawnEggItem::new, props -> props.spawnEgg(ModEntityTypes.MURDERER.get()));
 
     public static final Supplier<CreativeModeTab> PVP_CREATIVE_MODE_TAB = CREATIVE_MODE_TABS.register("pvp", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(Items.FISHING_ROD))
@@ -116,14 +108,6 @@ public abstract class ModItems {
                         .forEach(itemStack -> i.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
             })
             .build());
-
-    public static DeferredItem<Item> register(String path, Function<Item.Properties, Item> factory, Item.Properties settings) {
-        return ITEMS.registerItem(path, factory, properties -> settings.overrideDescription("item.pvp." + path).rarity(Rarity.EPIC));
-    }
-
-    public static DeferredItem<BlockItem> registerBlockItem(String path, Function<Item.Properties, BlockItem> factory, Item.Properties settings) {
-        return ITEMS.registerItem(path, factory, () -> settings.rarity(Rarity.EPIC).useBlockDescriptionPrefix());
-    }
 
     public static void initialize(IEventBus modBus) {
         try {

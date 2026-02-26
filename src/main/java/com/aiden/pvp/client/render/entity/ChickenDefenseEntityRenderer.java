@@ -9,11 +9,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.NonNull;
 
-@OnlyIn(Dist.CLIENT)
 public class ChickenDefenseEntityRenderer extends MobRenderer<ChickenDefenseEntity, ChickenDefenseEntityRenderState, ChickenDefenseEntityModel> {
     public ChickenDefenseEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new ChickenDefenseEntityModel(context.bakeLayer(ModEntityModelLayers.CHICKEN_DEFENSE)), 0.3F);

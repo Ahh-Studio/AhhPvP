@@ -6,7 +6,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class MurdererEntityRenderState extends UndeadRenderState {
     public boolean hasVehicle;
     public boolean attacking;

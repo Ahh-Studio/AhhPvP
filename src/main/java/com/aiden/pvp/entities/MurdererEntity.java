@@ -42,6 +42,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.world.NeoForgeAttributeTypes;
+import net.neoforged.neoforge.common.world.NeoForgeEnvironmentAttributes;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
@@ -269,7 +272,8 @@ public class MurdererEntity extends Monster {
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.ATTACK_DAMAGE, 7.0)
                 .add(Attributes.ATTACK_SPEED, 10)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3);
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
+                .add(NeoForgeMod.SWIM_SPEED, 1.0D);
     }
 
     public State getState() {

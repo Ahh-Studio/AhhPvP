@@ -15,11 +15,8 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.NonNull;
 
-@OnlyIn(Dist.CLIENT)
 public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
 
@@ -44,7 +41,8 @@ public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, 
         );
     }
 
-    public void updateRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
+    @Override
+    public void extractRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
         super.extractRenderState(murdererEntity, murdererEntityRenderState, f);
         ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
         murdererEntityRenderState.hasVehicle = murdererEntity.isPassenger();

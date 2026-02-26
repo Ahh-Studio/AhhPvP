@@ -2,6 +2,7 @@ package com.aiden.pvp.client.render.entity;
 
 import com.aiden.pvp.client.render.entity.state.FishingBobberEntityRenderState;
 import com.aiden.pvp.entities.FishingBobberEntity;
+import com.aiden.pvp.items.FishingRodItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -18,12 +19,10 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEntity, FishingBobberEntityRenderState> {
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/fishing_hook.png");
     private static final RenderType LAYER = RenderTypes.entityCutout(TEXTURE);

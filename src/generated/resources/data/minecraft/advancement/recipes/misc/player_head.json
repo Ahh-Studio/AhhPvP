@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_bbu_upgrade_template": {
+    "has_skeleton_skull": {
       "conditions": {
         "items": [
           {
-            "items": "pvp:bbu_upgrade_smithing_template"
+            "items": "minecraft:skeleton_skull"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "pvp:bbu_iron_sword_smithing"
+        "recipe": "minecraft:player_head"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_bbu_upgrade_template"
+      "has_skeleton_skull"
     ]
   ],
   "rewards": {
     "recipes": [
-      "pvp:bbu_iron_sword_smithing"
+      "minecraft:player_head"
     ]
   }
 }
