@@ -27,7 +27,6 @@ public class PvPDataGenerator {
         ));
         event.createProvider(PvPModelProvider::new);
         event.createProvider(PvPEnUsLangProvider::new);
-        event.createProvider(PvPEnGbLangProvider::new);
         event.createProvider(PvPZhCnLangProvider::new);
         event.createProvider(PvPZhTwLangProvider::new);
     }

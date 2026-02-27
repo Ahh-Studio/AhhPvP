@@ -30,6 +30,7 @@ public class PvPEnUsLangProvider extends LanguageProvider {
         this.add("item.pvp.boss_key", "Boss Key");
         this.add("item.pvp.bridge_egg", "Bridge Egg");
         this.add("item.pvp.carbon_rune", "Carbon Rune");
+        this.add("item.pvp.chicken_defense", "Chicken Defense");
         this.add("item.pvp.diamond_sword", "Diamond Sword");
         this.add("item.pvp.fireball", "Fireball");
         this.add("item.pvp.fishing_rod", "Fishing Rod");

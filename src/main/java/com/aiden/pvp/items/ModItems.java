@@ -31,18 +31,18 @@ public abstract class ModItems {
     public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, PvP.MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, PvP.MOD_ID);
 
-    public static final DeferredItem<Item> FIREBALL = ITEMS.registerItem("fireball", FireballItem::new, props -> props.stacksTo(64).fireResistant().useCooldown(0.1F));
-    public static final DeferredItem<Item> SELF_RES_PLATFORM = ITEMS.registerItem("self-res_platform", SelfRescuePlatformItem::new, props -> props.stacksTo(64).craftRemainder(Items.BLAZE_ROD));
-    public static final DeferredItem<Item> BRIDGE_EGG = ITEMS.registerItem("bridge_egg", BridgeEggItem::new, props -> props.stacksTo(64).fireResistant());
-    public static final DeferredItem<Item> FISHING_ROD = ITEMS.registerItem("fishing_rod", FishingRodItem::new, props -> props.stacksTo(1).fireResistant().durability(64));
-    public static final DeferredItem<Item> BED_BUG = ITEMS.registerItem("bed_bug", BedBugItem::new, props -> props.stacksTo(16));
-    public static final DeferredItem<Item> RETURN_SCROLL = ITEMS.registerItem("return_scroll", ReturnScrollItem::new, props -> props.stacksTo(1));
-    public static final DeferredItem<Item> CHICKEN_DEFENSE = ITEMS.registerItem("chicken_defense", ChickenDefenseItem::new, props -> props.stacksTo(64).fireResistant());
-    public static final DeferredItem<Item> EGGLLET = ITEMS.registerItem("eggllet", Item::new, props -> props.stacksTo(64).fireResistant());
+    public static final DeferredItem<Item> FIREBALL = ITEMS.registerItem("fireball", FireballItem::new, props -> props.stacksTo(64).fireResistant().useCooldown(0.1F).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> SELF_RES_PLATFORM = ITEMS.registerItem("self-res_platform", SelfRescuePlatformItem::new, props -> props.stacksTo(64).craftRemainder(Items.BLAZE_ROD).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> BRIDGE_EGG = ITEMS.registerItem("bridge_egg", BridgeEggItem::new, props -> props.stacksTo(64).fireResistant().rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> FISHING_ROD = ITEMS.registerItem("fishing_rod", FishingRodItem::new, props -> props.stacksTo(1).fireResistant().durability(64).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> BED_BUG = ITEMS.registerItem("bed_bug", BedBugItem::new, props -> props.stacksTo(16).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> RETURN_SCROLL = ITEMS.registerItem("return_scroll", ReturnScrollItem::new, props -> props.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> CHICKEN_DEFENSE = ITEMS.registerItem("chicken_defense", ChickenDefenseItem::new, props -> props.stacksTo(64).fireResistant().rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> EGGLLET = ITEMS.registerItem("eggllet", Item::new, props -> props.stacksTo(64).fireResistant().rarity(Rarity.EPIC));
 
-    public static final DeferredItem<Item> CARBON_RUNE = ITEMS.registerItem("carbon_rune", CarbonRuneItem::new, props -> props.stacksTo(64));
-    public static final DeferredItem<Item> IRON_RUNE = ITEMS.registerItem("iron_rune", IronRuneItem::new, props -> props.stacksTo(64));
-    public static final DeferredItem<Item> BOSS_KEY = ITEMS.registerItem("boss_key", Item::new, props -> props.stacksTo(64));
+    public static final DeferredItem<Item> CARBON_RUNE = ITEMS.registerItem("carbon_rune", CarbonRuneItem::new, props -> props.stacksTo(64).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> IRON_RUNE = ITEMS.registerItem("iron_rune", IronRuneItem::new, props -> props.stacksTo(64).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> BOSS_KEY = ITEMS.registerItem("boss_key", Item::new, props -> props.stacksTo(64).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> BBU_UPGRADE_SMITHING_TEMPLATE = ITEMS.registerItem("bbu_upgrade_smithing_template",
             settings -> new SmithingTemplateItem(
                     Component.translatable("item.pvp.smithing_template.bbu_upgrade.applies_to").withStyle(ChatFormatting.BLUE),
@@ -53,7 +53,7 @@ public abstract class ModItems {
                     List.of(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "container/slot/null")),
                     settings
             ),
-            props -> props
+            props -> props.rarity(Rarity.EPIC)
     );
 
     public static final DeferredItem<BlockItem> TNT = ITEMS.registerItem("tnt", TntBlockItem::new, props -> props.stacksTo(64).rarity(Rarity.EPIC).useBlockDescriptionPrefix());
@@ -62,17 +62,17 @@ public abstract class ModItems {
     public static final DeferredItem<BlockItem> GOLDEN_HEAD = ITEMS.registerItem("golden_head", GoldenHeadItem::new, props -> props.rarity(Rarity.EPIC).stacksTo(2).rarity(Rarity.EPIC).useBlockDescriptionPrefix());
     public static final DeferredItem<BlockItem> BOSS_SPAWNER = ITEMS.registerSimpleBlockItem("boss_spawner", ModBlocks.BOSS_SPAWNER, props -> props.rarity(Rarity.EPIC).stacksTo(64).useBlockDescriptionPrefix());
 
-    public static final DeferredItem<Item> WOODEN_SWORD = ITEMS.registerItem("wooden_sword", properties -> new SwordItem(properties, ToolMaterial.WOOD), props -> props);
-    public static final DeferredItem<Item> STONE_SWORD = ITEMS.registerItem("stone_sword", properties -> new SwordItem(properties, ToolMaterial.STONE), props -> props);
-    public static final DeferredItem<Item> IRON_SWORD = ITEMS.registerItem("iron_sword", properties -> new SwordItem(properties, ToolMaterial.IRON), props -> props);
-    public static final DeferredItem<Item> DIAMOND_SWORD = ITEMS.registerItem("diamond_sword", properties -> new SwordItem(properties, ToolMaterial.DIAMOND), props -> props);
+    public static final DeferredItem<Item> WOODEN_SWORD = ITEMS.registerItem("wooden_sword", properties -> new SwordItem(properties, ToolMaterial.WOOD), props -> props.rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> STONE_SWORD = ITEMS.registerItem("stone_sword", properties -> new SwordItem(properties, ToolMaterial.STONE), props -> props.rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> IRON_SWORD = ITEMS.registerItem("iron_sword", properties -> new SwordItem(properties, ToolMaterial.IRON), props -> props.rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> DIAMOND_SWORD = ITEMS.registerItem("diamond_sword", properties -> new SwordItem(properties, ToolMaterial.DIAMOND), props -> props.rarity(Rarity.EPIC));
 
-    public static final DeferredItem<Item> THROWABLE_DAGGER = ITEMS.registerItem("throwable_dagger", ThrowableDaggerItem::new, props -> props.useCooldown(5));
+    public static final DeferredItem<Item> THROWABLE_DAGGER = ITEMS.registerItem("throwable_dagger", ThrowableDaggerItem::new, props -> props.useCooldown(5).rarity(Rarity.EPIC));
 
     public static final Holder<Potion> SHORT_INVISIBILITY_POTION = POTIONS.register("short_invisibility_potion", identifier -> new Potion(identifier.getPath(), new MobEffectInstance(MobEffects.INVISIBILITY, 600, 0)));
     public static final Holder<Potion> LONG_INVISIBILITY_POTION = POTIONS.register("long_invisibility_potion", identifier -> new Potion(identifier.getPath(), new MobEffectInstance(MobEffects.INVISIBILITY, 12000, 0)));
 
-    public static final DeferredItem<Item> MURDERER_SPAWN_EGG = ITEMS.registerItem("murderer_spawn_egg", SpawnEggItem::new, props -> props.spawnEgg(ModEntityTypes.MURDERER.get()));
+    public static final DeferredItem<Item> MURDERER_SPAWN_EGG = ITEMS.registerItem("murderer_spawn_egg", SpawnEggItem::new, props -> props.spawnEgg(ModEntityTypes.MURDERER.get()).rarity(Rarity.EPIC));
 
     public static final Supplier<CreativeModeTab> PVP_CREATIVE_MODE_TAB = CREATIVE_MODE_TABS.register("pvp", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(Items.FISHING_ROD))
@@ -101,9 +101,8 @@ public abstract class ModItems {
                 i.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
                 i.accept(ModItems.MURDERER_SPAWN_EGG);
                 parameters.holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
-                        .filter(potionReference -> potionReference.value().isEnabled(parameters.enabledFeatures()) && (
-                                potionReference.value() == LONG_INVISIBILITY_POTION || potionReference.value() == SHORT_INVISIBILITY_POTION
-                        ))
+                        .filter(potionReference -> potionReference.value().isEnabled(parameters.enabledFeatures()) &&
+                                (potionReference.value() == LONG_INVISIBILITY_POTION.value() || potionReference.value() == SHORT_INVISIBILITY_POTION.value()))
                         .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
                         .forEach(itemStack -> i.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
             })

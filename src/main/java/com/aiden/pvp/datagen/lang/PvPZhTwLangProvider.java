@@ -30,6 +30,7 @@ public class PvPZhTwLangProvider extends LanguageProvider {
         this.add("item.pvp.boss_key", "頭目生成之匙");
         this.add("item.pvp.bridge_egg", "雞蛋橋");
         this.add("item.pvp.carbon_rune", "碳之符文");
+        this.add("item.pvp.chicken_defense", "小鷄炮臺");
         this.add("item.pvp.diamond_sword", "鑽石劍");
         this.add("item.pvp.fireball", "火球");
         this.add("item.pvp.fishing_rod", "釣竿");
