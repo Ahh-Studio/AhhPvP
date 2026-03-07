@@ -1,6 +1,7 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
+import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -136,11 +138,27 @@ public class FishingBobberEntity extends Projectile {
         this.setDeltaMovement(this.getDeltaMovement().multiply(0, 1, 0));
     }
 
-    private @Nullable ServerLevel getServerWorld() {
-        if (level() instanceof ServerLevel serverWorld) {
-            return serverWorld;
-        } else {
-            return null;
+    @Override
+    public void remove(Entity.RemovalReason removalReason) {
+        this.updateOwnerInfo(null);
+        super.remove(removalReason);
+    }
+
+    @Override
+    public void onClientRemoval() {
+        this.updateOwnerInfo(null);
+    }
+
+    @Override
+    public void setOwner(@Nullable Entity entity) {
+        super.setOwner(entity);
+        this.updateOwnerInfo(this);
+    }
+
+    private void updateOwnerInfo(@Nullable FishingBobberEntity fishingHook) {
+        Player player = this.getPlayerOwner();
+        if (player != null) {
+            ((PlayerEntityPvpExtension) player).AhhPvP$setPvpFishHook(fishingHook);
         }
     }
 

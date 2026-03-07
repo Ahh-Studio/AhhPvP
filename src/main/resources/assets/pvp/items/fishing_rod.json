@@ -9,6 +9,6 @@
       "type": "minecraft:model",
       "model": "pvp:item/fishing_rod_cast"
     },
-    "property": "minecraft:fishing_rod/cast"
+    "property": "pvp:fishing_rod/cast"
   }
 }
