@@ -90,6 +90,15 @@ public class ModBlocks {
                     .sound(SoundType.ANVIL)
                     .instabreak()
     );
+    public static final Block LANDMINE = register(
+            "landmine",
+            LandmineBlock::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+    );
 
     private static Block register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
         Identifier id = Identifier.fromNamespaceAndPath(PvP.MOD_ID, name);
