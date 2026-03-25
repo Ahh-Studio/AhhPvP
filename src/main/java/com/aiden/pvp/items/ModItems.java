@@ -54,6 +54,7 @@ public abstract class ModItems {
     public static final Item STRONG_GLASS = Items.registerBlock(ModBlocks.STRONG_GLASS, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.strong_glass"));
     public static final Item GOLDEN_HEAD = Items.registerBlock(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
     public static final Item BOSS_SPAWNER = Items.registerBlock(ModBlocks.BOSS_SPAWNER, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
+    public static final Item LANDMINE = Items.registerBlock(ModBlocks.LANDMINE, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64));
 
     public static final Item WOODEN_SWORD = register("wooden_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.WOOD, 3, 251));
     public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, 3, 251));
@@ -118,6 +119,7 @@ public abstract class ModItems {
                 i.accept(ModItems.THROWABLE_DAGGER);
                 i.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
                 i.accept(ModItems.MURDERER_SPAWN_EGG);
+                i.accept(ModItems.LANDMINE);
                 i.getContext().holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
                         .filter(potionReference -> potionReference.value().isEnabled(i.getEnabledFeatures()) && (potionReference.value() == LONG_INVISIBILITY_POTION || potionReference.value() == SHORT_INVISIBILITY_POTION))
                         .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))

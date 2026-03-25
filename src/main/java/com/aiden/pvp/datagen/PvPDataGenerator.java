@@ -1,6 +1,5 @@
 package com.aiden.pvp.datagen;
 
-import com.aiden.pvp.datagen.lang.PvPEnGbLangProvider;
 import com.aiden.pvp.datagen.lang.PvPEnUsLangProvider;
 import com.aiden.pvp.datagen.lang.PvPZhCnLangProvider;
 import com.aiden.pvp.datagen.lang.PvPZhTwLangProvider;
@@ -18,6 +17,5 @@ public class PvPDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(PvPEnUsLangProvider::new);
         pack.addProvider(PvPZhCnLangProvider::new);
         pack.addProvider(PvPZhTwLangProvider::new);
-        pack.addProvider(PvPEnGbLangProvider::new);
     }
 }

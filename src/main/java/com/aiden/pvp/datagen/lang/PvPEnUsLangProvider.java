@@ -16,6 +16,7 @@ public class PvPEnUsLangProvider extends FabricLanguageProvider {
     public void generateTranslations(HolderLookup.@NonNull Provider registryLookup, TranslationBuilder builder) {
         builder.add("block.pvp.boss_spawner", "Boss Spawner");
         builder.add("block.pvp.golden_head", "Golden Head");
+        builder.add("block.pvp.landmine", "Landmine");
         builder.add("block.pvp.slime_block", "Special Slime Block");
         builder.add("block.pvp.strong_glass", "Strong Glass");
         builder.add("block.pvp.throwable_tnt", "Throwable TNT");
