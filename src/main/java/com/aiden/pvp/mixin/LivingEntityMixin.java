@@ -54,10 +54,19 @@ public abstract class LivingEntityMixin {
             }
 
             Vec3 vec32 = new Vec3(x, 0.0, z).normalize().scale(strength);
-            instance.setDeltaMovement(
-                    vec3.x / 2.0 - vec32.x,
-                    instance.onGround() ? Math.min(0.4, vec3.y / 2.0 + strength) : Math.min(0.2, vec3.y / 4.0 + strength / 2),
-                    vec3.z / 2.0 - vec32.z);
+            if (instance.onGround()) {
+                instance.setDeltaMovement(
+                        vec3.x / 2.0 - vec32.x,
+                        Math.min(0.4, vec3.y / 2.0 + strength),
+                        vec3.z / 2.0 - vec32.z
+                );
+            } else {
+                instance.setDeltaMovement(
+                        vec3.x / 3.0 - vec32.x,
+                        Math.min(0.3, vec3.y / 3.33 + strength / 2),
+                        vec3.z / 3.0 - vec32.z
+                );
+            }
         }
 
         ci.cancel();

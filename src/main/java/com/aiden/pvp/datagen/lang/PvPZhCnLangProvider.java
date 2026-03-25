@@ -16,6 +16,7 @@ public class PvPZhCnLangProvider extends FabricLanguageProvider {
     public void generateTranslations(HolderLookup.@NonNull Provider registryLookup, @NonNull TranslationBuilder builder) {
         builder.add("block.pvp.boss_spawner", "Boss召唤器");
         builder.add("block.pvp.golden_head", "金头");
+        builder.add("block.pvp.landmine", "地雷");
         builder.add("block.pvp.slime_block", "特殊的黏液块");
         builder.add("block.pvp.strong_glass", "钢化玻璃");
         builder.add("block.pvp.throwable_tnt", "可投掷的TNT");
