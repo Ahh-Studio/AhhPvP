@@ -20,11 +20,13 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 
@@ -82,12 +84,15 @@ public class PvPClient implements ClientModInitializer {
             }
             while (openSettingsKeyBinding.consumeClick()) {
                 Minecraft client = Minecraft.getInstance();
-                SettingsScreen settingsScreen = new SettingsScreen(null);
+                LocalPlayer player = client.player;
+
+                if (player == null || !player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) break;
+
                 if (client.screen == null) {
+                    SettingsScreen settingsScreen = new SettingsScreen(null);
                     client.setScreen(settingsScreen);
                     break;
-                }
-                if (client.screen instanceof SettingsScreen) {
+                } else if (client.screen instanceof SettingsScreen) {
                     client.setScreen(null);
                 }
             }
