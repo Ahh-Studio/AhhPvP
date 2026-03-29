@@ -6,6 +6,7 @@ import com.aiden.pvp.entities.ModEntityTypes;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -63,10 +64,10 @@ public abstract class ModItems {
 
     public static final Item THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Properties().sword(ToolMaterial.IRON, 2, 251).useCooldown(5));
 
-    public static final Potion SHORT_INVISIBILITY_POTION = Registry.register(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 600)));
-    public static final Potion LONG_INVISIBILITY_POTION = Registry.register(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 12000)));
-    public static final Potion OP_KIT_SWIFT_POTION = Registry.register(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_swift"), new Potion("swift", new MobEffectInstance(MobEffects.SPEED, 1200, 1), new MobEffectInstance(MobEffects.SPEED, 3600)));
-    public static final Potion OP_KIT_REGENERATION_POTION = Registry.register(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_regeneration"), new Potion("regeneration", new MobEffectInstance(MobEffects.REGENERATION, 900)));
+    public static final Holder<Potion> SHORT_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 600)));
+    public static final Holder<Potion> LONG_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 12000)));
+    public static final Holder<Potion> OP_KIT_SWIFT_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_swift"), new Potion("swiftness", new MobEffectInstance(MobEffects.SPEED, 1200, 1), new MobEffectInstance(MobEffects.SPEED, 3600)));
+    public static final Holder<Potion> OP_KIT_REGENERATION_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_regeneration"), new Potion("regeneration", new MobEffectInstance(MobEffects.REGENERATION, 900)));
 
     public static final Item MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntityTypes.MURDERER));
 
@@ -86,16 +87,8 @@ public abstract class ModItems {
             Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvP.MOD_ID, "assets/pvp")), PVP_ITEM_GROUP);
 
             PotionBrewing.Builder.BUILD.register(builder -> {
-                builder.addMix(
-                        Potions.WATER,
-                        Items.GLASS,
-                        BuiltInRegistries.POTION.wrapAsHolder(SHORT_INVISIBILITY_POTION)
-                );
-                builder.addMix(
-                        Potions.WATER,
-                        STRONG_GLASS,
-                        BuiltInRegistries.POTION.wrapAsHolder(LONG_INVISIBILITY_POTION)
-                );
+                builder.addMix(Potions.WATER, Items.GLASS, SHORT_INVISIBILITY_POTION);
+                builder.addMix(Potions.WATER, STRONG_GLASS, LONG_INVISIBILITY_POTION);
             });
 
             ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvP.MOD_ID, "assets/pvp"))).register(i -> {
@@ -123,7 +116,7 @@ public abstract class ModItems {
                 i.accept(ModItems.MURDERER_SPAWN_EGG);
                 i.accept(ModItems.LANDMINE);
                 i.getContext().holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
-                        .filter(potionReference -> potionReference.value().isEnabled(i.getEnabledFeatures()) && (potionReference.value() == LONG_INVISIBILITY_POTION || potionReference.value() == SHORT_INVISIBILITY_POTION))
+                        .filter(potionReference -> potionReference.value().isEnabled(i.getEnabledFeatures()) && (potionReference.is(LONG_INVISIBILITY_POTION) || potionReference.is(SHORT_INVISIBILITY_POTION)))
                         .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
                         .forEach(itemStack -> i.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
             });
