@@ -26,7 +26,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class KitCommand {
     public static void register(CommandDispatcher<CommandSourceStack> d, CommandBuildContext c, Commands.CommandSelection s) {
-        d.register(Commands.literal("kit").requires(css -> css.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        d.register(Commands.literal("kit").requires(css -> css.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER) && css.isPlayer())
                 .executes(KitCommand::sendHelpMessage)
                 .then(Commands.literal("classic").executes(KitCommand::giveClassicKit))
                 .then(Commands.literal("op").executes(KitCommand::giveOPKit))
