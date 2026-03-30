@@ -1,6 +1,7 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
+import com.aiden.pvp.util.enchant.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
@@ -36,6 +37,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -245,27 +247,9 @@ public class MurdererEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder createMurdererAttributes() {
-        return new AttributeSupplier.Builder()
+        return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 40)
-                .add(Attributes.KNOCKBACK_RESISTANCE)
                 .add(Attributes.MOVEMENT_SPEED, 0.4)
-                .add(Attributes.ARMOR, 0)
-                .add(Attributes.ARMOR_TOUGHNESS, 4)
-                .add(Attributes.MAX_ABSORPTION)
-                .add(Attributes.STEP_HEIGHT)
-                .add(Attributes.SCALE)
-                .add(Attributes.GRAVITY)
-                .add(Attributes.SAFE_FALL_DISTANCE)
-                .add(Attributes.FALL_DAMAGE_MULTIPLIER)
-                .add(Attributes.JUMP_STRENGTH)
-                .add(Attributes.OXYGEN_BONUS)
-                .add(Attributes.BURNING_TIME)
-                .add(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE)
-                .add(Attributes.WATER_MOVEMENT_EFFICIENCY)
-                .add(Attributes.MOVEMENT_EFFICIENCY)
-                .add(Attributes.ATTACK_KNOCKBACK)
-                .add(Attributes.CAMERA_DISTANCE)
-                .add(Attributes.WAYPOINT_TRANSMIT_RANGE)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.ATTACK_DAMAGE, 7.0)
                 .add(Attributes.ATTACK_SPEED, 10)
@@ -287,27 +271,28 @@ public class MurdererEntity extends Monster {
         this.getNavigation().setCanOpenDoors(true);
         RandomSource random = world.getRandom();
         this.populateDefaultEquipmentSlots(random, difficulty);
-        this.populateDefaultEquipmentEnchantments(world, random, difficulty);
         return entityData2;
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
-        ItemStack helmet = Items.LEATHER_HELMET.getDefaultInstance();
-        ItemStack chestplate = Items.LEATHER_CHESTPLATE.getDefaultInstance();
-        ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultInstance();
-        ItemStack boots = Items.DIAMOND_BOOTS.getDefaultInstance();
+        if (level() instanceof ServerLevel serverLevel) {
+            ItemStack helmet = Items.LEATHER_HELMET.getDefaultInstance();
+            ItemStack chestplate = Items.LEATHER_CHESTPLATE.getDefaultInstance();
+            ItemStack leggings = Items.DIAMOND_LEGGINGS.getDefaultInstance();
+            ItemStack boots = Items.DIAMOND_BOOTS.getDefaultInstance();
 
-        helmet.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
-        chestplate.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
-        leggings.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
-        boots.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+            helmet.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+            chestplate.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+            leggings.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+            boots.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
-        this.setItemSlot(EquipmentSlot.HEAD, helmet);
-        this.setItemSlot(EquipmentSlot.CHEST, chestplate);
-        this.setItemSlot(EquipmentSlot.LEGS, leggings);
-        this.setItemSlot(EquipmentSlot.FEET, boots);
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.THROWABLE_DAGGER));
+            this.setItemSlot(EquipmentSlot.HEAD, EnchantmentUtil.enchantItemStack(serverLevel, helmet, Enchantments.PROTECTION, 4));
+            this.setItemSlot(EquipmentSlot.CHEST, EnchantmentUtil.enchantItemStack(serverLevel, chestplate, Enchantments.PROTECTION, 4));
+            this.setItemSlot(EquipmentSlot.LEGS, EnchantmentUtil.enchantItemStack(serverLevel, leggings, Enchantments.PROTECTION, 4));
+            this.setItemSlot(EquipmentSlot.FEET, EnchantmentUtil.enchantItemStack(serverLevel, boots, Enchantments.PROTECTION, 4));
+        }
     }
 
     public void setInPhase2(boolean inPhase2) {

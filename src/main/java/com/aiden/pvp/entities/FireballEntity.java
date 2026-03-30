@@ -1,14 +1,12 @@
 package com.aiden.pvp.entities;
 
-import com.aiden.pvp.explosion.FireballExplosionImpl;
+import com.aiden.pvp.util.explosion.FireballExplosionImpl;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
 import java.util.Optional;
-import net.minecraft.core.particles.ExplosionParticleInfo;
-import net.minecraft.core.particles.ParticleTypes;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;

@@ -1,6 +1,7 @@
 package com.aiden.pvp.commands;
 
 import com.aiden.pvp.items.ModItems;
+import com.aiden.pvp.util.enchant.EnchantmentUtil;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -52,10 +53,10 @@ public class KitCommand {
                 serverPlayer.getSlot(1).set(ModItems.FISHING_ROD.getDefaultInstance());
                 serverPlayer.getSlot(2).set(Items.BOW.getDefaultInstance());
                 serverPlayer.getSlot(9).set(new ItemStack(Items.ARROW, 5));
-                serverPlayer.getSlot(100).set(enchantItemStack(serverLevel, Items.IRON_BOOTS.getDefaultInstance(), Enchantments.PROTECTION, 2));
-                serverPlayer.getSlot(101).set(enchantItemStack(serverLevel, Items.IRON_LEGGINGS.getDefaultInstance(), Enchantments.PROTECTION, 2));
-                serverPlayer.getSlot(102).set(enchantItemStack(serverLevel, Items.IRON_CHESTPLATE.getDefaultInstance(), Enchantments.PROTECTION, 2));
-                serverPlayer.getSlot(103).set(enchantItemStack(serverLevel, Items.IRON_HELMET.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(100).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.IRON_BOOTS.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(101).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.IRON_LEGGINGS.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(102).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.IRON_CHESTPLATE.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(103).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.IRON_HELMET.getDefaultInstance(), Enchantments.PROTECTION, 2));
 
                 serverPlayer.inventoryMenu.broadcastChanges();
                 context.getSource().sendSuccess(() -> Component.literal("Classic kit's given to ").append(serverPlayer.getName()), false);
@@ -72,9 +73,9 @@ public class KitCommand {
 
             if (serverPlayer != null) {
                 serverPlayer.getInventory().clearContent();
-                serverPlayer.getSlot(0).set(enchantItemStack(serverLevel, ModItems.DIAMOND_SWORD.getDefaultInstance(), Enchantments.SHARPNESS, 5));
+                serverPlayer.getSlot(0).set(EnchantmentUtil.enchantItemStack(serverLevel, ModItems.DIAMOND_SWORD.getDefaultInstance(), Enchantments.SHARPNESS, 5));
                 serverPlayer.getSlot(1).set(ModItems.FISHING_ROD.getDefaultInstance());
-                serverPlayer.getSlot(2).set(enchantItemStack(serverLevel, Items.BOW.getDefaultInstance(), Enchantments.POWER, 4));
+                serverPlayer.getSlot(2).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.BOW.getDefaultInstance(), Enchantments.POWER, 4));
                 ItemStack flint_and_steel = Items.FLINT_AND_STEEL.getDefaultInstance();
                 flint_and_steel.setDamageValue(60);
                 serverPlayer.getSlot(3).set(flint_and_steel);
@@ -84,10 +85,10 @@ public class KitCommand {
                 serverPlayer.getSlot(7).set(PotionContents.createItemStack(Items.SPLASH_POTION, ModItems.OP_KIT_REGENERATION_POTION));
                 serverPlayer.getSlot(8).set(PotionContents.createItemStack(Items.SPLASH_POTION, ModItems.OP_KIT_REGENERATION_POTION));
                 serverPlayer.getSlot(9).set(new ItemStack(Items.ARROW, 20));
-                serverPlayer.getSlot(100).set(enchantItemStack(serverLevel, Items.DIAMOND_BOOTS.getDefaultInstance(), Enchantments.PROTECTION, 3));
-                serverPlayer.getSlot(101).set(enchantItemStack(serverLevel, Items.DIAMOND_LEGGINGS.getDefaultInstance(), Enchantments.PROTECTION, 3));
-                serverPlayer.getSlot(102).set(enchantItemStack(serverLevel, Items.DIAMOND_CHESTPLATE.getDefaultInstance(), Enchantments.PROTECTION, 4));
-                serverPlayer.getSlot(103).set(enchantItemStack(serverLevel, Items.DIAMOND_HELMET.getDefaultInstance(), Enchantments.PROTECTION, 3));
+                serverPlayer.getSlot(100).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_BOOTS.getDefaultInstance(), Enchantments.PROTECTION, 3));
+                serverPlayer.getSlot(101).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_LEGGINGS.getDefaultInstance(), Enchantments.PROTECTION, 3));
+                serverPlayer.getSlot(102).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_CHESTPLATE.getDefaultInstance(), Enchantments.PROTECTION, 4));
+                serverPlayer.getSlot(103).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_HELMET.getDefaultInstance(), Enchantments.PROTECTION, 3));
 
                 serverPlayer.inventoryMenu.broadcastChanges();
                 context.getSource().sendSuccess(() -> Component.literal("OP kit's given to ").append(serverPlayer.getName()), false);
@@ -97,10 +98,5 @@ public class KitCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static ItemStack enchantItemStack(ServerLevel level, ItemStack stack, ResourceKey<Enchantment> enchantment, int lvl) {
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(level.registryAccess().lookupOrThrow(enchantment.registryKey()).getOrThrow(enchantment), lvl);
-        stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
-        return stack;
-    }
+
 }
