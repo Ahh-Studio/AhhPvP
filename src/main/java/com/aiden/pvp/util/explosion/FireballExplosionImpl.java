@@ -1,4 +1,4 @@
-package com.aiden.pvp.explosion;
+package com.aiden.pvp.util.explosion;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
