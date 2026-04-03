@@ -1,5 +1,6 @@
 package com.aiden.pvp.datagen.lang;
 
+import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
@@ -33,6 +34,7 @@ public class PvPZhTwLangProvider extends FabricLanguageProvider {
         builder.add("item.pvp.boss_key", "頭目生成之匙");
         builder.add("item.pvp.bridge_egg", "雞蛋橋");
         builder.add("item.pvp.carbon_rune", "碳之符文");
+        builder.add(ModItems.CHICKEN_DEFENSE, "小鷄炮臺");
         builder.add("item.pvp.diamond_sword", "鑽石劍");
         builder.add("item.pvp.fireball", "火球");
         builder.add("item.pvp.fishing_rod", "釣竿");
