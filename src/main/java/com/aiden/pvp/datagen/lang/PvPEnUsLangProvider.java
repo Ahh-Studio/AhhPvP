@@ -1,5 +1,6 @@
 package com.aiden.pvp.datagen.lang;
 
+import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
@@ -34,6 +35,7 @@ public class PvPEnUsLangProvider extends FabricLanguageProvider {
         builder.add("item.pvp.boss_key", "Boss Key");
         builder.add("item.pvp.bridge_egg", "Bridge Egg");
         builder.add("item.pvp.carbon_rune", "Carbon Rune");
+        builder.add(ModItems.CHICKEN_DEFENSE, "Chicken Defense");
         builder.add("item.pvp.diamond_sword", "Diamond Sword");
         builder.add("item.pvp.fireball", "Fireball");
         builder.add("item.pvp.fishing_rod", "Fishing Rod");
