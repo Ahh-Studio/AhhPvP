@@ -1,7 +1,6 @@
 package com.aiden.pvp.client;
 
 import com.aiden.pvp.PvP;
-import com.aiden.pvp.client.item_properties_conditional.FishingRodCast;
 import com.aiden.pvp.client.render.entity.ChickenDefenseEntityRenderer;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
@@ -24,10 +23,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.Permissions;
-import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 import static com.aiden.pvp.blocks.ModBlocks.*;
