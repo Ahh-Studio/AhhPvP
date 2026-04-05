@@ -5,6 +5,8 @@ import com.aiden.pvp.entities.DaggerEntity;
 import com.aiden.pvp.items.ModItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
+@Environment(EnvType.CLIENT)
 public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer<T, DaggerEntityRenderState> {
     private final ItemModelResolver itemModelManager;
     private final float scale;

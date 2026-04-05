@@ -5,12 +5,15 @@ import com.aiden.pvp.client.render.entity.model.ChickenDefenseEntityModel;
 import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
 import com.aiden.pvp.client.render.entity.state.ChickenDefenseEntityRenderState;
 import com.aiden.pvp.entities.ChickenDefenseEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jspecify.annotations.NonNull;
 
+@Environment(EnvType.CLIENT)
 public class ChickenDefenseEntityRenderer extends MobRenderer<ChickenDefenseEntity, ChickenDefenseEntityRenderState, ChickenDefenseEntityModel> {
     public ChickenDefenseEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new ChickenDefenseEntityModel(context.bakeLayer(ModEntityModelLayers.CHICKEN_DEFENSE)), 0.3F);

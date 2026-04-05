@@ -6,6 +6,8 @@ import com.aiden.pvp.client.render.entity.model.MurdererEntityModel;
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
 import com.aiden.pvp.entities.MurdererEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.NonNull;
 
+@Environment(EnvType.CLIENT)
 public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
 

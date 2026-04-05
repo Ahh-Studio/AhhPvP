@@ -1,6 +1,5 @@
 package com.aiden.pvp.client.item_properties_conditional;
 
-import com.aiden.pvp.PvP;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
