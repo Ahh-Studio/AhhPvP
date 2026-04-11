@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEntity, FishingBobberEntityRenderState> {
-    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/fishing_hook.png");
+    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/fishing/fishing_hook.png");
     private static final RenderType LAYER = RenderTypes.entityCutout(TEXTURE);
 
     public FishingBobberEntityRenderer(EntityRendererProvider.Context context) {
@@ -77,22 +77,34 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         return player.getMainHandItem().getItem() instanceof FishingRodItem ? player.getMainArm() : player.getMainArm().getOpposite();
     }
 
-    private Vec3 getHandPos(Player player, float handRotation, float tickProgress) {
-        int i = getArmHoldingRod(player) == HumanoidArm.RIGHT ? 1 : -1;
-        if (this.entityRenderDispatcher.options.getCameraType().isFirstPerson() && player == Minecraft.getInstance().player) {
-            double l = 960.0 / this.entityRenderDispatcher.options.fov().get().intValue();
-            Vec3 vec3d = this.entityRenderDispatcher.camera.getNearPlane().getPointOnPlane(i * 0.525F, -0.1F).scale(l).yRot(handRotation * 0.5F).xRot(-handRotation * 0.7F);
-            return player.getEyePosition(tickProgress).add(vec3d);
+    private Vec3 getHandPos(Player owner, float swing, float partialTicks) {
+        int invert = getHoldingArm(owner) == HumanoidArm.RIGHT ? 1 : -1;
+        if (this.entityRenderDispatcher.options.getCameraType().isFirstPerson() && owner == Minecraft.getInstance().player) {
+            float fov = this.entityRenderDispatcher.options.fov().get().intValue();
+            double viewBobbingScale = 960.0 / fov;
+            Vec3 viewVec = this.entityRenderDispatcher
+                    .camera
+                    .getNearPlane(fov)
+                    .getPointOnPlane(invert * 0.525F, -0.1F)
+                    .scale(viewBobbingScale)
+                    .yRot(swing * 0.5F)
+                    .xRot(-swing * 0.7F);
+            return owner.getEyePosition(partialTicks).add(viewVec);
         } else {
-            float f = Mth.lerp(tickProgress, player.yBodyRotO, player.yBodyRot) * (float) (Math.PI / 180.0);
-            double d = Mth.sin(f);
-            double e = Mth.cos(f);
-            float g = player.getScale();
-            double h = i * 0.35 * g;
-            double j = 0.8 * g;
-            float k = player.isCrouching() ? -0.1875F : 0.0F;
-            return player.getEyePosition(tickProgress).add(-e * h - d * j, k - 0.45 * g, -d * h + e * j);
+            float ownerYRot = Mth.lerp(partialTicks, owner.yBodyRotO, owner.yBodyRot) * (float) (Math.PI / 180.0);
+            double sin = Mth.sin(ownerYRot);
+            double cos = Mth.cos(ownerYRot);
+            float playerScale = owner.getScale();
+            double rightOffset = invert * 0.35 * playerScale;
+            double forwardOffset = 0.8 * playerScale;
+            float yOffset = owner.isCrouching() ? -0.1875F : 0.0F;
+            return owner.getEyePosition(partialTicks)
+                    .add(-cos * rightOffset - sin * forwardOffset, yOffset - 0.45 * playerScale, -sin * rightOffset + cos * forwardOffset);
         }
+    }
+
+    public static HumanoidArm getHoldingArm(final Player owner) {
+        return owner.getMainHandItem().getItem() instanceof FishingRodItem ? owner.getMainArm() : owner.getMainArm().getOpposite();
     }
 
     private static float percentage(int value, int denominator) {

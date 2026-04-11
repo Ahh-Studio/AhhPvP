@@ -2,7 +2,7 @@ package com.aiden.pvp.datagen;
 
 import com.aiden.pvp.items.ModItemTags;
 import com.aiden.pvp.items.ModItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -22,8 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class PvPRecipeProvider extends FabricRecipeProvider {
     private final HolderGetter<Item> itemLookup;
 
-    public PvPRecipeProvider(FabricDataOutput output,
-            CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public PvPRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
         try {
             this.itemLookup = registriesFuture.get().lookupOrThrow(Registries.ITEM);

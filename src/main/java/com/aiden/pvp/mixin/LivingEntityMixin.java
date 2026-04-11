@@ -111,7 +111,7 @@ public abstract class LivingEntityMixin {
                 bl = bl && !(instance.getItemBlockingWith().getItem() instanceof SwordItem);
             }
 
-            if (source.is(DamageTypeTags.IS_FREEZING) && instance.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
+            if (source.is(DamageTypeTags.IS_FREEZING) && instance.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
                 amount *= 5.0F;
             }
 

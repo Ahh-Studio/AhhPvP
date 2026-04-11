@@ -70,7 +70,7 @@ public class TntBlock extends Block {
     public void wasExploded(ServerLevel world, BlockPos pos, Explosion explosion) {
         PrimedTnt tntEntity = new PrimedTnt(world, (double)pos.getX() + 0.5, pos.getY(), (double)pos.getZ() + 0.5, explosion.getIndirectSourceEntity());
         int i = tntEntity.getFuse();
-        tntEntity.setFuse((short)(world.random.nextInt(i / 4) + i / 8));
+        tntEntity.setFuse((short)(world.getRandom().nextInt(i / 4) + i / 8));
         world.addFreshEntity(tntEntity);
     }
 

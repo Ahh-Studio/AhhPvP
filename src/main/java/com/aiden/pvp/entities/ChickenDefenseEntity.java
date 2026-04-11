@@ -2,6 +2,9 @@ package com.aiden.pvp.entities;
 
 import com.aiden.pvp.items.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -15,21 +18,22 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.chicken.ChickenSoundVariant;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 
 public class ChickenDefenseEntity extends Animal {
-    private static final Logger log = LogManager.getLogger(ChickenDefenseEntity.class);
+    private static final EntityDataAccessor<Holder<ChickenSoundVariant>> DATA_SOUND_VARIANT_ID = SynchedEntityData.defineId(
+            ChickenDefenseEntity.class, EntityDataSerializers.CHICKEN_SOUND_VARIANT
+    );
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
@@ -163,22 +167,26 @@ public class ChickenDefenseEntity extends Animal {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.CHICKEN_AMBIENT;
+        return this.getSoundVariant().value().adultSounds().ambientSound().value();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NonNull DamageSource damageSource) {
-        return SoundEvents.CHICKEN_HURT;
+        return this.getSoundVariant().value().adultSounds().hurtSound().value();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.CHICKEN_DEATH;
+        return this.getSoundVariant().value().adultSounds().deathSound().value();
+    }
+
+    private Holder<ChickenSoundVariant> getSoundVariant() {
+        return this.entityData.get(DATA_SOUND_VARIANT_ID);
     }
 
     @Override
     protected void playStepSound(@NonNull BlockPos blockPos, @NonNull BlockState blockState) {
-        this.playSound(SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
+        this.playSound(this.getSoundVariant().value().adultSounds().stepSound().value(), 0.15F, 1.0F);
     }
 
     @Nullable

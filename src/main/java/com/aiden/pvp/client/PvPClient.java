@@ -14,20 +14,16 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.Permissions;
 import org.lwjgl.glfw.GLFW;
 
-import static com.aiden.pvp.blocks.ModBlocks.*;
 import static com.aiden.pvp.client.keybinding.ModKeyBindings.*;
 
 @Environment(EnvType.CLIENT)
@@ -58,20 +54,10 @@ public class PvPClient implements ClientModInitializer {
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
 
-        BlockRenderLayerMap.putBlock(STRONG_GLASS, ChunkSectionLayer.TRANSLUCENT);
-        BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, ChunkSectionLayer.TRANSLUCENT);
-        BlockRenderLayerMap.putBlock(BOSS_SPAWNER, ChunkSectionLayer.TRANSLUCENT);
-
         pvpKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "pvp"));
 
-        throwTntKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                        "key.pvp.throw_tnt", InputConstants.Type.MOUSE,
-                        GLFW.GLFW_MOUSE_BUTTON_LEFT, pvpKeyCategory
-        ));
-        openSettingsKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                        "key.pvp.open_settings", InputConstants.Type.KEYSYM,
-                        GLFW.GLFW_KEY_F7, pvpKeyCategory
-        ));
+        throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, pvpKeyCategory);
+        openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F7, pvpKeyCategory);
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
             while (throwTntKeyBinding.consumeClick()) {

@@ -5,7 +5,7 @@ import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -85,9 +85,9 @@ public class SettingsScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-        super.render(context, mouseX, mouseY, deltaTicks);
-        context.drawString(this.font, title, 40, 40 - this.font.lineHeight - 10, 0xFFFFFFFF, true);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractRenderState(graphics, mouseX, mouseY, a);
+        graphics.text(this.font, title, 40, 40 - this.font.lineHeight - 10, 0xFFFFFFFF, true);
     }
 
     @Override

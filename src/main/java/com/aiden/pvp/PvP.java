@@ -50,7 +50,7 @@ public class PvP implements ModInitializer {
         LOGGER.info("[Main] Registering Packets...");
 
         // register the client=>server packet of throwing TNT
-		PayloadTypeRegistry.playC2S().register(ThrowTntC2SPayload.ID, ThrowTntC2SPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ThrowTntC2SPayload.ID, ThrowTntC2SPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ThrowTntC2SPayload.ID, ((throwTntC2SPayload, context) -> {
 			context.server().execute(() -> {
 				Entity user = context.player().level().getEntity(throwTntC2SPayload.userId());
@@ -85,7 +85,7 @@ public class PvP implements ModInitializer {
 		}));
 
         // register the client=>server packet of setting game rules
-		PayloadTypeRegistry.playC2S().register(SetGameRulesC2SPayload.ID, SetGameRulesC2SPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(SetGameRulesC2SPayload.ID, SetGameRulesC2SPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(SetGameRulesC2SPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
                 ServerLevel serverWorld = context.player().level();
@@ -95,7 +95,7 @@ public class PvP implements ModInitializer {
 		});
 
         // register the server=>client packet of getting game rules
-        PayloadTypeRegistry.playS2C().register(GetGameRulesS2CPayload.ID, GetGameRulesS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(GetGameRulesS2CPayload.ID, GetGameRulesS2CPayload.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(GetGameRulesS2CPayload.ID, (payload, context) -> {
             if (context.client().screen instanceof SettingsScreen settingsScreen) {
                 settingsScreen.setSliderValues(
@@ -106,7 +106,7 @@ public class PvP implements ModInitializer {
         });
 
         // register the client=>server packet of getting game rules (triggers the returning packet)
-        PayloadTypeRegistry.playC2S().register(GetGameRulesC2SPayload.ID, GetGameRulesC2SPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(GetGameRulesC2SPayload.ID, GetGameRulesC2SPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(GetGameRulesC2SPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
                 Entity entity = context.player().level().getEntity(payload.playerId());

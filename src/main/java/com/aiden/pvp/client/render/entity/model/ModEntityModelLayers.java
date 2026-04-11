@@ -3,7 +3,7 @@ package com.aiden.pvp.client.render.entity.model;
 import com.aiden.pvp.PvP;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.Identifier;
 
@@ -19,7 +19,7 @@ public class ModEntityModelLayers {
     );
 
     public static void register() {
-        EntityModelLayerRegistry.registerModelLayer(MURDERER, MurdererEntityModel::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(CHICKEN_DEFENSE, ChickenDefenseEntityModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(MURDERER, MurdererEntityModel::getTexturedModelData);
+        ModelLayerRegistry.registerModelLayer(CHICKEN_DEFENSE, ChickenDefenseEntityModel::createBodyLayer);
     }
 }

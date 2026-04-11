@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -43,12 +43,7 @@ public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer
     }
 
     @Override
-    public void submit(
-            DaggerEntityRenderState daggerEntityRenderState,
-            PoseStack matrixStack,
-            SubmitNodeCollector orderedRenderCommandQueue,
-            CameraRenderState cameraRenderState
-    ) {
+    public void submit(DaggerEntityRenderState daggerEntityRenderState, PoseStack matrixStack, SubmitNodeCollector orderedRenderCommandQueue, CameraRenderState cameraRenderState) {
         matrixStack.pushPose();
 
         matrixStack.translate(0.0F, 0.25F, 0.0F);

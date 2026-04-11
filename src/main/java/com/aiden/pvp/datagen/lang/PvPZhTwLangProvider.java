@@ -1,15 +1,15 @@
 package com.aiden.pvp.datagen.lang;
 
 import com.aiden.pvp.items.ModItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
 
 public class PvPZhTwLangProvider extends FabricLanguageProvider {
-    public PvPZhTwLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-        super(dataOutput, "zh_tw", registryLookup);
+    public PvPZhTwLangProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(output, "zh_tw", registryLookup);
     }
 
     @Override

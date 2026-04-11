@@ -4,7 +4,6 @@ import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.entities.ModEntityTypes;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -20,8 +19,10 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.Block;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class ModItems {
@@ -50,12 +51,12 @@ public abstract class ModItems {
             new Item.Properties()
     );
 
-    public static final Item TNT = Items.registerBlock(ModBlocks.TNT, TntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.tnt"));
-    public static final Item THROWABLE_TNT = Items.registerBlock(ModBlocks.THROWABLE_TNT, ThrowableTntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.throwable_tnt"));
-    public static final Item STRONG_GLASS = Items.registerBlock(ModBlocks.STRONG_GLASS, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.strong_glass"));
-    public static final Item GOLDEN_HEAD = Items.registerBlock(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
-    public static final Item BOSS_SPAWNER = Items.registerBlock(ModBlocks.BOSS_SPAWNER, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
-    public static final Item LANDMINE = Items.registerBlock(ModBlocks.LANDMINE, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64));
+    public static final Item TNT = registerBlock(ModBlocks.TNT, TntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.tnt"));
+    public static final Item THROWABLE_TNT = registerBlock(ModBlocks.THROWABLE_TNT, ThrowableTntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.throwable_tnt"));
+    public static final Item STRONG_GLASS = registerBlock(ModBlocks.STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.strong_glass"));
+    public static final Item GOLDEN_HEAD = registerBlock(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
+    public static final Item BOSS_SPAWNER = registerBlock(ModBlocks.BOSS_SPAWNER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
+    public static final Item LANDMINE = registerBlock(ModBlocks.LANDMINE, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.landmine"));
 
     public static final Item WOODEN_SWORD = register("wooden_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.WOOD, 3, 251));
     public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, 3, 251));
@@ -71,15 +72,61 @@ public abstract class ModItems {
 
     public static final Item MURDERER_SPAWN_EGG = register("murderer_spawn_egg", SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntityTypes.MURDERER));
 
-    public static final CreativeModeTab PVP_ITEM_GROUP = CreativeModeTab
-            .builder(CreativeModeTab.Row.BOTTOM, 6)
+    public static final CreativeModeTab PVP_ITEM_GROUP = CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 6)
             .icon(() -> new ItemStack(Items.FISHING_ROD))
             .title(Component.translatable("itemGroup.pvp_mod"))
+            .displayItems((p, o) -> {
+                o.accept(ModItems.FIREBALL);
+                o.accept(ModItems.SELF_RES_PLATFORM);
+                o.accept(ModItems.BRIDGE_EGG);
+                o.accept(ModItems.FISHING_ROD);
+                o.accept(ModItems.BED_BUG);
+                o.accept(ModItems.RETURN_SCROLL);
+                o.accept(ModItems.CHICKEN_DEFENSE);
+                o.accept(ModItems.TNT);
+                o.accept(ModItems.THROWABLE_TNT);
+                o.accept(ModItems.STRONG_GLASS);
+                o.accept(ModItems.BOSS_SPAWNER);
+                o.accept(ModItems.BOSS_KEY);
+                o.accept(ModItems.GOLDEN_HEAD);
+                o.accept(ModItems.CARBON_RUNE);
+                o.accept(ModItems.IRON_RUNE);
+                o.accept(ModItems.WOODEN_SWORD);
+                o.accept(ModItems.STONE_SWORD);
+                o.accept(ModItems.IRON_SWORD);
+                o.accept(ModItems.DIAMOND_SWORD);
+                o.accept(ModItems.THROWABLE_DAGGER);
+                o.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
+                o.accept(ModItems.MURDERER_SPAWN_EGG);
+                o.accept(ModItems.LANDMINE);
+                p.holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
+                        .filter(potionReference -> potionReference.value().isEnabled(p.enabledFeatures()) && (potionReference.is(LONG_INVISIBILITY_POTION) || potionReference.is(SHORT_INVISIBILITY_POTION)))
+                        .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
+                        .forEach(itemStack -> o.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
+            })
             .build();
 
     public static Item register(String path, Function<Item.Properties, Item> factory, Item.Properties settings) {
         final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(PvP.MOD_ID, path));
-        return Items.registerItem(registryKey, factory, settings.overrideDescription("item.pvp." + path).rarity(Rarity.EPIC));
+
+        Item item = factory.apply(settings.setId(registryKey).rarity(Rarity.EPIC));
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+
+        return Registry.register(BuiltInRegistries.ITEM, registryKey, item);
+    }
+
+    private static Item registerBlock(final Block block, final BiFunction<Block, Item.Properties, Item> itemFactory, final Item.Properties properties) {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, block.builtInRegistryHolder().key().identifier());
+
+        Item.Properties p = properties.setId(key);
+        Item item = itemFactory.apply(block, p);
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+
+        return Registry.register(BuiltInRegistries.ITEM, key, item);
     }
 
     public static void initialize() {
@@ -91,35 +138,6 @@ public abstract class ModItems {
                 builder.addMix(Potions.WATER, STRONG_GLASS, LONG_INVISIBILITY_POTION);
             });
 
-            ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvP.MOD_ID, "assets/pvp"))).register(i -> {
-                i.accept(ModItems.FIREBALL);
-                i.accept(ModItems.SELF_RES_PLATFORM);
-                i.accept(ModItems.BRIDGE_EGG);
-                i.accept(ModItems.FISHING_ROD);
-                i.accept(ModItems.BED_BUG);
-                i.accept(ModItems.RETURN_SCROLL);
-                i.accept(ModItems.CHICKEN_DEFENSE);
-                i.accept(ModItems.TNT);
-                i.accept(ModItems.THROWABLE_TNT);
-                i.accept(ModItems.STRONG_GLASS);
-                i.accept(ModItems.BOSS_SPAWNER);
-                i.accept(ModItems.BOSS_KEY);
-                i.accept(ModItems.GOLDEN_HEAD);
-                i.accept(ModItems.CARBON_RUNE);
-                i.accept(ModItems.IRON_RUNE);
-                i.accept(ModItems.WOODEN_SWORD);
-                i.accept(ModItems.STONE_SWORD);
-                i.accept(ModItems.IRON_SWORD);
-                i.accept(ModItems.DIAMOND_SWORD);
-                i.accept(ModItems.THROWABLE_DAGGER);
-                i.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
-                i.accept(ModItems.MURDERER_SPAWN_EGG);
-                i.accept(ModItems.LANDMINE);
-                i.getContext().holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
-                        .filter(potionReference -> potionReference.value().isEnabled(i.getEnabledFeatures()) && (potionReference.is(LONG_INVISIBILITY_POTION) || potionReference.is(SHORT_INVISIBILITY_POTION)))
-                        .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
-                        .forEach(itemStack -> i.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
-            });
             ItemTooltipCallback.EVENT.register((i, context, type, list) -> {
                 if (i.is(FIREBALL)) list.add(Component.literal("Use it... and watch it explode!"));
                 if (i.is(SELF_RES_PLATFORM)) list.add(Component.literal("Breaking the fall!"));

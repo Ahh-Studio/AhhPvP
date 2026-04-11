@@ -76,7 +76,7 @@ public class FireballExplosionImpl implements Explosion {
 
     private void createFire(List<BlockPos> positions) {
         for (BlockPos blockPos : positions) {
-            if (this.world.random.nextInt(3) == 0 && this.world.getBlockState(blockPos).isAir() && this.world.getBlockState(blockPos.below()).isSolidRender()) {
+            if (this.world.getRandom().nextInt(3) == 0 && this.world.getBlockState(blockPos).isAir() && this.world.getBlockState(blockPos.below()).isSolidRender()) {
                 this.world.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.world, blockPos));
             }
         }
@@ -84,7 +84,7 @@ public class FireballExplosionImpl implements Explosion {
 
     private void destroyBlocks(List<BlockPos> positions) {
         List<DroppedItem> list = new ArrayList<>();
-        Util.shuffle(positions, this.world.random);
+        Util.shuffle(positions, this.world.getRandom());
 
         for (BlockPos blockPos : positions) {
             this.world.getBlockState(blockPos).onExplosionHit(this.world, blockPos, this, (item, pos) -> addDroppedItem(list, item, pos));
@@ -173,7 +173,7 @@ public class FireballExplosionImpl implements Explosion {
                         );
 
                         entity.push(vec33);
-                        if (entity.getType().is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectileEntity) {
+                        if (entity.is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectileEntity) {
                             projectileEntity.setOwner(this.damageSource.getEntity());
                         } else if (entity instanceof Player playerEntity
                                 && !playerEntity.isSpectator()
@@ -201,7 +201,7 @@ public class FireballExplosionImpl implements Explosion {
                         d /= g;
                         e /= g;
                         f /= g;
-                        float h = this.radius() / 3 * (0.7F + this.level().random.nextFloat() * 0.6F);
+                        float h = this.radius() / 3 * (0.7F + this.level().getRandom().nextFloat() * 0.6F);
                         double m = this.center().x;
                         double n = this.center().y;
                         double o = this.center().z;

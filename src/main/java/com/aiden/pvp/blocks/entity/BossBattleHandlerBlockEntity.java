@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 public class BossBattleHandlerBlockEntity extends BlockEntity {
     public ArrayList<Entity> players = new ArrayList<>();
     public ServerBossEvent bossBar = new ServerBossEvent(
+            Mth.createInsecureUUID(this.getLevel().getRandom()),
             Component.literal("AhhPvP Boss"),
             BossEvent.BossBarColor.YELLOW,
             BossEvent.BossBarOverlay.NOTCHED_20
@@ -115,25 +117,25 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
         if (world.getBlockEntity(pos.above()) instanceof BarrelBlockEntity barrelBlockEntity) {
             Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
             ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
-            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.getRandom().nextLong());
         }
         world.setBlock(pos.above().north(), Blocks.BARREL.defaultBlockState(), 6);
         if (world.getBlockEntity(pos.above().north()) instanceof BarrelBlockEntity barrelBlockEntity) {
             Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
             ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
-            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.getRandom().nextLong());
         }
         world.setBlock(pos.above().west(), Blocks.BARREL.defaultBlockState(), 6);
         if (world.getBlockEntity(pos.above().west()) instanceof BarrelBlockEntity barrelBlockEntity) {
             Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
             ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
-            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.getRandom().nextLong());
         }
         world.setBlock(pos.above().north().west(), Blocks.BARREL.defaultBlockState(), 6);
         if (world.getBlockEntity(pos.above().north().west()) instanceof BarrelBlockEntity barrelBlockEntity) {
             Identifier lootTableId = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "battlefield_boss");
             ResourceKey<LootTable> lootTableRegistryKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
-            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.random.nextLong());
+            barrelBlockEntity.setLootTable(lootTableRegistryKey, world.getRandom().nextLong());
         }
         world.setBlock(pos, Blocks.JUNGLE_PLANKS.defaultBlockState(), 6);
     }
