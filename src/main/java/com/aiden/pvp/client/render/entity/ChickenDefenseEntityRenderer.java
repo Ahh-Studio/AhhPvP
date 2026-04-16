@@ -9,9 +9,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ChickenDefenseEntityRenderer extends MobRenderer<ChickenDefenseEntity, ChickenDefenseEntityRenderState, ChickenDefenseEntityModel> {
@@ -19,8 +19,8 @@ public class ChickenDefenseEntityRenderer extends MobRenderer<ChickenDefenseEnti
         super(context, new ChickenDefenseEntityModel(context.bakeLayer(ModEntityModelLayers.CHICKEN_DEFENSE)), 0.3F);
     }
 
-    public @NonNull Identifier getTextureLocation(ChickenDefenseEntityRenderState chickenRenderState) {
-        return Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/chicken_defense.png");
+    public @NotNull ResourceLocation getTextureLocation(ChickenDefenseEntityRenderState chickenRenderState) {
+        return ResourceLocation.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/chicken_defense.png");
     }
 
     public ChickenDefenseEntityRenderState createRenderState() {

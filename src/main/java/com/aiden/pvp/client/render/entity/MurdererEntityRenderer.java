@@ -16,12 +16,12 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.NonNull;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
 
     public MurdererEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new MurdererEntityModel(ctx.bakeLayer(ModEntityModelLayers.MURDERER)), 0.5F);
@@ -31,7 +31,7 @@ public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, 
                     PoseStack matrices, SubmitNodeCollector queue, int light,
                     MurdererEntityRenderState state, float limbSwing, float limbSwingAmount
             ) {
-                if (state.attacking || !state.getMainHandItemState().isEmpty()) {
+                if (state.attacking || !state.getMainHandItem().isEmpty()) {
                     super.submit(matrices, queue, light, state, limbSwing, limbSwingAmount);
                 }
             }
@@ -44,9 +44,10 @@ public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, 
         );
     }
 
-    public void updateRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
+    @Override
+    public void extractRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
         super.extractRenderState(murdererEntity, murdererEntityRenderState, f);
-        ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
+        ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver);
         murdererEntityRenderState.hasVehicle = murdererEntity.isPassenger();
         murdererEntityRenderState.mainArm = murdererEntity.getMainArm();
         murdererEntityRenderState.attacking = murdererEntity.isAggressive();
@@ -54,7 +55,7 @@ public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, 
     }
 
     @Override
-    public @NonNull Identifier getTextureLocation(MurdererEntityRenderState state) {
+    public @NotNull ResourceLocation getTextureLocation(MurdererEntityRenderState state) {
         return TEXTURE;
     }
 

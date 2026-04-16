@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 
 public class BossBattleHandlerBlock extends BaseEntityBlock {
 
@@ -50,7 +50,7 @@ public class BossBattleHandlerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NonNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public @NotNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         if (world.getBlockEntity(pos) instanceof BossBattleHandlerBlockEntity bossBattleHandlerBlockEntity) {
             bossBattleHandlerBlockEntity.removeBossBarPlayers();
         }

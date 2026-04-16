@@ -45,7 +45,6 @@ public abstract class LivingEntityMixin {
 
         strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
         if (strength > 0.0) {
-            instance.needsSync = true;
             Vec3 vec3 = instance.getDeltaMovement();
 
             while (x * x + z * z < 1.0E-5F) {
@@ -137,7 +136,7 @@ public abstract class LivingEntityMixin {
             } else {
                 int phdi = 10;
                 if (instance.level() instanceof ServerLevel serverWorld) {
-                    phdi = serverWorld.getGameRules().get(ModGameRules.PHDI);
+                    phdi = serverWorld.getGameRules().getRule(ModGameRules.PHDI).get();
                 }
                 accessor.setLastDamageTaken(amount);
                 instance.invulnerableTime = 2 * phdi;

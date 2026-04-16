@@ -4,8 +4,8 @@ import com.aiden.pvp.PvP;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -101,7 +101,7 @@ public class ModBlocks {
     );
 
     private static Block register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
-        Identifier id = Identifier.fromNamespaceAndPath(PvP.MOD_ID, name);
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(PvP.MOD_ID, name);
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
         // 注册方块
         return Registry.register(BuiltInRegistries.BLOCK, id, blockFactory.apply(settings.setId(blockKey)));

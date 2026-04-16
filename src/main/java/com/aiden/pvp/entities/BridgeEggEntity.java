@@ -3,6 +3,7 @@ package com.aiden.pvp.entities;
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.items.ModItems;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -11,7 +12,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;

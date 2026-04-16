@@ -13,20 +13,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public record FishingRodCast() implements ConditionalItemModelProperty {
     public static final MapCodec<FishingRodCast> MAP_CODEC = MapCodec.unit(new FishingRodCast());
 
     @Override
-    public @NonNull MapCodec<FishingRodCast> type() {
+    public @NotNull MapCodec<FishingRodCast> type() {
         return MAP_CODEC;
     }
 
     @Override
-    public boolean get(@NonNull ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i, @NonNull ItemDisplayContext itemDisplayContext) {
+    public boolean get(@NotNull ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i, @NotNull ItemDisplayContext itemDisplayContext) {
         if (livingEntity instanceof Player player) {
             PlayerEntityPvpExtension playerExt = (PlayerEntityPvpExtension) player;
             if (playerExt.AhhPvP$getPvpFishHook() != null) {

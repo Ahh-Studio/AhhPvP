@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer<T, DaggerEntityRenderState> {
@@ -38,7 +38,7 @@ public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer
     }
 
     @Override
-    protected int getBlockLightLevel(T entity, @NonNull BlockPos pos) {
+    protected int getBlockLightLevel(T entity, @NotNull BlockPos pos) {
         return this.lit ? 15 : super.getBlockLightLevel(entity, pos);
     }
 

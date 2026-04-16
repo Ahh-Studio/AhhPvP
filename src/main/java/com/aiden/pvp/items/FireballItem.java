@@ -43,9 +43,9 @@ public class FireballItem extends Item implements ProjectileItem {
             float f = -Mth.sin(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
             float g = -Mth.sin((user.getXRot() + 0.0F) * ((float)Math.PI / 180));
             float h = Mth.cos(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER) / 10, 0.0F);
+            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().getRule(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER).get() / 10, 0.0F);
 
-            if (serverWorld.getGameRules().get(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY)) {
+            if (serverWorld.getGameRules().getRule(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY).get()) {
                 Vec3 vec3d = user.getKnownMovement();
                 fireballEntity.setDeltaMovement(fireballEntity.getDeltaMovement().add(vec3d.x, user.onGround() ? 0.0 : vec3d.y, vec3d.z));
             }
@@ -79,9 +79,9 @@ public class FireballItem extends Item implements ProjectileItem {
             float f = -Mth.sin(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
             float g = -Mth.sin((user.getXRot() + 0.0F) * ((float)Math.PI / 180));
             float h = Mth.cos(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER) / 10, 0.0F);
+            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().getRule(ModGameRules.PvpMod_FIREBALL_SHOOT_POWER).get() / 10, 0.0F);
 
-            if (serverWorld.getGameRules().get(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY)) {
+            if (serverWorld.getGameRules().getRule(ModGameRules.PvpMod_DO_SHOOTER_VELOCITY_AFFECTS_FIREBALL_VELOCITY).get()) {
                 Vec3 vec3d = user.getKnownMovement();
                 fireballEntity.setDeltaMovement(fireballEntity.getDeltaMovement().add(vec3d.x, user.onGround() ? 0.0 : vec3d.y, vec3d.z));
             }

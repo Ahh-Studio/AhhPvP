@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
@@ -126,7 +126,7 @@ public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState
     }
 
     @Override
-    public @NonNull ModelPart getHead() {
+    public @NotNull ModelPart getHead() {
         return this.head;
     }
 

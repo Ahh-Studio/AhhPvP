@@ -9,11 +9,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.illager.Illusioner;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -26,8 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 
 public class BossSpawnerBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Block.column(16.0, 0.0, 8.0);
@@ -42,7 +38,7 @@ public class BossSpawnerBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NonNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
+    protected @NotNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
                                                    Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(ModItems.BOSS_KEY) && world instanceof ServerLevel serverWorld) {
             if (serverWorld.getBlockState(pos.below()).is(Blocks.TNT) &&
@@ -66,17 +62,17 @@ public class BossSpawnerBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NonNull VoxelShape getCollisionShape(@NonNull BlockState state, @NonNull BlockGetter world, @NonNull BlockPos pos, @NonNull CollisionContext context) {
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected @NonNull VoxelShape getOcclusionShape(@NonNull BlockState state) {
+    protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state) {
         return SHAPE;
     }
 
     @Override
-    protected @NonNull VoxelShape getShape(@NonNull BlockState state, @NonNull BlockGetter world, @NonNull BlockPos pos, @NonNull CollisionContext context) {
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
     }
 

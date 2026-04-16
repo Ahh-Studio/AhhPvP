@@ -8,15 +8,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
@@ -25,8 +24,8 @@ import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEntity, FishingBobberEntityRenderState> {
-    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/fishing_hook.png");
-    private static final RenderType LAYER = RenderTypes.entityCutout(TEXTURE);
+    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/fishing_hook.png");
+    private static final RenderType LAYER = RenderType.entityCutout(TEXTURE);
 
     public FishingBobberEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -58,15 +57,12 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         float f = (float) fishingBobberEntityRenderState.pos.x;
         float g = (float) fishingBobberEntityRenderState.pos.y;
         float h = (float) fishingBobberEntityRenderState.pos.z;
-        float i = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
-        orderedRenderCommandQueue.submitCustomGeometry(matrixStack, RenderTypes.lines(), (matricesEntry, vertexConsumer) -> {
-            int j = 16;
-
+        orderedRenderCommandQueue.submitCustomGeometry(matrixStack, RenderType.lines(), (matricesEntry, vertexConsumer) -> {
             for (int k = 0; k < 16; k++) {
                 float l = percentage(k, 16);
                 float m = percentage(k + 1, 16);
-                renderFishingLine(f, g, h, vertexConsumer, matricesEntry, l, m, i);
-                renderFishingLine(f, g, h, vertexConsumer, matricesEntry, m, l, i);
+                renderFishingLine(f, g, h, vertexConsumer, matricesEntry, l, m);
+                renderFishingLine(f, g, h, vertexConsumer, matricesEntry, m, l);
             }
         });
         matrixStack.popPose();
@@ -108,9 +104,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
                 .setNormal(matrix, 0.0F, 1.0F, 0.0F);
     }
 
-    private static void renderFishingLine(
-            float x, float y, float z, VertexConsumer buffer, PoseStack.Pose matrices, float segmentStart, float segmentEnd, float getMinimumLineWidth
-    ) {
+    private static void renderFishingLine(float x, float y, float z, VertexConsumer buffer, PoseStack.Pose matrices, float segmentStart, float segmentEnd) {
         float f = x * segmentStart;
         float g = y * (segmentStart * segmentStart + segmentStart) * 0.5F + 0.25F;
         float h = z * segmentStart;
@@ -121,7 +115,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         i /= l;
         j /= l;
         k /= l;
-        buffer.addVertex(matrices, f, g, h).setColor(CommonColors.BLACK).setNormal(matrices, i, j, k).setLineWidth(getMinimumLineWidth);
+        buffer.addVertex(matrices, f, g, h).setColor(CommonColors.BLACK).setNormal(matrices, i, j, k);
     }
 
     @Override

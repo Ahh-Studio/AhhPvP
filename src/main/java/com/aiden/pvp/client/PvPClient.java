@@ -6,6 +6,7 @@ import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
 import com.aiden.pvp.client.render.entity.MurdererEntityRenderer;
 import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
+import com.aiden.pvp.entities.EgglletEntity;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import com.aiden.pvp.screen.SettingsScreen;
@@ -23,8 +24,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.permissions.Permissions;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import static com.aiden.pvp.blocks.ModBlocks.*;
@@ -62,7 +62,7 @@ public class PvPClient implements ClientModInitializer {
         BlockRenderLayerMap.putBlock(SPECIAL_SLIME_BLOCK, ChunkSectionLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(BOSS_SPAWNER, ChunkSectionLayer.TRANSLUCENT);
 
-        pvpKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "pvp"));
+        pvpKeyCategory = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(PvP.MOD_ID, "pvp"));
 
         throwTntKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                         "key.pvp.throw_tnt", InputConstants.Type.MOUSE,
@@ -83,7 +83,7 @@ public class PvPClient implements ClientModInitializer {
                 Minecraft client = Minecraft.getInstance();
                 LocalPlayer player = client.player;
 
-                if (player == null || !player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) break;
+                if (player == null || player.getPermissionLevel() < 2) break;
 
                 if (client.screen == null) {
                     SettingsScreen settingsScreen = new SettingsScreen(null);

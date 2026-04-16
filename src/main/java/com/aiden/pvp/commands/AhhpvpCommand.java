@@ -9,13 +9,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.server.permissions.Permissions;
 
 @Environment(EnvType.CLIENT)
 public class AhhpvpCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> d, CommandBuildContext bc) {
         d.register(ClientCommandManager.literal("ahh-pvp-mod")
-                .requires(css -> css.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .requires(css -> css.getPlayer().hasPermissions(2))
                 .executes(context -> {
                     Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(new SettingsScreen(null)));
                     return Command.SINGLE_SUCCESS;

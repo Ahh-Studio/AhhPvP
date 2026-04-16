@@ -2,6 +2,7 @@ package com.aiden.pvp.screen;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 public abstract class ModSliderWidget extends AbstractSliderButton {
     public ModSliderWidget(int x, int y, int width, int height, Component text, double value) {
@@ -12,8 +13,13 @@ public abstract class ModSliderWidget extends AbstractSliderButton {
 
     public abstract void applyValue();
 
-    @Override
     public void setValue(double value) {
-        super.setValue(value);
+        double e = this.value;
+        this.value = Mth.clamp(value, 0.0, 1.0);
+        if (e != this.value) {
+            this.applyValue();
+        }
+
+        this.updateMessage();
     }
 }

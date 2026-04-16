@@ -6,7 +6,6 @@ import com.aiden.pvp.commands.ModCommands;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
-import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import com.aiden.pvp.payloads.*;
 import com.aiden.pvp.screen.SettingsScreen;
 import net.fabricmc.api.ModInitializer;
@@ -16,7 +15,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -43,7 +42,7 @@ public class PvP implements ModInitializer {
 		ModEntityTypes.initialize();
 		ModCommands.initialize();
 
-        Item fireballItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MOD_ID, "fireball"));
+        Item fireballItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fireball"));
         ProjectileDispenseBehavior projectileDispenserBehavior = new ProjectileDispenseBehavior(fireballItem);
         DispenserBlock.registerBehavior(fireballItem, projectileDispenserBehavior);
 
@@ -64,7 +63,6 @@ public class PvP implements ModInitializer {
 					).normalize().add(RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
 
 					tnt.setDeltaMovement(vec3d);
-					tnt.needsSync = true;
 					double d = vec3d.horizontalDistance();
 					tnt.setYRot((float)(Mth.atan2(vec3d.x, vec3d.z) * 180.0F / (float)Math.PI));
 					tnt.setXRot((float)(Mth.atan2(vec3d.y, d) * 180.0F / (float)Math.PI));
@@ -89,8 +87,8 @@ public class PvP implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(SetGameRulesC2SPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
                 ServerLevel serverWorld = context.player().level();
-				serverWorld.getGameRules().set(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value1(), serverWorld.getServer());
-                serverWorld.getGameRules().set(ModGameRules.PHDI, payload.value2(), serverWorld.getServer());
+				serverWorld.getGameRules().getRule(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER).set(payload.value1(), serverWorld.getServer());
+                serverWorld.getGameRules().getRule(ModGameRules.PHDI).set(payload.value2(), serverWorld.getServer());
 			});
 		});
 
@@ -114,8 +112,8 @@ public class PvP implements ModInitializer {
                     ServerPlayNetworking.send(
                             serverPlayer,
                             new GetGameRulesS2CPayload(
-                                    serverPlayer.level().getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
-                                    serverPlayer.level().getGameRules().get(ModGameRules.PHDI)
+                                    serverPlayer.level().getGameRules().getInt(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
+                                    serverPlayer.level().getGameRules().getInt(ModGameRules.PHDI)
                             )
                     );
                 }

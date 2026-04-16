@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     public static final MapCodec<SlimeBlock> CODEC = simpleCodec(SlimeBlock::new);

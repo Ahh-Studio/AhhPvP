@@ -23,8 +23,8 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -167,7 +167,7 @@ public class ChickenDefenseEntity extends Animal {
     }
 
     @Override
-    protected SoundEvent getHurtSound(@NonNull DamageSource damageSource) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return SoundEvents.CHICKEN_HURT;
     }
 
@@ -177,12 +177,12 @@ public class ChickenDefenseEntity extends Animal {
     }
 
     @Override
-    protected void playStepSound(@NonNull BlockPos blockPos, @NonNull BlockState blockState) {
+    protected void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         this.playSound(SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
     }
 
     @Nullable
-    public ChickenDefenseEntity getBreedOffspring(@NonNull ServerLevel serverLevel, @NonNull AgeableMob ageableMob) {
+    public ChickenDefenseEntity getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
         return ModEntityTypes.CHICKEN_DEFENSE.create(serverLevel, EntitySpawnReason.BREEDING);
     }
 
@@ -192,17 +192,17 @@ public class ChickenDefenseEntity extends Animal {
     }
 
     @Override
-    protected int getBaseExperienceReward(@NonNull ServerLevel serverLevel) {
+    protected int getBaseExperienceReward(@NotNull ServerLevel serverLevel) {
         return 0;
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
     }
 
     @Override
-    protected void positionRider(@NonNull Entity entity, Entity.@NonNull MoveFunction moveFunction) {
+    protected void positionRider(@NotNull Entity entity, Entity.@NotNull MoveFunction moveFunction) {
         super.positionRider(entity, moveFunction);
         if (entity instanceof LivingEntity) {
             ((LivingEntity) entity).yBodyRot = this.yBodyRot;

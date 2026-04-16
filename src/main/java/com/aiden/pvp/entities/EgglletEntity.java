@@ -6,13 +6,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class EgglletEntity extends ThrowableItemProjectile {
     public int age = 200;
@@ -45,7 +45,7 @@ public class EgglletEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHit(@NonNull HitResult hitResult) {
+    protected void onHit(@NotNull HitResult hitResult) {
         super.onHit(hitResult);
         if (this.level() instanceof ServerLevel serverLevel) {
             if (this.random.nextInt(200) == 0) {
@@ -62,7 +62,7 @@ public class EgglletEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    protected @NonNull Item getDefaultItem() {
+    protected @NotNull Item getDefaultItem() {
         return ModItems.EGGLLET;
     }
 

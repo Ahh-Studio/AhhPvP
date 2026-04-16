@@ -12,7 +12,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -20,7 +19,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 public class KitCommand {
     public static void register(CommandDispatcher<CommandSourceStack> d, CommandBuildContext c, Commands.CommandSelection s) {
-        d.register(Commands.literal("kit").requires(css -> css.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER) && css.isPlayer())
+        d.register(Commands.literal("kit").requires(css -> css.isPlayer() && css.getPlayer().hasPermissions(2))
                 .executes(KitCommand::sendHelpMessage)
                 .then(Commands.literal("classic").executes(KitCommand::giveClassicKit))
                 .then(Commands.literal("op").executes(KitCommand::giveOPKit))

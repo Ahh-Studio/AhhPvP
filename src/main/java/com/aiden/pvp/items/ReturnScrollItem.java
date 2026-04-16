@@ -11,8 +11,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ReturnScrollItem extends Item {
     private Entity entity;
@@ -22,7 +22,7 @@ public class ReturnScrollItem extends Item {
     }
 
     @Override
-    public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel serverLevel, @NonNull Entity entity, @Nullable EquipmentSlot equipmentSlot) {
+    public void inventoryTick(@NotNull ItemStack itemStack, @NotNull ServerLevel serverLevel, @NotNull Entity entity, @Nullable EquipmentSlot equipmentSlot) {
         super.inventoryTick(itemStack, serverLevel, entity, equipmentSlot);
         this.entity = entity;
         if (entity instanceof Player player) {
@@ -36,9 +36,9 @@ public class ReturnScrollItem extends Item {
 
 
 
-    @NonNull
+    @NotNull
     @Override
-    public InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand interactionHand) {
+    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
         super.use(level, player, interactionHand);
         PlayerEntityPvpExtension playerExt = (PlayerEntityPvpExtension) player;
         boolean bl = playerExt.AhhPvP$isTeleportingUsingReturnScroll();
@@ -49,7 +49,7 @@ public class ReturnScrollItem extends Item {
     }
 
     @Override
-    public @NonNull Component getName(@NonNull ItemStack itemStack) {
+    public @NotNull Component getName(@NotNull ItemStack itemStack) {
         if (this.entity instanceof Player player) {
             PlayerEntityPvpExtension playerPvpExtension = (PlayerEntityPvpExtension) player;
             return Component.literal(super.getName(itemStack).getString() +

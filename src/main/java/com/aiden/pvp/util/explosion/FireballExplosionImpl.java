@@ -1,6 +1,7 @@
 package com.aiden.pvp.util.explosion;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ExplosionParticleInfo;
@@ -12,7 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.util.random.WeightedList;
@@ -26,22 +26,17 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -243,11 +238,11 @@ public class FireballExplosionImpl implements Explosion {
         ServerLevel serverWorld = (ServerLevel) world;
         Explosion.BlockInteraction destructionType = switch (explosionSourceType) {
             case NONE -> Explosion.BlockInteraction.KEEP;
-            case BLOCK -> serverWorld.getGameRules().get(GameRules.BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
-            case MOB -> serverWorld.getGameRules().get(GameRules.MOB_GRIEFING)
-                    ? serverWorld.getGameRules().get(GameRules.MOB_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY
+            case BLOCK -> serverWorld.getGameRules().getRule(GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY).get() ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
+            case MOB -> serverWorld.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()
+                    ? serverWorld.getGameRules().getRule(GameRules.RULE_MOB_EXPLOSION_DROP_DECAY).get() ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY
                     : Explosion.BlockInteraction.KEEP;
-            case TNT -> serverWorld.getGameRules().get(GameRules.TNT_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
+            case TNT -> serverWorld.getGameRules().getRule(GameRules.RULE_TNT_EXPLOSION_DROP_DECAY).get() ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
             case TRIGGER -> Explosion.BlockInteraction.TRIGGER_BLOCK;
         };
         Vec3 vec3d = new Vec3(x, y, z);
@@ -271,12 +266,12 @@ public class FireballExplosionImpl implements Explosion {
     }
 
     @Override
-    public @NonNull ServerLevel level() {
+    public @NotNull ServerLevel level() {
         return this.world;
     }
 
     @Override
-    public @NonNull BlockInteraction getBlockInteraction() {
+    public @NotNull BlockInteraction getBlockInteraction() {
         return this.destructionType;
     }
 
@@ -296,7 +291,7 @@ public class FireballExplosionImpl implements Explosion {
     }
 
     @Override
-    public @NonNull Vec3 center() {
+    public @NotNull Vec3 center() {
         return this.pos;
     }
 
@@ -305,13 +300,13 @@ public class FireballExplosionImpl implements Explosion {
         if (this.destructionType != Explosion.BlockInteraction.TRIGGER_BLOCK) {
             return false;
         } else {
-            return this.entity != null && this.entity.getType() == EntityType.BREEZE_WIND_CHARGE ? this.world.getGameRules().get(GameRules.MOB_GRIEFING) : true;
+            return this.entity == null || this.entity.getType() != EntityType.BREEZE_WIND_CHARGE || this.world.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get();
         }
     }
 
     @Override
     public boolean shouldAffectBlocklikeEntities() {
-        boolean bl = this.world.getGameRules().get(GameRules.MOB_GRIEFING);
+        boolean bl = this.world.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get();
         boolean bl2 = this.entity == null || this.entity.getType() != EntityType.BREEZE_WIND_CHARGE && this.entity.getType() != EntityType.WIND_CHARGE;
         return bl ? bl2 : this.destructionType.shouldAffectBlocklikeEntities() && bl2;
     }

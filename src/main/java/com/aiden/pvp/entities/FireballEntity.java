@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -56,7 +56,7 @@ public class FireballEntity extends ThrowableItemProjectile {
         super.onHitBlock(blockHitResult);
         Level var3 = this.level();
         if (var3 instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getRule(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER).get() / 10;
             this.explode(this.explosionPower);
             this.discard();
         }
@@ -66,7 +66,7 @@ public class FireballEntity extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (this.level() instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().getRule(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER).get() / 10;
             this.explode(this.explosionPower);
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.hurtServer(serverWorld, damageSources().explosion(this, this.getOwner()), 2.0F);

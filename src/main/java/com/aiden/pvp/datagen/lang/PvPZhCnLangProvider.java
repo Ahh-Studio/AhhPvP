@@ -4,7 +4,7 @@ import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -14,7 +14,7 @@ public class PvPZhCnLangProvider extends FabricLanguageProvider {
     }
 
     @Override
-    public void generateTranslations(HolderLookup.@NonNull Provider registryLookup, @NonNull TranslationBuilder builder) {
+    public void generateTranslations(HolderLookup.@NotNull Provider registryLookup, @NotNull TranslationBuilder builder) {
         builder.add("block.pvp.boss_spawner", "Boss召唤器");
         builder.add("block.pvp.golden_head", "金头");
         builder.add("block.pvp.landmine", "地雷");
