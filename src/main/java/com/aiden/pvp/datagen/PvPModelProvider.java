@@ -23,6 +23,7 @@ public class PvPModelProvider extends FabricModelProvider {
         itemModelGenerators.generateFlatItem(ModItems.RETURN_SCROLL, ModelTemplates.FLAT_ITEM);
         itemModelGenerators.generateFlatItem(ModItems.EGGLLET, ModelTemplates.FLAT_ITEM);
         itemModelGenerators.generateFlatItem(ModItems.CHICKEN_DEFENSE, ModelTemplates.FLAT_ITEM);
+        itemModelGenerators.generateFlatItem(ModItems.AXE_OF_MURDER, ModelTemplates.FLAT_ITEM);
     }
 
     @Override

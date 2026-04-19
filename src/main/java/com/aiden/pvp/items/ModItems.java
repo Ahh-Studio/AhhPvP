@@ -62,6 +62,7 @@ public abstract class ModItems {
     public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, 3, 251));
     public static final Item IRON_SWORD = register("iron_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.IRON, 3, 251));
     public static final Item DIAMOND_SWORD = register("diamond_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.DIAMOND, 3, 251));
+    public static final Item AXE_OF_MURDER = register("axe_of_murder", properties -> new AxeItem(ModToolMaterials.SUPER, 3, 251, properties), new Item.Properties());
 
     public static final Item THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Properties().sword(ToolMaterial.IRON, 2, 251).useCooldown(5));
 
@@ -99,6 +100,7 @@ public abstract class ModItems {
                 o.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
                 o.accept(ModItems.MURDERER_SPAWN_EGG);
                 o.accept(ModItems.LANDMINE);
+                o.accept(ModItems.AXE_OF_MURDER);
                 p.holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
                         .filter(potionReference -> potionReference.value().isEnabled(p.enabledFeatures()) && (potionReference.is(LONG_INVISIBILITY_POTION) || potionReference.is(SHORT_INVISIBILITY_POTION)))
                         .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))

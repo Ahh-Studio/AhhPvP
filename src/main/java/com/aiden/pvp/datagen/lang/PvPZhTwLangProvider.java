@@ -22,6 +22,7 @@ public class PvPZhTwLangProvider extends FabricLanguageProvider {
         builder.add("block.pvp.throwable_tnt", "可投射的TNT");
         builder.add("block.pvp.tnt", "TNT");
 
+        builder.add(ModItems.AXE_OF_MURDER, "謀殺之斧");
         builder.add("entity.pvp.bed_bug", "床豸");
         builder.add("entity.pvp.bridge_egg", "雞蛋橋");
         builder.add("entity.pvp.dagger", "飛刀");

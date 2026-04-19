@@ -30,6 +30,7 @@ public class PvPEnUsLangProvider extends FabricLanguageProvider {
         builder.add("entity.pvp.fishing_bobber", "Fishing Bobber");
         builder.add("entity.pvp.murderer", "Murderer");
 
+        builder.add(ModItems.AXE_OF_MURDER, "Axe of Murderer");
         builder.add("item.pvp.bbu_upgrade_smithing_template", "Before-battle-update Upgrade");
         builder.add("item.pvp.bed_bug", "Bed Bug");
         builder.add("item.pvp.boss_key", "Boss Key");

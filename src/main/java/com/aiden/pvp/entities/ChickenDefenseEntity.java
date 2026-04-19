@@ -31,9 +31,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.EnumSet;
 
 public class ChickenDefenseEntity extends Animal {
-    private static final EntityDataAccessor<Holder<ChickenSoundVariant>> DATA_SOUND_VARIANT_ID = SynchedEntityData.defineId(
-            ChickenDefenseEntity.class, EntityDataSerializers.CHICKEN_SOUND_VARIANT
-    );
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
@@ -166,27 +163,13 @@ public class ChickenDefenseEntity extends Animal {
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        return this.getSoundVariant().value().adultSounds().ambientSound().value();
-    }
-
-    @Override
     protected SoundEvent getHurtSound(@NonNull DamageSource damageSource) {
-        return this.getSoundVariant().value().adultSounds().hurtSound().value();
+        return SoundEvents.BLAZE_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return this.getSoundVariant().value().adultSounds().deathSound().value();
-    }
-
-    private Holder<ChickenSoundVariant> getSoundVariant() {
-        return this.entityData.get(DATA_SOUND_VARIANT_ID);
-    }
-
-    @Override
-    protected void playStepSound(@NonNull BlockPos blockPos, @NonNull BlockState blockState) {
-        this.playSound(this.getSoundVariant().value().adultSounds().stepSound().value(), 0.15F, 1.0F);
+        return SoundEvents.ANVIL_LAND;
     }
 
     @Nullable
