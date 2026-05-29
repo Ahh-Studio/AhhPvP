@@ -14,6 +14,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -54,10 +55,12 @@ public class PvPClient implements ClientModInitializer {
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
 
-        pvpKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "pvp"));
-
-        throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, pvpKeyCategory);
-        openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F7, pvpKeyCategory);
+        throwTntKeyBinding = KeyMappingHelper.registerKeyMapping(
+                new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, PVP_KEY_CATEGORY)
+        );
+        openSettingsKeyBinding = KeyMappingHelper.registerKeyMapping(
+                new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F7, PVP_KEY_CATEGORY)
+        );
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
             while (throwTntKeyBinding.consumeClick()) {

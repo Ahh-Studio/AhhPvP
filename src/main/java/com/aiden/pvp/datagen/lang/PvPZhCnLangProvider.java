@@ -55,6 +55,10 @@ public class PvPZhCnLangProvider extends FabricLanguageProvider {
 
         builder.add("itemGroup.pvp_mod", "PvP模组");
 
+        builder.add("key.category.pvp.pvp", "PvP模组");
+        builder.add("key.pvp.open_settings", "打开设置");
+        builder.add("key.pvp.throw_tnt", "投掷TNT");
+
         builder.add("screen.pvp.settings", "PvP模组设置");
 
         builder.add("tag.item.pvp.empty", "空");

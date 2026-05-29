@@ -24,6 +24,8 @@ public class KitCommand {
                 .executes(KitCommand::sendHelpMessage)
                 .then(Commands.literal("classic").executes(KitCommand::giveClassicKit))
                 .then(Commands.literal("op").executes(KitCommand::giveOPKit))
+                .then(Commands.literal("builduhc").executes(KitCommand::giveBuildUHCKit))
+                .then(Commands.literal("buhc").executes(KitCommand::giveBuildUHCKit))
         );
     }
 
@@ -31,6 +33,7 @@ public class KitCommand {
         context.getSource().sendSystemMessage(Component.literal("=== /Kit Command ===").withStyle(ChatFormatting.GREEN));
         context.getSource().sendSystemMessage(Component.literal(" - classic").withStyle(ChatFormatting.GREEN));
         context.getSource().sendSystemMessage(Component.literal(" - op").withStyle(ChatFormatting.GREEN));
+        context.getSource().sendSystemMessage(Component.literal(" - builduhc (buhc)").withStyle(ChatFormatting.GREEN));
         context.getSource().sendSystemMessage(Component.literal("WARNING: THIS COMMAND WILL CLEAR YOUR INVENTORY! ").withStyle(ChatFormatting.RED));
         return 0;
     }
@@ -85,6 +88,41 @@ public class KitCommand {
 
                 serverPlayer.inventoryMenu.broadcastChanges();
                 context.getSource().sendSuccess(() -> Component.literal("OP kit's given to ").append(serverPlayer.getName()), false);
+            }
+        });
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int giveBuildUHCKit(CommandContext<CommandSourceStack> context) {
+        context.getSource().getServer().execute(() -> {
+            ServerLevel serverLevel = context.getSource().getLevel();
+            ServerPlayer serverPlayer = context.getSource().getPlayer();
+
+            if (serverPlayer != null) {
+                serverPlayer.getInventory().clearContent();
+                serverPlayer.getSlot(0).set(EnchantmentUtil.enchantItemStack(serverLevel, ModItems.DIAMOND_SWORD.getDefaultInstance(), Enchantments.SHARPNESS, 3));
+                serverPlayer.getSlot(1).set(ModItems.FISHING_ROD.getDefaultInstance());
+                serverPlayer.getSlot(2).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.BOW.getDefaultInstance(), Enchantments.POWER, 2));
+                ItemStack flint_and_steel = Items.FLINT_AND_STEEL.getDefaultInstance();
+                flint_and_steel.setDamageValue(60);
+                serverPlayer.getSlot(3).set(Items.DIAMOND_AXE.getDefaultInstance());
+                serverPlayer.getSlot(4).set(new ItemStack(Items.GOLDEN_APPLE, 6));
+                serverPlayer.getSlot(5).set(new ItemStack(ModItems.GOLDEN_HEAD, 3));
+                serverPlayer.getSlot(6).set(Items.LAVA_BUCKET.getDefaultInstance());
+                serverPlayer.getSlot(7).set(Items.WATER_BUCKET.getDefaultInstance());
+                serverPlayer.getSlot(8).set(new ItemStack(Items.OAK_PLANKS, 64));
+                serverPlayer.getSlot(9).set(new ItemStack(Items.ARROW, 16));
+                serverPlayer.getSlot(33).set(Items.LAVA_BUCKET.getDefaultInstance());
+                serverPlayer.getSlot(34).set(Items.WATER_BUCKET.getDefaultInstance());
+                serverPlayer.getSlot(35).set(new ItemStack(Items.OAK_PLANKS, 64));
+                serverPlayer.getSlot(100).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_BOOTS.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(101).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_LEGGINGS.getDefaultInstance(), Enchantments.PROTECTION, 2));
+                serverPlayer.getSlot(102).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_CHESTPLATE.getDefaultInstance(), Enchantments.PROJECTILE_PROTECTION, 2));
+                serverPlayer.getSlot(103).set(EnchantmentUtil.enchantItemStack(serverLevel, Items.DIAMOND_HELMET.getDefaultInstance(), Enchantments.PROTECTION, 2));
+
+                serverPlayer.inventoryMenu.broadcastChanges();
+                context.getSource().sendSuccess(() -> Component.literal("BuildUHC kit's given to ").append(serverPlayer.getName()), false);
             }
         });
 

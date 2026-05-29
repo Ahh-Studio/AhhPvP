@@ -55,6 +55,10 @@ public class PvPEnUsLangProvider extends FabricLanguageProvider {
 
         builder.add("itemGroup.pvp_mod", "PvP Mod");
 
+        builder.add("key.category.pvp.pvp", "PvP Mod");
+        builder.add("key.pvp.open_settings", "Open Settings");
+        builder.add("key.pvp.throw_tnt", "Throw TNT");
+
         builder.add("screen.pvp.settings", "PvP Mod Settings");
 
         builder.add("tag.item.pvp.empty", "Empty");

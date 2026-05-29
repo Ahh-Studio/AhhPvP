@@ -34,6 +34,9 @@
   "item.pvp.throwable_dagger": "飛刀",
   "item.pvp.wooden_sword": "木劍",
   "itemGroup.pvp_mod": "PvP Mod",
+  "key.category.pvp.pvp": "PvP模組",
+  "key.pvp.open_settings": "打開設置",
+  "key.pvp.throw_tnt": "投擲TNT",
   "screen.pvp.settings": "PvP Mod設定",
   "tag.item.pvp.empty": "空"
 }

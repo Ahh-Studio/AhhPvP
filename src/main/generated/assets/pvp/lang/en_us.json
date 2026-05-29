@@ -35,6 +35,9 @@
   "item.pvp.throwable_dagger": "Throwable Dagger",
   "item.pvp.wooden_sword": "Wooden Sword",
   "itemGroup.pvp_mod": "PvP Mod",
+  "key.category.pvp.pvp": "PvP Mod",
+  "key.pvp.open_settings": "Open Settings",
+  "key.pvp.throw_tnt": "Throw TNT",
   "screen.pvp.settings": "PvP Mod Settings",
   "tag.item.pvp.empty": "Empty"
 }

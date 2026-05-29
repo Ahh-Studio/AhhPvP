@@ -46,7 +46,7 @@ public abstract class LivingEntityMixin {
         strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
         if (strength > 0.0) {
             instance.needsSync = true;
-            Vec3 vec3 = instance.getDeltaMovement();
+            Vec3 deltaMovement = instance.getDeltaMovement();
 
             while (x * x + z * z < 1.0E-5F) {
                 x = (Math.random() - Math.random()) * 0.01;
@@ -56,15 +56,15 @@ public abstract class LivingEntityMixin {
             Vec3 vec32 = new Vec3(x, 0.0, z).normalize().scale(strength);
             if (instance.onGround()) {
                 instance.setDeltaMovement( // 不变
-                        vec3.x / 2.0 - vec32.x,
-                        Math.min(0.5, vec3.y / 2.0 + strength),
-                        vec3.z / 2.0 - vec32.z
+                        deltaMovement.x / 2.0 - vec32.x,
+                        Math.min(0.5, deltaMovement.y / 2.0 + strength),
+                        deltaMovement.z / 2.0 - vec32.z
                 );
             } else {
                 instance.setDeltaMovement(
-                        vec3.x / 2.5 - vec32.x,
-                        Math.min(0.5, vec3.y / 2.5 + strength * 0.8),
-                        vec3.z / 2.5 - vec32.z
+                        deltaMovement.x / 2.5 - vec32.x,
+                        Math.min(0.5, deltaMovement.y / 2.5 + strength * 0.8),
+                        deltaMovement.z / 2.5 - vec32.z
                 );
             }
         }
@@ -174,14 +174,7 @@ public abstract class LivingEntityMixin {
                         e = source.getSourcePosition().z() - instance.getZ();
                     }
 
-                    boolean bl3 = false;
-
-                    if (instance.getItemBlockingWith() != null) {
-                        if (instance.getItemBlockingWith().getItem() instanceof SwordItem) {
-                            bl3 = true;
-                        }
-                    }
-
+                    boolean bl3 = instance.getItemBlockingWith() != null && instance.getItemBlockingWith().getItem() instanceof SwordItem;
                     instance.knockback(bl3 ? 0.2F : 0.4F, d, e);
 
                     if (!bl) {

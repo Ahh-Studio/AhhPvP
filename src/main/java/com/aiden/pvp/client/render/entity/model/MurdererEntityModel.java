@@ -18,14 +18,14 @@ import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class MurdererEntityModel extends HumanoidModel<MurdererEntityRenderState> implements ArmedModel<MurdererEntityRenderState>, HeadedModel {
-    private final net.minecraft.client.model.geom.ModelPart head;
-    private final net.minecraft.client.model.geom.ModelPart body;
-    private final net.minecraft.client.model.geom.ModelPart leftLeg;
-    private final net.minecraft.client.model.geom.ModelPart rightLeg;
-    private final net.minecraft.client.model.geom.ModelPart rightArm;
-    private final net.minecraft.client.model.geom.ModelPart leftArm;
+    private final ModelPart head;
+    private final ModelPart body;
+    private final ModelPart leftLeg;
+    private final ModelPart rightLeg;
+    private final ModelPart rightArm;
+    private final ModelPart leftArm;
 
-    public MurdererEntityModel(net.minecraft.client.model.geom.ModelPart modelPart) {
+    public MurdererEntityModel(ModelPart modelPart) {
         super(modelPart);
         this.head = modelPart.getChild(PartNames.HEAD);
         this.body = modelPart.getChild(PartNames.BODY);
