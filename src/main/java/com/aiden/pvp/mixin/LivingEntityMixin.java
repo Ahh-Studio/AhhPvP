@@ -31,9 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Shadow
-    public abstract boolean canBreatheUnderwater();
-
     @Inject(
             method = "knockback",
             at = @At("HEAD"),
@@ -42,6 +39,31 @@ public abstract class LivingEntityMixin {
     )
     public void takeKnockback(double strength, double x, double z, CallbackInfo ci) {
         LivingEntity instance = (LivingEntity) (Object) this;
+
+        String stackTrace = java.util.Arrays.stream(Thread.currentThread().getStackTrace())
+                .skip(2)
+                .limit(10)
+                .map(s -> s.getMethodName())
+                .toList()
+                .toString();
+        if (stackTrace.contains("blockedByItem")) {
+            ci.cancel();
+            return;
+        }
+
+        boolean isSwordBlocking = false;
+        ItemStack blockingItem = instance.getItemBlockingWith();
+        ItemStack useItem = instance.getUseItem();
+        
+        if (blockingItem != null && blockingItem.getItem() instanceof SwordItem) {
+            isSwordBlocking = true;
+        } else if (instance.isBlocking() && useItem != null && !useItem.isEmpty() && useItem.getItem() instanceof SwordItem) {
+            isSwordBlocking = true;
+        }
+        
+        if (isSwordBlocking) {
+            strength = 0.4F;
+        }
 
         strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
         if (strength > 0.0) {
@@ -55,7 +77,7 @@ public abstract class LivingEntityMixin {
 
             Vec3 vec32 = new Vec3(x, 0.0, z).normalize().scale(strength);
             if (instance.onGround()) {
-                instance.setDeltaMovement( // 不变
+                instance.setDeltaMovement(
                         deltaMovement.x / 2.0 - vec32.x,
                         Math.min(0.5, deltaMovement.y / 2.0 + strength),
                         deltaMovement.z / 2.0 - vec32.z
@@ -85,13 +107,10 @@ public abstract class LivingEntityMixin {
 
         if (instance.isInvulnerableTo(world, source)) {
             cir.setReturnValue(false);
-            return;
         } else if (instance.isDeadOrDying()) {
             cir.setReturnValue(false);
-            return;
         } else if (source.is(DamageTypeTags.IS_FIRE) && instance.hasEffect(MobEffects.FIRE_RESISTANCE)) {
             cir.setReturnValue(false);
-            return;
         } else {
             if (instance.isSleeping()) {
                 instance.stopSleeping();
@@ -107,9 +126,7 @@ public abstract class LivingEntityMixin {
             amount -= g;
             boolean bl = g > 0.0F;
 
-            if (instance.getItemBlockingWith() != null) {
-                bl = bl && !(instance.getItemBlockingWith().getItem() instanceof SwordItem);
-            }
+
 
             if (source.is(DamageTypeTags.IS_FREEZING) && instance.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
                 amount *= 5.0F;
@@ -174,8 +191,7 @@ public abstract class LivingEntityMixin {
                         e = source.getSourcePosition().z() - instance.getZ();
                     }
 
-                    boolean bl3 = instance.getItemBlockingWith() != null && instance.getItemBlockingWith().getItem() instanceof SwordItem;
-                    instance.knockback(bl3 ? 0.2F : 0.4F, d, e);
+                    instance.knockback(0.4F, d, e);
 
                     if (!bl) {
                         instance.indicateDamage(d, e);

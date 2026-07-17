@@ -26,11 +26,7 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,10 +122,10 @@ public class FireballExplosionImpl implements Explosion {
             for (Entity entity : this.world.getEntities(this.entity, new AABB(i, k, m, j, l, n))) {
                 if (!entity.ignoreExplosion(this) && !(entity instanceof ItemEntity)) {
                     double d;
-                    if (entity.getY() - this.pos.y < 0) {
+                    if (entity.getY() < this.pos.y) {
                         d = Math.sqrt(this.pos.distanceTo(entity.position().add(0.0, entity.getEyeHeight(), 0.0))) / f;
                     } else {
-                        d = Math.sqrt(entity.distanceToSqr(this.pos)) / f; // 距离除以强度的2.5倍
+                        d = this.pos.distanceTo(entity.position()) / f; // 距离除以强度的2.5倍
                     }
                     if (!(d > 1.0)) { // 距离小于等于强度的2.5倍
                         Vec3 vec3 = entity instanceof PrimedTnt ? entity.position() : entity.getEyePosition(); // 实体眼睛的位置
@@ -146,31 +142,14 @@ public class FireballExplosionImpl implements Explosion {
                         Vec3 vec33;
 
                         if (vec32.y > 0) {
-                            vec33 = new Vec3(
-                                    vec32.x * 2,
-                                    Math.min(vec32.y * 0.7, 0.5),
-                                    vec32.z * 2
-                            ).scale(p);
+                            vec33 = new Vec3(vec32.x * 2, Math.min(vec32.y * 0.7, 0.5), vec32.z * 2).scale(p);
                         } else {
                             double q = (double) ((int) (100 / vec32.y)) / 100;
-                            vec33 = new Vec3(
-                                    vec32.x * -q * 0.1,
-                                    vec32.y * 0.3 + 0.8,
-                                    vec32.z * -q * 0.1
-                            ).scale(p);
+                            vec33 = new Vec3(vec32.x * -q * 0.1, vec32.y * 0.3 + 0.8, vec32.z * -q * 0.1).scale(p);
                         }
 
-                        vec33 = new Vec3(
-                                Math.min(vec33.x, 3.0),
-                                Math.min(vec33.y, 3.0),
-                                Math.min(vec33.z, 3.0)
-                        );
-
-                        vec33 = new Vec3(
-                                Math.max(vec33.x, -3.0),
-                                Math.max(vec33.y, -3.0),
-                                Math.max(vec33.z, -3.0)
-                        );
+                        vec33 = new Vec3(Math.min(vec33.x, 3.0), Math.min(vec33.y, 3.0), Math.min(vec33.z, 3.0));
+                        vec33 = new Vec3(Math.max(vec33.x, -3.0), Math.max(vec33.y, -3.0), Math.max(vec33.z, -3.0));
 
                         entity.push(vec33);
                         if (entity.is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectileEntity) {

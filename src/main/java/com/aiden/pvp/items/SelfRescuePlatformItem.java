@@ -3,8 +3,6 @@ package com.aiden.pvp.items;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
-import java.util.ArrayList;
-
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -16,6 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
 
 public class SelfRescuePlatformItem extends Item {
     public SelfRescuePlatformItem(Properties settings) {

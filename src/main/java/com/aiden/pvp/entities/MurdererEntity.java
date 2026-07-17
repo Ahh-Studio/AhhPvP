@@ -13,14 +13,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -61,7 +54,7 @@ public class MurdererEntity extends Monster {
     private static final int FIREBALL_COOLDOWN = 100;
     private boolean isDoingWaterBucketMLG = false;
     private BlockPos waterBucketMLGWaterPos;
-    public boolean isInPhase2 = false;
+    private byte placeBlockCD = 0;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, Level world) {
         super(ModEntityTypes.MURDERER, world);
@@ -82,31 +75,10 @@ public class MurdererEntity extends Monster {
     public void tick() {
         super.tick();
 
-        if (this.wTapFreezeTicks > 0) {
-            this.wTapFreezeTicks--;
-        }
-
-        if (this.isInPhase2) {
-            if (this.getAttributeBaseValue(Attributes.ENTITY_INTERACTION_RANGE) != 4.0) {
-                Objects.requireNonNull(this.getAttribute(Attributes.ENTITY_INTERACTION_RANGE)).setBaseValue(4.0);
-            }
-            if (this.getAttributeBaseValue(Attributes.ATTACK_DAMAGE) != 12.0) {
-                Objects.requireNonNull(this.getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(12.0);
-            }
-            if (this.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) != 1.0) {
-                Objects.requireNonNull(this.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(1.0);
-            }
-            return;
-        }
-
-        if (this.enderPearlCooldownTicks > 0) {
-            this.enderPearlCooldownTicks--;
-        }
-
-        if (this.fireballCooldownTicks > 0) {
-            this.fireballCooldownTicks--;
-        }
-
+        if (this.wTapFreezeTicks > 0) this.wTapFreezeTicks--;
+        if (this.enderPearlCooldownTicks > 0) this.enderPearlCooldownTicks--;
+        if (this.fireballCooldownTicks > 0) this.fireballCooldownTicks--;
+        if (this.placeBlockCD > 0) this.placeBlockCD--;
         if (this.comboTickCount > 0) this.comboTickCount--;
         else {
             this.comboTickCount = 40;
@@ -139,6 +111,7 @@ public class MurdererEntity extends Monster {
 
         if (this.getTarget() != null) {
             this.placeBlocksUnderFeetWhenBeBlocked();
+            this.placeBlockCD = 8;
         }
 
         // water bucket MLG
@@ -176,8 +149,7 @@ public class MurdererEntity extends Monster {
             ));
 
             if (this.isDoingWaterBucketMLG
-                    && this.waterBucketMLGWaterPos != null
-                    && this.fallDistance == 0
+                    && this.waterBucketMLGWaterPos != null && this.fallDistance == 0
                     && this.level().getBlockState(this.waterBucketMLGWaterPos).is(Blocks.WATER)
                     && !blockState2.isAir()
             ) {
@@ -190,16 +162,12 @@ public class MurdererEntity extends Monster {
                 this.waterBucketMLGWaterPos = null;
             }
         }
-
-        if ((4 * (this.getHealth() + this.getAbsorptionAmount())) < (this.getMaxHealth() + this.getAbsorptionAmount())) {
-            this.setInPhase2(true);
-        }
     }
 
     private void placeBlocksUnderFeetWhenBeBlocked() {
         if (!this.hasLineOfSight(this.getTarget())) { // 看不到目标
             if (this.getRandom().nextIntBetweenInclusive(0, 10) <= 0.5) { // 随机，有概率不触发
-                if (this.level() instanceof ServerLevel serverWorld) { // 服务端运作
+                if (this.level() instanceof ServerLevel) { // 服务端运作
                     final BlockState blockState = this.level().getBlockState(new BlockPos(
                             this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
                             ((int) this.position().y) - 1,
@@ -207,7 +175,7 @@ public class MurdererEntity extends Monster {
                     ));
 
                     if (!blockState.isAir()) {
-                        this.setDeltaMovement(this.getDeltaMovement().add(0.0, 0.5, 0.0));
+                        this.jumpFromGround();
                         this.level().setBlock(
                                 new BlockPos(
                                         this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
@@ -293,10 +261,6 @@ public class MurdererEntity extends Monster {
             this.setItemSlot(EquipmentSlot.LEGS, EnchantmentUtil.enchantItemStack(serverLevel, leggings, Enchantments.PROTECTION, 4));
             this.setItemSlot(EquipmentSlot.FEET, EnchantmentUtil.enchantItemStack(serverLevel, boots, Enchantments.PROTECTION, 4));
         }
-    }
-
-    public void setInPhase2(boolean inPhase2) {
-        this.isInPhase2 = inPhase2;
     }
 
     public enum State {
@@ -403,12 +367,12 @@ public class MurdererEntity extends Monster {
                 LivingEntity livingEntity = this.mob.getTarget();
                 if (livingEntity == null) {
                     return false;
-                } else if (!livingEntity.isAlive()) {
-                    return false;
-                } else {
-                    this.path = this.mob.getNavigation().createPath(livingEntity, 0);
-                    return (this.path != null || this.mob.isWithinMeleeAttackRange(livingEntity)) && this.mob.distanceToSqr(livingEntity) <= 100;
                 }
+                if (!livingEntity.isAlive()) {
+                    return false;
+                }
+                this.path = this.mob.getNavigation().createPath(livingEntity, 0);
+                return (this.path != null || this.mob.isWithinMeleeAttackRange(livingEntity)) && this.mob.distanceToSqr(livingEntity) <= 100;
             }
         }
 
@@ -458,8 +422,7 @@ public class MurdererEntity extends Monster {
                 this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
                 if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity))
                         && this.updateCountdownTicks <= 0
-                        && (
-                        this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
+                        && (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
                                 || livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0
                                 || this.mob.getRandom().nextFloat() < 0.05F
                 )) {
@@ -509,16 +472,6 @@ public class MurdererEntity extends Monster {
 
         protected boolean canAttack(LivingEntity target) {
             return this.isCooledDown() && this.mob.isWithinMeleeAttackRange(target) && this.mob.getSensing().hasLineOfSight(target);
-        }
-
-        protected int getCooldown() {
-            return this.cooldown;
-        }
-
-        protected int getMaxCooldown() {
-            double attackSpeed = this.mob.getAttributeValue(Attributes.ATTACK_SPEED);
-            int dynamicCooldown = (int) (20 / attackSpeed);
-            return this.adjustedTickDelay(Math.max(1, dynamicCooldown));
         }
     }
 

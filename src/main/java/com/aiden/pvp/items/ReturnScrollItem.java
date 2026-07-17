@@ -1,7 +1,6 @@
 package com.aiden.pvp.items;
 
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,8 +14,6 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class ReturnScrollItem extends Item {
-    private Entity entity;
-
     public ReturnScrollItem(Properties properties) {
         super(properties);
     }
@@ -24,7 +21,6 @@ public class ReturnScrollItem extends Item {
     @Override
     public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel serverLevel, @NonNull Entity entity, @Nullable EquipmentSlot equipmentSlot) {
         super.inventoryTick(itemStack, serverLevel, entity, equipmentSlot);
-        this.entity = entity;
         if (entity instanceof Player player) {
             PlayerEntityPvpExtension playerExt = (PlayerEntityPvpExtension) player;
             if (playerExt.AhhPvP$isTeleportingUsingReturnScroll() && playerExt.AhhPvP$getReturnScrollTeleportCountDown() == 0) {
@@ -33,8 +29,6 @@ public class ReturnScrollItem extends Item {
             }
         }
     }
-
-
 
     @NonNull
     @Override
@@ -46,16 +40,5 @@ public class ReturnScrollItem extends Item {
         playerExt.AhhPvP$setTeleportingUsingReturnScroll(!bl);
 
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public @NonNull Component getName(@NonNull ItemStack itemStack) {
-        if (this.entity instanceof Player player) {
-            PlayerEntityPvpExtension playerPvpExtension = (PlayerEntityPvpExtension) player;
-            return Component.literal(super.getName(itemStack).getString() +
-                    (playerPvpExtension.AhhPvP$isTeleportingUsingReturnScroll() ?
-                    " (Teleport in " + playerPvpExtension.AhhPvP$getReturnScrollTeleportCountDown() + " ticks)" : "")
-            );
-        } else return super.getName(itemStack);
     }
 }

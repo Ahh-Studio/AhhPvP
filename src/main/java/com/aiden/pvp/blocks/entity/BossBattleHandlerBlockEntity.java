@@ -2,7 +2,6 @@ package com.aiden.pvp.blocks.entity;
 
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.entities.MurdererEntity;
-import java.util.ArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -22,6 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
+
+import java.util.ArrayList;
 
 public class BossBattleHandlerBlockEntity extends BlockEntity {
     public ArrayList<Entity> players = new ArrayList<>();

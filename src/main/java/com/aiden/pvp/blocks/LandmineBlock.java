@@ -8,7 +8,9 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.*;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class LandmineBlock extends Block {
     public static final VoxelShape SHAPE = Shapes.or(Block.column(10.0, 0.0, 3.0), Block.column(8.0, 3.0, 4.0));

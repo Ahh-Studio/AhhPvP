@@ -1,10 +1,8 @@
 package com.aiden.pvp.entities;
 
-import com.aiden.pvp.util.explosion.FireballExplosionImpl;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
-import java.util.Optional;
-
+import com.aiden.pvp.util.explosion.FireballExplosionImpl;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +16,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 public class FireballEntity extends ThrowableItemProjectile {
     private float explosionPower = 12.0F;
@@ -86,22 +86,14 @@ public class FireballEntity extends ThrowableItemProjectile {
     private void explode(float power) {
         if (level() instanceof ServerLevel serverWorld) {
             FireballExplosionImpl.createExplosion(
-                    this.level(),
-                    this,
+                    this.level(), this,
                     serverWorld.damageSources().explosion(this, this.getOwner()),
                     new SimpleExplosionDamageCalculator(
-                            true,
-                            true,
-                            Optional.of(explosionDamage),
-                            Optional.empty()
+                            true, true,
+                            Optional.of(explosionDamage), Optional.empty()
                     ),
-                    this.getX() + (double) 0,
-                    this.getY() + (double) 0,
-                    this.getZ() + (double) 0,
-                    power,
-                    true,
-                    Level.ExplosionInteraction.MOB,
-                    SoundEvents.GENERIC_EXPLODE
+                    this.getX() + 0.0, this.getY() + 0.0, this.getZ() + 0.0,
+                    power, true, Level.ExplosionInteraction.MOB, SoundEvents.GENERIC_EXPLODE
 
             );
         }
