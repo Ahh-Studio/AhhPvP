@@ -9,14 +9,17 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class SettingsScreen extends Screen {
     private Screen parent;
     private int sliderValue1;
     private int sliderValue2;
+    private int sliderValue3;
     private ModSliderWidget sliderWidget1;
     private ModSliderWidget sliderWidget2;
+    private ModSliderWidget sliderWidget3;
 
     public SettingsScreen(Screen parent) {
         super(Component.translatable("screen.pvp.settings"));
@@ -68,13 +71,32 @@ public class SettingsScreen extends Screen {
                 if (this.value <= 0) this.value = 0.01;
             }
         };
+
+        sliderWidget3 = new ModSliderWidget(width / 4 - 100, height / 4 + 40, 200, 20,
+                Component.literal("Fireball Creates Fire: " + "[???]"), sliderValue3) {
+            @Override
+            public void updateMessage() {
+                this.setMessage(Component.literal("Fireball Creates Fire: " + (sliderValue3 != 0)));
+            }
+
+            @Override
+            public void applyValue() {
+                if (this.value > 0.5) {
+                    this.value = sliderValue3 = 1;
+                }
+                else {
+                    this.value = sliderValue3 = 0;
+                }
+            }
+        };
         this.addRenderableWidget(sliderWidget1);
         this.addRenderableWidget(sliderWidget2);
+        this.addRenderableWidget(sliderWidget3);
 
         Button applyButton = Button.builder(
                         Component.literal("Apply"),
-                        (button) -> {
-                            SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2);
+                        _ -> {
+                            SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2, sliderValue3 != 0);
                             ClientPlayNetworking.send(payload);
                             this.onClose();
                         })
@@ -85,7 +107,7 @@ public class SettingsScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
         graphics.text(this.font, title, 40, 40 - this.font.lineHeight - 10, 0xFFFFFFFF, true);
     }
@@ -96,16 +118,17 @@ public class SettingsScreen extends Screen {
         minecraft.setScreen(this.parent);
     }
 
-    public void setSliderValues(int sliderValue1, int sliderValue2) {
+    public void setSliderValues(int sliderValue1, int sliderValue2, boolean sliderValue3) {
         this.sliderValue1 = sliderValue1;
         this.sliderValue2 = sliderValue2;
+        this.sliderValue3 = sliderValue3 ? 1 : 0;
         if (sliderWidget1 != null && sliderWidget2 != null) {
-            // 更新滑块1的value和显示
             sliderWidget1.setValue((double) sliderValue1 / 100);
             sliderWidget1.updateMessage();
-            // 更新滑块2的value和显示
             sliderWidget2.setValue((double) sliderValue2 / 10);
             sliderWidget2.updateMessage();
+            sliderWidget3.setValue(sliderValue3 ? 1 : 0);
+            sliderWidget3.updateMessage();
         }
     }
 }

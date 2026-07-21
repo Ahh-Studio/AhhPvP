@@ -43,7 +43,7 @@ public abstract class LivingEntityMixin {
         String stackTrace = java.util.Arrays.stream(Thread.currentThread().getStackTrace())
                 .skip(2)
                 .limit(10)
-                .map(s -> s.getMethodName())
+                .map(StackTraceElement::getMethodName)
                 .toList()
                 .toString();
         if (stackTrace.contains("blockedByItem")) {

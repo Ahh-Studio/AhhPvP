@@ -85,6 +85,7 @@ public class FireballEntity extends ThrowableItemProjectile {
 
     private void explode(float power) {
         if (level() instanceof ServerLevel serverWorld) {
+            boolean createFire = serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_CREATES_FIRE);
             FireballExplosionImpl.createExplosion(
                     this.level(), this,
                     serverWorld.damageSources().explosion(this, this.getOwner()),
@@ -93,8 +94,7 @@ public class FireballEntity extends ThrowableItemProjectile {
                             Optional.of(explosionDamage), Optional.empty()
                     ),
                     this.getX() + 0.0, this.getY() + 0.0, this.getZ() + 0.0,
-                    power, true, Level.ExplosionInteraction.MOB, SoundEvents.GENERIC_EXPLODE
-
+                    power, createFire, Level.ExplosionInteraction.MOB, SoundEvents.GENERIC_EXPLODE
             );
         }
     }

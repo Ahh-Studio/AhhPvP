@@ -57,6 +57,7 @@ public class PacketListeners {
             ServerLevel serverWorld = context.player().level();
             serverWorld.getGameRules().set(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER, payload.value1(), serverWorld.getServer());
             serverWorld.getGameRules().set(ModGameRules.PHDI, payload.value2(), serverWorld.getServer());
+            serverWorld.getGameRules().set(ModGameRules.PvpMod_FIREBALL_CREATES_FIRE, payload.value3(), serverWorld.getServer());
         });
     }
 
@@ -64,7 +65,8 @@ public class PacketListeners {
         if (context.client().screen instanceof SettingsScreen settingsScreen) {
             settingsScreen.setSliderValues(
                     payload.value1(),
-                    payload.value2()
+                    payload.value2(),
+                    payload.value3()
             );
         }
     }
@@ -77,7 +79,8 @@ public class PacketListeners {
                         serverPlayer,
                         new GetGameRulesS2CPayload(
                                 serverPlayer.level().getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER),
-                                serverPlayer.level().getGameRules().get(ModGameRules.PHDI)
+                                serverPlayer.level().getGameRules().get(ModGameRules.PHDI),
+                                serverPlayer.level().getGameRules().get(ModGameRules.PvpMod_FIREBALL_CREATES_FIRE)
                         )
                 );
             }
