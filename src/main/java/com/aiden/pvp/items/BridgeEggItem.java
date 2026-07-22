@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,21 +33,21 @@ public class BridgeEggItem extends EggItem {
                 SoundSource.PLAYERS
         );
 
-        // 仅在服务器端生成实体（确保同步到客户端）
         if (world instanceof ServerLevel serverWorld) {
-            // 使用定义的投掷力度，替换原POWER
-            Projectile.spawnProjectileFromRotation(
-                    BridgeEggEntity::new,  // 实体构造器
-                    serverWorld,          // 服务器世界
-                    itemStack,            // 物品栈
-                    user,                 // 投掷者
-                    0.0F,                 // 垂直偏移
-                    THROW_POWER,          // 投掷力度
-                    1.0F                  // 散布范围（1.0F为原版鸡蛋散布）
+            Projectile.ProjectileFactory<BridgeEggEntity> creator = BridgeEggEntity::new;
+            Projectile.spawnProjectile(
+                    creator.create(serverWorld, user, itemStack),
+                    serverWorld,
+                    itemStack,
+                    projectile -> {
+                        float xd = -Mth.sin(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0));
+                        float yd = -Mth.sin((user.getXRot() + 0.0F) * (float) (Math.PI / 180.0));
+                        float zd = Mth.cos(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0));
+                        projectile.shoot(xd, yd, zd, THROW_POWER, 1.0F);
+                    }
             );
         }
 
-        // 更新统计信息和物品数量
         user.awardStat(Stats.ITEM_USED.get(this));
         itemStack.consume(1, user);
 

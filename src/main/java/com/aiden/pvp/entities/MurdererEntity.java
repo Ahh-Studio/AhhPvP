@@ -41,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
-import java.util.Objects;
 
 public class MurdererEntity extends Monster {
     private int wTapFreezeTicks;
