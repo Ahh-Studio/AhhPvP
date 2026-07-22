@@ -25,7 +25,6 @@ public class BridgeEggItem extends EggItem {
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack itemStack = user.getItemInHand(hand);
 
-        // 播放投掷声音（客户端和服务器都能听到）
         world.playSound(
                 null,
                 user.getX(), user.getY(), user.getZ(),
@@ -34,9 +33,8 @@ public class BridgeEggItem extends EggItem {
         );
 
         if (world instanceof ServerLevel serverWorld) {
-            Projectile.ProjectileFactory<BridgeEggEntity> creator = BridgeEggEntity::new;
             Projectile.spawnProjectile(
-                    creator.create(serverWorld, user, itemStack),
+                    new BridgeEggEntity(serverWorld, user, itemStack),
                     serverWorld,
                     itemStack,
                     projectile -> {
