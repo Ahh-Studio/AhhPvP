@@ -54,6 +54,23 @@ public abstract class ModItems {
     public static final Item TNT = registerBlock(ModBlocks.TNT, TntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.tnt"));
     public static final Item THROWABLE_TNT = registerBlock(ModBlocks.THROWABLE_TNT, ThrowableTntBlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.throwable_tnt"));
     public static final Item STRONG_GLASS = registerBlock(ModBlocks.STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.strong_glass"));
+    public static final Item WHITE_STRONG_GLASS = registerBlock(ModBlocks.WHITE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.white_strong_glass"));
+    public static final Item LIGHT_GRAY_STRONG_GLASS = registerBlock(ModBlocks.LIGHT_GRAY_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.light_gray_strong_glass"));
+    public static final Item GRAY_STRONG_GLASS = registerBlock(ModBlocks.GRAY_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.gray_strong_glass"));
+    public static final Item BLACK_STRONG_GLASS = registerBlock(ModBlocks.BLACK_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.black_strong_glass"));
+    public static final Item BROWN_STRONG_GLASS = registerBlock(ModBlocks.BROWN_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.brown_strong_glass"));
+    public static final Item RED_STRONG_GLASS = registerBlock(ModBlocks.RED_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.red_strong_glass"));
+    public static final Item ORANGE_STRONG_GLASS = registerBlock(ModBlocks.ORANGE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.orange_strong_glass"));
+    public static final Item YELLOW_STRONG_GLASS = registerBlock(ModBlocks.YELLOW_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.yellow_strong_glass"));
+    public static final Item LIME_STRONG_GLASS = registerBlock(ModBlocks.LIME_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.lime_strong_glass"));
+    public static final Item GREEN_STRONG_GLASS = registerBlock(ModBlocks.GREEN_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.green_strong_glass"));
+    public static final Item CYAN_STRONG_GLASS = registerBlock(ModBlocks.CYAN_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.cyan_strong_glass"));
+    public static final Item LIGHT_BLUE_STRONG_GLASS = registerBlock(ModBlocks.LIGHT_BLUE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.light_blue_strong_glass"));
+    public static final Item BLUE_STRONG_GLASS = registerBlock(ModBlocks.BLUE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.blue_strong_glass"));
+    public static final Item PURPLE_STRONG_GLASS = registerBlock(ModBlocks.PURPLE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.purple_strong_glass"));
+    public static final Item MAGENTA_STRONG_GLASS = registerBlock(ModBlocks.MAGENTA_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.magenta_strong_glass"));
+    public static final Item PINK_STRONG_GLASS = registerBlock(ModBlocks.PINK_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.pink_strong_glass"));
+
     public static final Item GOLDEN_HEAD = registerBlock(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
     public static final Item BOSS_SPAWNER = registerBlock(ModBlocks.BOSS_SPAWNER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
     public static final Item LANDMINE = registerBlock(ModBlocks.LANDMINE, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.landmine"));
@@ -77,30 +94,46 @@ public abstract class ModItems {
             .icon(() -> new ItemStack(Items.FISHING_ROD))
             .title(Component.translatable("itemGroup.pvp_mod"))
             .displayItems((p, o) -> {
-                o.accept(ModItems.FIREBALL);
-                o.accept(ModItems.SELF_RES_PLATFORM);
-                o.accept(ModItems.BRIDGE_EGG);
-                o.accept(ModItems.FISHING_ROD);
-                o.accept(ModItems.BED_BUG);
-                o.accept(ModItems.RETURN_SCROLL);
-                o.accept(ModItems.CHICKEN_DEFENSE);
-                o.accept(ModItems.TNT);
-                o.accept(ModItems.THROWABLE_TNT);
-                o.accept(ModItems.STRONG_GLASS);
-                o.accept(ModItems.BOSS_SPAWNER);
-                o.accept(ModItems.BOSS_KEY);
-                o.accept(ModItems.GOLDEN_HEAD);
-                o.accept(ModItems.CARBON_RUNE);
-                o.accept(ModItems.IRON_RUNE);
-                o.accept(ModItems.WOODEN_SWORD);
-                o.accept(ModItems.STONE_SWORD);
-                o.accept(ModItems.IRON_SWORD);
-                o.accept(ModItems.DIAMOND_SWORD);
-                o.accept(ModItems.THROWABLE_DAGGER);
-                o.accept(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE);
-                o.accept(ModItems.MURDERER_SPAWN_EGG);
-                o.accept(ModItems.LANDMINE);
-                o.accept(ModItems.AXE_OF_MURDER);
+                o.accept(FIREBALL);
+                o.accept(SELF_RES_PLATFORM);
+                o.accept(BRIDGE_EGG);
+                o.accept(FISHING_ROD);
+                o.accept(BED_BUG);
+                o.accept(RETURN_SCROLL);
+                o.accept(CHICKEN_DEFENSE);
+                o.accept(TNT);
+                o.accept(THROWABLE_TNT);
+                o.accept(STRONG_GLASS);
+                o.accept(WHITE_STRONG_GLASS);
+                o.accept(LIGHT_GRAY_STRONG_GLASS);
+                o.accept(GRAY_STRONG_GLASS);
+                o.accept(BLACK_STRONG_GLASS);
+                o.accept(BROWN_STRONG_GLASS);
+                o.accept(RED_STRONG_GLASS);
+                o.accept(ORANGE_STRONG_GLASS);
+                o.accept(YELLOW_STRONG_GLASS);
+                o.accept(LIME_STRONG_GLASS);
+                o.accept(GREEN_STRONG_GLASS);
+                o.accept(CYAN_STRONG_GLASS);
+                o.accept(LIGHT_BLUE_STRONG_GLASS);
+                o.accept(BLUE_STRONG_GLASS);
+                o.accept(PURPLE_STRONG_GLASS);
+                o.accept(MAGENTA_STRONG_GLASS);
+                o.accept(PINK_STRONG_GLASS);
+                o.accept(BOSS_SPAWNER);
+                o.accept(BOSS_KEY);
+                o.accept(GOLDEN_HEAD);
+                o.accept(CARBON_RUNE);
+                o.accept(IRON_RUNE);
+                o.accept(WOODEN_SWORD);
+                o.accept(STONE_SWORD);
+                o.accept(IRON_SWORD);
+                o.accept(DIAMOND_SWORD);
+                o.accept(THROWABLE_DAGGER);
+                o.accept(BBU_UPGRADE_SMITHING_TEMPLATE);
+                o.accept(MURDERER_SPAWN_EGG);
+                o.accept(LANDMINE);
+                o.accept(AXE_OF_MURDER);
                 p.holders().lookup(Registries.POTION).ifPresent(potion -> potion.listElements()
                         .filter(potionReference -> potionReference.value().isEnabled(p.enabledFeatures()) && (potionReference.is(LONG_INVISIBILITY_POTION) || potionReference.is(SHORT_INVISIBILITY_POTION)))
                         .map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
@@ -120,6 +153,7 @@ public abstract class ModItems {
     }
 
     private static Item registerBlock(final Block block, final BiFunction<Block, Item.Properties, Item> itemFactory, final Item.Properties properties) {
+        @SuppressWarnings("deprecation")
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, block.builtInRegistryHolder().key().identifier());
 
         Item.Properties p = properties.setId(key);

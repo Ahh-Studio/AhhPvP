@@ -1,5 +1,6 @@
 package com.aiden.pvp.datagen.lang;
 
+import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -20,6 +21,22 @@ public class PvPEnUsLangProvider extends FabricLanguageProvider {
         builder.add("block.pvp.landmine", "Landmine");
         builder.add("block.pvp.slime_block", "Special Slime Block");
         builder.add("block.pvp.strong_glass", "Strong Glass");
+        builder.add(ModBlocks.BLACK_STRONG_GLASS, "Black Strong Glass");
+        builder.add(ModBlocks.BLUE_STRONG_GLASS, "Blue Strong Glass");
+        builder.add(ModBlocks.BROWN_STRONG_GLASS, "Brown Strong Glass");
+        builder.add(ModBlocks.CYAN_STRONG_GLASS, "Cyan Strong Glass");
+        builder.add(ModBlocks.GRAY_STRONG_GLASS, "Gray Strong Glass");
+        builder.add(ModBlocks.GREEN_STRONG_GLASS, "Green Strong Glass");
+        builder.add(ModBlocks.LIGHT_BLUE_STRONG_GLASS, "Light Blue Strong Glass");
+        builder.add(ModBlocks.LIGHT_GRAY_STRONG_GLASS, "Light Gray Strong Glass");
+        builder.add(ModBlocks.LIME_STRONG_GLASS, "Lime Strong Glass");
+        builder.add(ModBlocks.MAGENTA_STRONG_GLASS, "Magenta Strong Glass");
+        builder.add(ModBlocks.ORANGE_STRONG_GLASS, "Orange Strong Glass");
+        builder.add(ModBlocks.PURPLE_STRONG_GLASS, "Purple Strong Glass");
+        builder.add(ModBlocks.PINK_STRONG_GLASS, "Pink Strong Glass");
+        builder.add(ModBlocks.RED_STRONG_GLASS, "Red Strong Glass");
+        builder.add(ModBlocks.WHITE_STRONG_GLASS, "White Strong Glass");
+        builder.add(ModBlocks.YELLOW_STRONG_GLASS,  "Yellow Strong Glass");
         builder.add("block.pvp.throwable_tnt", "Throwable TNT");
         builder.add("block.pvp.tnt", "TNT");
 

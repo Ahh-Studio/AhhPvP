@@ -1,5 +1,6 @@
 package com.aiden.pvp.datagen.lang;
 
+import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -20,6 +21,22 @@ public class PvPZhCnLangProvider extends FabricLanguageProvider {
         builder.add("block.pvp.landmine", "地雷");
         builder.add("block.pvp.slime_block", "特殊的黏液块");
         builder.add("block.pvp.strong_glass", "钢化玻璃");
+        builder.add(ModBlocks.BLACK_STRONG_GLASS, "黑色钢化玻璃");
+        builder.add(ModBlocks.BLUE_STRONG_GLASS, "蓝色钢化玻璃");
+        builder.add(ModBlocks.BROWN_STRONG_GLASS, "棕色钢化玻璃");
+        builder.add(ModBlocks.CYAN_STRONG_GLASS, "青色钢化玻璃");
+        builder.add(ModBlocks.GRAY_STRONG_GLASS, "灰色钢化玻璃");
+        builder.add(ModBlocks.GREEN_STRONG_GLASS, "绿色钢化玻璃");
+        builder.add(ModBlocks.LIGHT_BLUE_STRONG_GLASS, "淡蓝色钢化玻璃");
+        builder.add(ModBlocks.LIGHT_GRAY_STRONG_GLASS, "淡灰色钢化玻璃");
+        builder.add(ModBlocks.LIME_STRONG_GLASS, "黄绿色钢化玻璃");
+        builder.add(ModBlocks.MAGENTA_STRONG_GLASS, "品红色钢化玻璃");
+        builder.add(ModBlocks.ORANGE_STRONG_GLASS, "橙色钢化玻璃");
+        builder.add(ModBlocks.PURPLE_STRONG_GLASS, "紫色钢化玻璃");
+        builder.add(ModBlocks.PINK_STRONG_GLASS, "粉色钢化玻璃");
+        builder.add(ModBlocks.RED_STRONG_GLASS, "红色钢化玻璃");
+        builder.add(ModBlocks.WHITE_STRONG_GLASS, "白色钢化玻璃");
+        builder.add(ModBlocks.YELLOW_STRONG_GLASS,  "黄色钢化玻璃");
         builder.add("block.pvp.throwable_tnt", "可投掷的TNT");
         builder.add("block.pvp.tnt", "TNT");
 

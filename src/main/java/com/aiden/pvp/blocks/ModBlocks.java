@@ -64,6 +64,214 @@ public class ModBlocks {
                     .isSuffocating(Blocks::never)
                     .isViewBlocking(Blocks::never)
     );
+    public static final Block WHITE_STRONG_GLASS = register(
+            "white_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block LIGHT_GRAY_STRONG_GLASS = register(
+            "light_gray_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block GRAY_STRONG_GLASS = register(
+            "gray_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block BLACK_STRONG_GLASS = register(
+            "black_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block BROWN_STRONG_GLASS = register(
+            "brown_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block RED_STRONG_GLASS = register(
+            "red_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block ORANGE_STRONG_GLASS = register(
+            "orange_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block YELLOW_STRONG_GLASS = register(
+            "yellow_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block LIME_STRONG_GLASS = register(
+            "lime_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block GREEN_STRONG_GLASS = register(
+            "green_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block CYAN_STRONG_GLASS = register(
+            "cyan_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block LIGHT_BLUE_STRONG_GLASS = register(
+            "light_blue_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block BLUE_STRONG_GLASS = register(
+            "blue_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block PURPLE_STRONG_GLASS = register(
+            "purple_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block MAGENTA_STRONG_GLASS = register(
+            "magenta_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
+    public static final Block PINK_STRONG_GLASS = register(
+            "pink_strong_glass",
+            TransparentBlock::new,
+            BlockBehaviour.Properties.of()
+                    .sound(SoundType.GLASS)
+                    .strength(0.3F, 2147483647.0F)
+                    .noOcclusion()
+                    .instrument(NoteBlockInstrument.HAT)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
+    );
     public static final Block GOLDEN_HEAD = register(
             "golden_head",
             GoldenHeadBlock::new,
