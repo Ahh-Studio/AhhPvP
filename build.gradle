@@ -20,10 +20,10 @@ loom {
 
 repositories {
     mavenCentral()
-	maven {
-		name = "Terraformers"
-		url = "https://maven.terraformersmc.com/"
-	}
+	//    maven {
+//		name = "Terraformers"
+//		url = "https://maven.terraformersmc.com/"
+//	}
     mavenLocal()
 }
 
@@ -37,7 +37,8 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	// implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+//	ModMenu: using local stubs in src/main/java/com/terraformersmc/modmenu/api/ instead
+//	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 
@@ -62,9 +63,17 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
+	// Exclude ModMenu API stubs — they are only for compilation.
+	// At runtime the real ModMenu jar provides these classes.
+	exclude 'com/terraformersmc/modmenu/api/**'
+
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
+}
+
+tasks.withType(Jar).configureEach {
+	exclude 'com/terraformersmc/modmenu/api/**'
 }
 
 publishing {

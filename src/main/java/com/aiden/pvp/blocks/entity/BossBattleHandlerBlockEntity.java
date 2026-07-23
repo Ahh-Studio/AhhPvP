@@ -26,12 +26,7 @@ import java.util.ArrayList;
 
 public class BossBattleHandlerBlockEntity extends BlockEntity {
     public ArrayList<Entity> players = new ArrayList<>();
-    public ServerBossEvent bossBar = new ServerBossEvent(
-            Mth.createInsecureUUID(this.getLevel().getRandom()),
-            Component.literal("AhhPvP Boss"),
-            BossEvent.BossBarColor.YELLOW,
-            BossEvent.BossBarOverlay.NOTCHED_20
-    );
+    public ServerBossEvent bossBar;
 
     public BossBattleHandlerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.BOSS_BATTLE_HANDLER_BLOCK_ENTITY, pos, state);
@@ -42,6 +37,15 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
     }
 
     private void tick(Level world, BlockPos pos, BlockState state, BossBattleHandlerBlockEntity blockEntity) {
+        if (this.bossBar == null) {
+            this.bossBar = new ServerBossEvent(
+                    Mth.createInsecureUUID(world.getRandom()),
+                    Component.literal("AhhPvP Boss"),
+                    BossEvent.BossBarColor.YELLOW,
+                    BossEvent.BossBarOverlay.NOTCHED_20
+            );
+        }
+
         int x= pos.getX(); int y = pos.getY(); int z = pos.getZ();
         AABB box = new AABB(
                 x + 25, y + 12, z + 25,
@@ -105,6 +109,7 @@ public class BossBattleHandlerBlockEntity extends BlockEntity {
     }
 
     public void removeBossBarPlayers() {
+        if (this.bossBar == null) return;
         for (Entity player : this.players) {
             if (player instanceof ServerPlayer serverPlayer) {
                 this.bossBar.removePlayer(serverPlayer);

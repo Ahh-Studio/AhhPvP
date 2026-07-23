@@ -56,7 +56,7 @@ public class FireballEntity extends ThrowableItemProjectile {
         super.onHitBlock(blockHitResult);
         Level var3 = this.level();
         if (var3 instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_EXPLODE_POWER) / 10;
             this.explode(this.explosionPower);
             this.discard();
         }
@@ -66,7 +66,7 @@ public class FireballEntity extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (this.level() instanceof ServerLevel serverWorld) {
-            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_EXPLODE_POWER) / 10;
+            explosionPower = (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_EXPLODE_POWER) / 10;
             this.explode(this.explosionPower);
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.hurtServer(serverWorld, damageSources().explosion(this, this.getOwner()), 2.0F);
@@ -85,7 +85,7 @@ public class FireballEntity extends ThrowableItemProjectile {
 
     private void explode(float power) {
         if (level() instanceof ServerLevel serverWorld) {
-            boolean createFire = serverWorld.getGameRules().get(ModGameRules.PvpMod_FIREBALL_CREATES_FIRE);
+            boolean createFire = serverWorld.getGameRules().get(ModGameRules.FIREBALL_CREATES_FIRE);
             FireballExplosionImpl.createExplosion(
                     this.level(), this,
                     serverWorld.damageSources().explosion(this, this.getOwner()),

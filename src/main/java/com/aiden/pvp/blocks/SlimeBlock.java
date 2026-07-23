@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     public static final MapCodec<SlimeBlock> CODEC = simpleCodec(SlimeBlock::new);
-    public static final IntegerProperty VANISH_COUNTDOWN = IntegerProperty.create("vanish_countdown", 0, 400);
+    public static final IntegerProperty VANISH_COUNTDOWN = IntegerProperty.create("vanish_countdown", 0, 1601);
 
     @Override
     public MapCodec<SlimeBlock> codec() {
@@ -32,7 +32,7 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
 
     public SlimeBlock(Properties settings) {
         super(settings);
-        registerDefaultState(defaultBlockState().setValue(VANISH_COUNTDOWN, 400));
+        registerDefaultState(defaultBlockState().setValue(VANISH_COUNTDOWN, 0));
     }
 
     @Override
@@ -75,20 +75,6 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
         return new SlimeBlockEntity(pos, state);
     }
 
-    @Override
-    public void setPlacedBy(
-            Level world,
-            BlockPos pos,
-            BlockState state,
-            @Nullable LivingEntity placer,
-            ItemStack itemStack)
-    {
-        super.setPlacedBy(world, pos, state, placer, itemStack);
-        if (!world.isClientSide()) {
-            world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
-                    .ifPresent(SlimeBlockEntity::startCountdown);
-        }
-    }
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {

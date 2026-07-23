@@ -3,10 +3,12 @@ package com.aiden.pvp.items;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
+import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,7 +25,7 @@ public class SelfRescuePlatformItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level level, Player user, InteractionHand hand) {
         PlayerEntityPvpExtension playerEntityPvpExtension = (PlayerEntityPvpExtension) user;
         if (playerEntityPvpExtension.AhhPvP$getSelfRescuePlatformCooldown() <= 0) {
             ItemStack itemStack = user.getItemInHand(hand);
@@ -48,20 +50,16 @@ public class SelfRescuePlatformItem extends Item {
             blockPos.add(blockPos(user, -1, -2));
 
             for (BlockPos pos : blockPos) {
-                if (world.getBlockState(pos).isAir() && !world.isClientSide()) {
-                    world.setBlock(pos, ModBlocks.SPECIAL_SLIME_BLOCK.defaultBlockState(), 6);
+                if (level.getBlockState(pos).isAir() && !level.isClientSide()) {
+                    level.setBlock(pos, ModBlocks.SPECIAL_SLIME_BLOCK.defaultBlockState(), 6);
                 }
             }
             itemStack.consume(1, user);
 
-            for (BlockPos pos : blockPos) {
-                if (!world.isClientSide()) {
-                    world.getBlockEntity(pos, ModBlockEntityTypes.SLIME_BLOCK_ENTITY)
-                            .ifPresent(SlimeBlockEntity::startCountdown);
-                }
+            if (level instanceof ServerLevel serverLevel) {
+                int cd = serverLevel.getGameRules().get(ModGameRules.SELF_RES_PLATFORM_CD);
+                playerEntityPvpExtension.AhhPvP$setSelfRescuePlatformCooldown(cd);
             }
-
-            playerEntityPvpExtension.AhhPvP$setSelfRescuePlatformCooldown(400);
 
             return InteractionResult.CONSUME;
         } else {
