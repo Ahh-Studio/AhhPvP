@@ -1,6 +1,7 @@
 package com.aiden.pvp.client;
 
 import com.aiden.pvp.PvP;
+import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.client.render.entity.ChickenDefenseEntityRenderer;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
@@ -17,6 +18,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -24,6 +26,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
@@ -47,6 +51,8 @@ public class PvPClient implements ClientModInitializer {
         EntityRenderers.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
+
+        BlockEntityRenderers.register(ModBlockEntityTypes.DEFENSE_TOWER_BLOCK_ENTITY, ChestRenderer::new);
 
         throwTntKeyBinding = KeyMappingHelper.registerKeyMapping(
                 new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, PVP_KEY_CATEGORY)

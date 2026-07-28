@@ -13,14 +13,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ModBlockEntityTypes {
 
-    public static BlockEntityType<? extends SlimeBlockEntity> SLIME_BLOCK_ENTITY;
-    public static BlockEntityType<? extends BossSpawnerBlockEntity> BOSS_SPAWNER_BLOCK_ENTITY;
-    public static BlockEntityType<? extends BossBattleHandlerBlockEntity> BOSS_BATTLE_HANDLER_BLOCK_ENTITY;
+    public static BlockEntityType<SlimeBlockEntity> SLIME_BLOCK_ENTITY;
+    public static BlockEntityType<BossSpawnerBlockEntity> BOSS_SPAWNER_BLOCK_ENTITY;
+    public static BlockEntityType<BossBattleHandlerBlockEntity> BOSS_BATTLE_HANDLER_BLOCK_ENTITY;
+    public static BlockEntityType<DefenseTowerBlockEntity> DEFENSE_TOWER_BLOCK_ENTITY;
 
     @NotNull
-    public static <T extends BlockEntity> BlockEntityType<? extends T> register(
+    public static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
-            FabricBlockEntityTypeBuilder.Factory<? extends T> factory,
+            FabricBlockEntityTypeBuilder.Factory<T> factory,
             Block block)
     {
          return Registry.register(
@@ -37,6 +38,7 @@ public class ModBlockEntityTypes {
             SLIME_BLOCK_ENTITY = register("slime_block_entity", SlimeBlockEntity::new, ModBlocks.SPECIAL_SLIME_BLOCK);
             BOSS_SPAWNER_BLOCK_ENTITY = register("boss_spawner_block_entity", BossSpawnerBlockEntity::new, ModBlocks.BOSS_SPAWNER);
             BOSS_BATTLE_HANDLER_BLOCK_ENTITY = register("boss_battle_handler_block_entity", BossBattleHandlerBlockEntity::new, ModBlocks.BOSS_BATTLE_HANDLER);
+            DEFENSE_TOWER_BLOCK_ENTITY = register("defense_tower_block_entity", DefenseTowerBlockEntity::new, ModBlocks.DEFENSE_TOWER);
             PvP.LOGGER.info("[Block Entity Type Initializer] Mod Block Entity Types Initialized!");
         } catch (Exception e) {
             PvP.LOGGER.warn("[Block Entity Type Initializer] An Error Occurred: " + e.getMessage());

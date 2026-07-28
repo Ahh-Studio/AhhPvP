@@ -44,7 +44,8 @@ public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, 
         );
     }
 
-    public void updateRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
+    @Override
+    public void extractRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
         super.extractRenderState(murdererEntity, murdererEntityRenderState, f);
         ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
         murdererEntityRenderState.hasVehicle = murdererEntity.isPassenger();

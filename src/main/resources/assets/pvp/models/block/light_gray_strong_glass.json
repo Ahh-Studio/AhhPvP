@@ -1,0 +1,9 @@
+{
+    "parent": "minecraft:block/cube_all",
+    "textures": {
+        "all": {
+            "force_translucent": true,
+            "sprite": "pvp:block/light_gray_strong_glass"
+        }
+    }
+}
