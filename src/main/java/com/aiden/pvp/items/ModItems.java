@@ -70,7 +70,7 @@ public abstract class ModItems {
     public static final Item PURPLE_STRONG_GLASS = registerBlock(ModBlocks.PURPLE_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.purple_strong_glass"));
     public static final Item MAGENTA_STRONG_GLASS = registerBlock(ModBlocks.MAGENTA_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.magenta_strong_glass"));
     public static final Item PINK_STRONG_GLASS = registerBlock(ModBlocks.PINK_STRONG_GLASS, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.pink_strong_glass"));
-    public static final Item DEFENSE_TOWER = registerBlock(ModBlocks.DEFENSE_TOWER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.defense_tower"));
+    // public static final Item DEFENSE_TOWER = registerBlock(ModBlocks.DEFENSE_TOWER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.defense_tower"));
 
     public static final Item GOLDEN_HEAD = registerBlock(ModBlocks.GOLDEN_HEAD, GoldenHeadItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(2).overrideDescription("block.pvp.golden_head"));
     public static final Item BOSS_SPAWNER = registerBlock(ModBlocks.BOSS_SPAWNER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
@@ -121,7 +121,8 @@ public abstract class ModItems {
                 o.accept(PURPLE_STRONG_GLASS);
                 o.accept(MAGENTA_STRONG_GLASS);
                 o.accept(PINK_STRONG_GLASS);
-                o.accept(DEFENSE_TOWER);
+                // 未开发完成
+                // o.accept(DEFENSE_TOWER);
                 o.accept(BOSS_SPAWNER);
                 o.accept(BOSS_KEY);
                 o.accept(GOLDEN_HEAD);

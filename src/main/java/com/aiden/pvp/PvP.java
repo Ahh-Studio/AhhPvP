@@ -1,5 +1,6 @@
 package com.aiden.pvp;
 
+import com.aiden.pvp.blocks.DefenseTowerBlock;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.commands.ModCommands;
@@ -10,6 +11,7 @@ import com.aiden.pvp.payloads.*;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
@@ -32,6 +34,15 @@ public class PvP implements ModInitializer {
 		ModBlockEntityTypes.initialize();
 		ModEntityTypes.initialize();
 		ModCommands.initialize();
+
+		ServerTickEvents.END_SERVER_TICK.register(server ->
+				server.levelKeys().forEach(key -> {
+					var level = server.getLevel(key);
+					if (level != null) {
+						DefenseTowerBlock.processTasks(level);
+					}
+				})
+		);
 
         Item fireballItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MOD_ID, "fireball"));
         ProjectileDispenseBehavior projectileDispenserBehavior = new ProjectileDispenseBehavior(fireballItem);
