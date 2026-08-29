@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,6 +31,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+    @Unique
+    private boolean blockedByItemActive = false;
+
+    @Inject(method = "blockedByItem", at = @At("HEAD"))
+    private void onBlockedByItem(LivingEntity attacker, CallbackInfo ci) {
+        this.blockedByItemActive = true;
+    }
+
+    @Inject(method = "blockedByItem", at = @At("RETURN"))
+    private void onBlockedByItemReturn(LivingEntity attacker, CallbackInfo ci) {
+        this.blockedByItemActive = false;
+    }
+
     @Inject(
             method = "knockback",
             at = @At("HEAD"),
@@ -39,13 +53,7 @@ public abstract class LivingEntityMixin {
     public void takeKnockback(double strength, double x, double z, CallbackInfo ci) {
         LivingEntity instance = (LivingEntity) (Object) this;
 
-        String stackTrace = java.util.Arrays.stream(Thread.currentThread().getStackTrace())
-                .skip(2)
-                .limit(10)
-                .map(StackTraceElement::getMethodName)
-                .toList()
-                .toString();
-        if (stackTrace.contains("blockedByItem")) {
+        if (this.blockedByItemActive) {
             ci.cancel();
             return;
         }

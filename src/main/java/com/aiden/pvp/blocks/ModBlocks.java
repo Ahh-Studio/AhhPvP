@@ -112,7 +112,7 @@ public class ModBlocks {
     private static Block registerGlass(String name) {
         return register(name, TransparentBlock::new, BlockBehaviour.Properties.of()
                 .sound(SoundType.GLASS)
-                .strength(0.3F, 2147483647.0F)
+                .strength(0.3F, Float.MAX_VALUE)
                 .noOcclusion()
                 .instrument(NoteBlockInstrument.HAT)
                 .isValidSpawn(Blocks::never)
@@ -132,7 +132,8 @@ public class ModBlocks {
         try {
             PvP.LOGGER.info("[Block Initializer] Mod Blocks Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Block Initializer] An Error Occurred: {}", e.getMessage());
+            PvP.LOGGER.error("[Block Initializer] An Error Occurred: ", e);
+            throw new RuntimeException("Failed to initialize ModBlocks", e);
         }
     }
 }

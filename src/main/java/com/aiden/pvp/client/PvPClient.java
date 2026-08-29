@@ -47,7 +47,7 @@ public class PvPClient implements ClientModInitializer {
         EntityRenderers.register(ModEntityTypes.BRIDGE_EGG, context -> new ThrownItemRenderer<>(context, 1.0F, true));
         EntityRenderers.register(ModEntityTypes.BED_BUG, context -> new ThrownItemRenderer<>(context, 1.0F, true));
         EntityRenderers.register(ModEntityTypes.FISHING_BOBBER, FishingBobberEntityRenderer::new);
-        EntityRenderers.register(ModEntityTypes.EGGLLIT, ThrownItemRenderer::new);
+        EntityRenderers.register(ModEntityTypes.EGGLLET, ThrownItemRenderer::new);
         EntityRenderers.register(ModEntityTypes.DAGGER, DaggerEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.MURDERER, MurdererEntityRenderer::new);
         EntityRenderers.register(ModEntityTypes.CHICKEN_DEFENSE, ChickenDefenseEntityRenderer::new);
@@ -77,17 +77,16 @@ public class PvPClient implements ClientModInitializer {
             }
         }
         while (openSettingsKeyBinding.consumeClick()) {
-            Minecraft client = Minecraft.getInstance();
-            LocalPlayer player = client.player;
+            LocalPlayer player = minecraft.player;
 
             if (player == null || !player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) break;
 
-            if (client.screen == null) {
+            if (minecraft.screen == null) {
                 SettingsScreen settingsScreen = new SettingsScreen(null);
-                client.setScreen(settingsScreen);
+                minecraft.setScreen(settingsScreen);
                 break;
-            } else if (client.screen instanceof SettingsScreen) {
-                client.setScreen(null);
+            } else if (minecraft.screen instanceof SettingsScreen) {
+                minecraft.setScreen(null);
             }
         }
     }

@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public class ModCommands {
     public static void initialize() {
-        ClientCommandRegistrationCallback.EVENT.register((AhhpvpCommand::register));
+        ClientCommandRegistrationCallback.EVENT.register((AhhPvPCommand::register));
         CommandRegistrationCallback.EVENT.register(KitCommand::register);
     }
 }

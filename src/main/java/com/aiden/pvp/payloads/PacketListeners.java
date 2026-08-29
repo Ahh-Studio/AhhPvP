@@ -24,11 +24,12 @@ public class PacketListeners {
             if (user instanceof LivingEntity livingEntityUser) {
                 PrimedTnt tnt = new PrimedTnt(user.level(), user.getX(), user.getEyeY(), user.getZ(), livingEntityUser);
                 // Shoot
+                RandomSource random = user.level().getRandom();
                 Vec3 vec3d = new Vec3(
                         -Mth.sin(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0)),
                         -Mth.sin((user.getXRot() + 0.0F) * (float) (Math.PI / 180.0)),
                         Mth.cos(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0))
-                ).normalize().add(RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
+                ).normalize().add(random.triangle(0.0, 0.0172275 * 1.0F), random.triangle(0.0, 0.0172275 * 1.0F), random.triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
 
                 tnt.setDeltaMovement(vec3d);
                 tnt.needsSync = true;

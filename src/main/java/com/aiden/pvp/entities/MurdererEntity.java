@@ -56,7 +56,7 @@ public class MurdererEntity extends Monster {
     private byte placeBlockCD = 0;
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, Level world) {
-        super(ModEntityTypes.MURDERER, world);
+        super(type, world);
         this.wTapFreezeTicks = 0;
     }
 
@@ -116,22 +116,22 @@ public class MurdererEntity extends Monster {
         // water bucket MLG
         {
             BlockState blockState = this.level().getBlockState(new BlockPos(
-                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    Mth.floor(this.position().x),
                     ((int) this.position().y) - 1,
-                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                    Mth.floor(this.position().z)
             ));
 
             BlockState blockState1 = this.level().getBlockState(new BlockPos(
-                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    Mth.floor(this.position().x),
                     ((int) this.position().y) - 2,
-                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                    Mth.floor(this.position().z)
             ));
 
             if (this.fallDistance > 3 && blockState.isAir() && !blockState1.isAir()) {
                 this.waterBucketMLGWaterPos = new BlockPos(
-                        this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                        Mth.floor(this.position().x),
                         ((int) this.position().y) - 1,
-                        this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                        Mth.floor(this.position().z)
                 );
                 this.level().setBlock(
                         this.waterBucketMLGWaterPos,
@@ -142,9 +142,9 @@ public class MurdererEntity extends Monster {
             }
 
             BlockState blockState2 = this.level().getBlockState(new BlockPos(
-                    this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                    Mth.floor(this.position().x),
                     (int) this.position().y - 1,
-                    this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                    Mth.floor(this.position().z)
             ));
 
             if (this.isDoingWaterBucketMLG
@@ -165,21 +165,21 @@ public class MurdererEntity extends Monster {
 
     private void placeBlocksUnderFeetWhenBeBlocked() {
         if (!this.hasLineOfSight(this.getTarget())) { // 看不到目标
-            if (this.getRandom().nextIntBetweenInclusive(0, 10) <= 0.5) { // 随机，有概率不触发
+            if (this.getRandom().nextFloat() < 0.5F) { // 随机，有概率不触发
                 if (this.level() instanceof ServerLevel) { // 服务端运作
                     final BlockState blockState = this.level().getBlockState(new BlockPos(
-                            this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                            Mth.floor(this.position().x),
                             ((int) this.position().y) - 1,
-                            this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                            Mth.floor(this.position().z)
                     ));
 
                     if (!blockState.isAir()) {
                         this.jumpFromGround();
                         this.level().setBlock(
                                 new BlockPos(
-                                        this.position().x >= 0 ? (int) this.position().x : (int) this.position().x - 1,
+                                        Mth.floor(this.position().x),
                                         (int) this.position().y,
-                                        this.position().z >= 0 ? (int) this.position().z : (int) this.position().z - 1
+                                        Mth.floor(this.position().z)
                                 ),
                                 Blocks.DIRT.defaultBlockState(),
                                 6
@@ -328,7 +328,6 @@ public class MurdererEntity extends Monster {
 
             this.mob.enderPearlCooldownTicks = ENDER_PEARL_COOLDOWN;
             this.mob.getNavigation().stop();
-            this.mob.lookAt(this.mob.getTarget(), 30.0F, 30.0F);
         }
 
         @Override
@@ -544,12 +543,12 @@ public class MurdererEntity extends Monster {
 
                 // Approach by fireball
                 BlockState blockState = this.actor.level().getBlockState(new BlockPos(
-                        this.actor.position().x >= 0 ? (int) this.actor.position().x : (int) this.actor.position().x - 1,
+                        Mth.floor(this.actor.position().x),
                         (int) this.actor.position().y - 1,
-                        this.actor.position().z >= 0 ? (int) this.actor.position().z : (int) this.actor.position().z - 1
+                        Mth.floor(this.actor.position().z)
                 ));
                 if (this.actor.getHealth() >= 10 && !blockState.isAir() && this.actor.fireballCooldownTicks <= 0) { // 同时满足：血量>10、脚底方块不是空气、冷却结束
-                    if (this.actor.getRandom().nextIntBetweenInclusive(1, 10) <= 5) { // 随机，有概率不触发
+                    if (this.actor.getRandom().nextFloat() < 0.5F) { // 随机，有概率不触发
                         if (this.actor.level() instanceof ServerLevel serverWorld) { // 服务端生成实体
                             FireballEntity fireballEntity = new FireballEntity(this.actor, this.actor.level(), ModItems.FIREBALL.getDefaultInstance());
                             fireballEntity.setPosRaw(this.actor.getX(), this.actor.getEyeY(), this.actor.getZ());

@@ -25,7 +25,13 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class ModItems {
+public final class ModItems {
+    private ModItems() {} // prevent instantiation
+
+    private static final int SHORT_INVISIBILITY_DURATION = 600;
+    private static final int LONG_INVISIBILITY_DURATION = 12000;
+    private static final int PVP_SWORD_ATTACK_DAMAGE = 3;
+    private static final int PVP_SWORD_ATTACK_SPEED = 251;
     public static final Item FIREBALL = register("fireball", FireballItem::new, new Item.Properties().stacksTo(64).fireResistant().useCooldown(0.1F));
     public static final Item SELF_RES_PLATFORM = register("self-res_platform", SelfRescuePlatformItem::new, new Item.Properties().stacksTo(64).craftRemainder(Items.BLAZE_ROD));
     public static final Item BRIDGE_EGG = register("bridge_egg", BridgeEggItem::new, new Item.Properties().stacksTo(64).fireResistant());
@@ -76,16 +82,16 @@ public abstract class ModItems {
     public static final Item BOSS_SPAWNER = registerBlock(ModBlocks.BOSS_SPAWNER, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.boss_spawner"));
     public static final Item LANDMINE = registerBlock(ModBlocks.LANDMINE, BlockItem::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(64).overrideDescription("block.pvp.landmine"));
 
-    public static final Item WOODEN_SWORD = register("wooden_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.WOOD, 3, 251));
-    public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, 3, 251));
-    public static final Item IRON_SWORD = register("iron_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.IRON, 3, 251));
-    public static final Item DIAMOND_SWORD = register("diamond_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.DIAMOND, 3, 251));
-    public static final Item AXE_OF_MURDER = register("axe_of_murder", properties -> new AxeItem(ModToolMaterials.SUPER, 3, 251, properties), new Item.Properties());
+    public static final Item WOODEN_SWORD = register("wooden_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.WOOD, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
+    public static final Item STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
+    public static final Item IRON_SWORD = register("iron_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.IRON, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
+    public static final Item DIAMOND_SWORD = register("diamond_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.DIAMOND, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
+    public static final Item AXE_OF_MURDER = register("axe_of_murder", properties -> new AxeItem(ModToolMaterials.SUPER, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED, properties), new Item.Properties());
 
     public static final Item THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Properties().sword(ToolMaterial.IRON, 2, 251).useCooldown(5));
 
-    public static final Holder<Potion> SHORT_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 600)));
-    public static final Holder<Potion> LONG_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, 12000)));
+    public static final Holder<Potion> SHORT_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "short_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, SHORT_INVISIBILITY_DURATION)));
+    public static final Holder<Potion> LONG_INVISIBILITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "long_invisibility_potion"), new Potion("invisibility", new MobEffectInstance(MobEffects.INVISIBILITY, LONG_INVISIBILITY_DURATION)));
     public static final Holder<Potion> OP_KIT_SWIFT_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_swift"), new Potion("swiftness", new MobEffectInstance(MobEffects.SPEED, 1200, 1), new MobEffectInstance(MobEffects.SPEED, 3600)));
     public static final Holder<Potion> OP_KIT_REGENERATION_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "op_kit_regeneration"), new Potion("regeneration", new MobEffectInstance(MobEffects.REGENERATION, 900)));
 
@@ -190,7 +196,8 @@ public abstract class ModItems {
             });
             PvP.LOGGER.info("[Item Initializer] Mod Items Initialized! ");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Item Initializer]  An Error Occurred! ");
+            PvP.LOGGER.error("[Item Initializer] An Error Occurred: ", e);
+            throw new RuntimeException("Failed to initialize ModItems", e);
         }
     }
 }
