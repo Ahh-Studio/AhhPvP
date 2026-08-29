@@ -22,11 +22,11 @@ public class EgglletEntity extends ThrowableItemProjectile {
     }
 
     public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, double d, double e, double f, Level level, ItemStack itemStack) {
-        super(ModEntityTypes.EGGLLIT, d, e, f, level, itemStack);
+        super(ModEntityTypes.EGGLLET, d, e, f, level, itemStack);
     }
 
     public EgglletEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity livingEntity, Level level, ItemStack itemStack) {
-        super(ModEntityTypes.EGGLLIT, livingEntity, level, itemStack);
+        super(ModEntityTypes.EGGLLET, livingEntity, level, itemStack);
     }
 
     @Override

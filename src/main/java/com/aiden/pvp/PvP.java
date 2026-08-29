@@ -38,7 +38,7 @@ public class PvP implements ModInitializer {
 		ServerTickEvents.END_SERVER_TICK.register(server ->
 				server.levelKeys().forEach(key -> {
 					var level = server.getLevel(key);
-					if (level != null) {
+					if (level != null && DefenseTowerBlock.hasPendingTasks()) {
 						DefenseTowerBlock.processTasks(level);
 					}
 				})

@@ -81,6 +81,7 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
             if (instance.level() instanceof ServerLevel serverLevel
                     && instance instanceof ServerPlayer serverPlayer
                     && serverPlayer.getRespawnConfig() != null
+                    && serverPlayer.getRespawnConfig().respawnData() != null
             ) {
                 BlockPos pos = serverPlayer.getRespawnConfig().respawnData().pos();
                 boolean bl = serverLevel.getBlockState(pos).tags().anyMatch(Predicate.isEqual(BlockTags.BEDS));

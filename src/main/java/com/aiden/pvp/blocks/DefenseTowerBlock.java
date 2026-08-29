@@ -15,12 +15,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class DefenseTowerBlock extends ChestBlock {
-    private static final List<PendingTowerTask> pendingTasks = new ArrayList<>();
+    private static final Map<ResourceKey<Level>, List<PendingTowerTask>> pendingTasksByDimension = new HashMap<>();
 
     public DefenseTowerBlock(Properties properties) {
         super(() -> ModBlockEntityTypes.DEFENSE_TOWER_BLOCK_ENTITY, SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, properties);
@@ -47,7 +45,7 @@ public class DefenseTowerBlock extends ChestBlock {
                 entries.add(new TaskEntry(pos1.relative(dir).relative(dir).relative(dir.getCounterClockWise()), Blocks.SANDSTONE.defaultBlockState()));
             }
 
-            pendingTasks.add(new PendingTowerTask(pos, level.dimension(), entries));
+            pendingTasksByDimension.computeIfAbsent(level.dimension(), k -> new ArrayList<>()).add(new PendingTowerTask(pos, level.dimension(), entries));
         }
     }
 
@@ -63,17 +61,19 @@ public class DefenseTowerBlock extends ChestBlock {
                 : null;
     }
 
+    public static boolean hasPendingTasks() {
+        return !pendingTasksByDimension.isEmpty();
+    }
+
     public static void processTasks(Level level) {
-        if (pendingTasks.isEmpty()) {
+        ResourceKey<Level> currentDim = level.dimension();
+        List<PendingTowerTask> tasks = pendingTasksByDimension.get(currentDim);
+        if (tasks == null || tasks.isEmpty()) {
             return;
         }
-        ResourceKey<Level> currentDim = level.dimension();
-        Iterator<PendingTowerTask> it = pendingTasks.iterator();
+        Iterator<PendingTowerTask> it = tasks.iterator();
         while (it.hasNext()) {
             PendingTowerTask task = it.next();
-            if (!task.levelKey.equals(currentDim)) {
-                continue;
-            }
             TaskEntry next = task.next();
             if (next != null) {
                 BlockPos target = next.pos();
@@ -85,6 +85,9 @@ public class DefenseTowerBlock extends ChestBlock {
             if (task.isDone()) {
                 it.remove();
             }
+        }
+        if (tasks.isEmpty()) {
+            pendingTasksByDimension.remove(currentDim);
         }
     }
 

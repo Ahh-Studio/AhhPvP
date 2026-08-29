@@ -33,7 +33,8 @@ public class ModGameRules {
 
             PvP.LOGGER.info("[Game Rules Initializer] Mod Game Rules Initialized! ");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Game Rules Initializer] An Error Occurred! ");
+            PvP.LOGGER.error("[Game Rules Initializer] An Error Occurred: ", e);
+            throw new RuntimeException("Failed to initialize ModGameRules", e);
         }
     }
 

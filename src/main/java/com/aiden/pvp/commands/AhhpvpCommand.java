@@ -12,7 +12,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.server.permissions.Permissions;
 
 @Environment(EnvType.CLIENT)
-public class AhhpvpCommand {
+public class AhhPvPCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> d, CommandBuildContext bc) {
         d.register(ClientCommands.literal("ahh-pvp-mod")
                 .requires(css -> css.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))

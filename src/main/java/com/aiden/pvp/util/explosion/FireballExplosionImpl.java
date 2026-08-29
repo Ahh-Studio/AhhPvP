@@ -143,6 +143,8 @@ public class FireballExplosionImpl implements Explosion {
 
                         if (vec32.y > 0) {
                             vec33 = new Vec3(vec32.x * 2, Math.min(vec32.y * 0.7, 0.5), vec32.z * 2).scale(p);
+                        } else if (vec32.y == 0) {
+                            vec33 = new Vec3(vec32.x * 2, 0.5, vec32.z * 2).scale(p);
                         } else {
                             double q = (double) ((int) (100 / vec32.y)) / 100;
                             vec33 = new Vec3(vec32.x * -q * 0.1, vec32.y * 0.3 + 0.8, vec32.z * -q * 0.1).scale(p);
@@ -233,6 +235,10 @@ public class FireballExplosionImpl implements Explosion {
         FireballExplosionImpl explosionImpl = new FireballExplosionImpl(serverWorld, entity, damageSource, behavior, vec3d, power, createFire, destructionType);
         int i = explosionImpl.explode();
         ParticleOptions particleEffect = ParticleTypes.EXPLOSION_EMITTER;
+        WeightedList<ExplosionParticleInfo> particleList = WeightedList.<ExplosionParticleInfo>builder()
+                .add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
+                .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
+                .build();
 
         for (ServerPlayer serverPlayerEntity : serverWorld.players()) {
             if (serverPlayerEntity.distanceToSqr(vec3d) < 4096.0) {
@@ -240,10 +246,7 @@ public class FireballExplosionImpl implements Explosion {
                 serverPlayerEntity.connection.send(new ClientboundExplodePacket(
                         vec3d, power * 7.5F, i * 3, optional,
                         particleEffect, soundEvent,
-                        WeightedList.<ExplosionParticleInfo>builder()
-                                .add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
-                                .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
-                                .build()
+                        particleList
                 ));
             }
         }
