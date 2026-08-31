@@ -1,0 +1,84 @@
+package com.aiden.pvp.datagen.lang;
+
+import com.aiden.pvp.blocks.ModBlocks;
+import com.aiden.pvp.items.ModItems;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.core.HolderLookup;
+import org.jspecify.annotations.NonNull;
+
+import java.util.concurrent.CompletableFuture;
+
+public class PvPEnUsLangProvider extends FabricLanguageProvider {
+    public PvPEnUsLangProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(output, "en_us", registryLookup);
+    }
+
+    @Override
+    public void generateTranslations(HolderLookup.@NonNull Provider registryLookup, TranslationBuilder builder) {
+        builder.add("block.pvp.boss_spawner", "Boss Spawner");
+        builder.add(ModBlocks.DEFENSE_TOWER, "Defense Tower");
+        builder.add("block.pvp.golden_head", "Golden Head");
+        builder.add("block.pvp.landmine", "Landmine");
+        builder.add("block.pvp.slime_block", "Special Slime Block");
+        builder.add("block.pvp.strong_glass", "Strong Glass");
+        builder.add(ModBlocks.BLACK_STRONG_GLASS, "Black Strong Glass");
+        builder.add(ModBlocks.BLUE_STRONG_GLASS, "Blue Strong Glass");
+        builder.add(ModBlocks.BROWN_STRONG_GLASS, "Brown Strong Glass");
+        builder.add(ModBlocks.CYAN_STRONG_GLASS, "Cyan Strong Glass");
+        builder.add(ModBlocks.GRAY_STRONG_GLASS, "Gray Strong Glass");
+        builder.add(ModBlocks.GREEN_STRONG_GLASS, "Green Strong Glass");
+        builder.add(ModBlocks.LIGHT_BLUE_STRONG_GLASS, "Light Blue Strong Glass");
+        builder.add(ModBlocks.LIGHT_GRAY_STRONG_GLASS, "Light Gray Strong Glass");
+        builder.add(ModBlocks.LIME_STRONG_GLASS, "Lime Strong Glass");
+        builder.add(ModBlocks.MAGENTA_STRONG_GLASS, "Magenta Strong Glass");
+        builder.add(ModBlocks.ORANGE_STRONG_GLASS, "Orange Strong Glass");
+        builder.add(ModBlocks.PURPLE_STRONG_GLASS, "Purple Strong Glass");
+        builder.add(ModBlocks.PINK_STRONG_GLASS, "Pink Strong Glass");
+        builder.add(ModBlocks.RED_STRONG_GLASS, "Red Strong Glass");
+        builder.add(ModBlocks.WHITE_STRONG_GLASS, "White Strong Glass");
+        builder.add(ModBlocks.YELLOW_STRONG_GLASS,  "Yellow Strong Glass");
+        builder.add("block.pvp.throwable_tnt", "Throwable TNT");
+        builder.add("block.pvp.tnt", "TNT");
+
+        builder.add("entity.pvp.bed_bug", "Bed Bug");
+        builder.add("entity.pvp.bridge_egg", "Bridge Egg");
+        builder.add("entity.pvp.dagger", "Dagger");
+        builder.add("entity.pvp.fireball", "Fireball");
+        builder.add("entity.pvp.fishing_bobber", "Fishing Bobber");
+        builder.add("entity.pvp.murderer", "Murderer");
+
+        builder.add(ModItems.AXE_OF_MURDER, "Axe of Murderer");
+        builder.add("item.pvp.bbu_upgrade_smithing_template", "Before-battle-update Upgrade");
+        builder.add("item.pvp.bed_bug", "Bed Bug");
+        builder.add("item.pvp.boss_key", "Boss Key");
+        builder.add("item.pvp.bridge_egg", "Bridge Egg");
+        builder.add("item.pvp.carbon_rune", "Carbon Rune");
+        builder.add(ModItems.CHICKEN_DEFENSE, "Chicken Defense");
+        builder.add("item.pvp.diamond_sword", "Diamond Sword");
+        builder.add("item.pvp.fireball", "Fireball");
+        builder.add("item.pvp.fishing_rod", "Fishing Rod");
+        builder.add("item.pvp.iron_rune", "Iron Rune");
+        builder.add("item.pvp.iron_sword", "Iron Sword");
+        builder.add("item.pvp.murderer_spawn_egg", "Murderer Spawn Egg");
+        builder.add("item.pvp.return_scroll", "Return Scroll");
+        builder.add("item.pvp.self-res_platform", "Self-res Platform");
+        builder.add("item.pvp.stone_sword", "Stone Sword");
+        builder.add("item.pvp.throwable_dagger", "Throwable Dagger");
+        builder.add("item.pvp.wooden_sword", "Wooden Sword");
+        builder.add("item.pvp.smithing_template.bbu_upgrade.additions_slot_description", "Add Nothing");
+        builder.add("item.pvp.smithing_template.bbu_upgrade.applies_to", "Vanilla Swords");
+        builder.add("item.pvp.smithing_template.bbu_upgrade.base_slot_description", "Add Vanilla Swords");
+        builder.add("item.pvp.smithing_template.bbu_upgrade.ingredients", "Nothing");
+
+        builder.add("itemGroup.pvp_mod", "PvP Mod");
+
+        builder.add("key.category.pvp.pvp", "PvP Mod");
+        builder.add("key.pvp.open_settings", "Open Settings");
+        builder.add("key.pvp.throw_tnt", "Throw TNT");
+
+        builder.add("screen.pvp.settings", "PvP Mod Settings");
+
+        builder.add("tag.item.pvp.empty", "Empty");
+    }
+}

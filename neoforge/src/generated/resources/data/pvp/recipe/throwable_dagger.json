@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "throwable_dagger",
+  "key": {
+    "B": "minecraft:iron_block",
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " IB",
+    " S ",
+    "S  "
+  ],
+  "result": {
+    "id": "pvp:throwable_dagger"
+  }
+}
