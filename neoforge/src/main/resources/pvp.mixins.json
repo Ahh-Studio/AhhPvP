@@ -4,8 +4,8 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "IllusionerEntityMixin",
-        "LivingEntityNeoForgeMixin",
         "LivingEntityMixin",
+        "LivingEntityNeoForgeMixin",
         "PlayerEntityMixin",
         "accessor.LivingEntityAccessor",
         "invoker.LivingEntityInvoker"
