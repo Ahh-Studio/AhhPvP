@@ -8,3 +8,9 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+
+rootProject.name = 'AhhPvP'
+
+include 'common'
+include 'fabric'
+include 'neoforge'

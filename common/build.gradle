@@ -1,0 +1,39 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
+}
+
+// We only need Loom's Minecraft dependency resolution, not the full mod compilation
+apply plugin: 'net.fabricmc.fabric-loom'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    compileOnly "net.fabricmc:fabric-loader:${loader_version}"
+    compileOnly "org.spongepowered:mixin:0.8.5"
+    compileOnly "io.github.llamalad7:mixinextras-common:0.5.5"
+    // No Mixin annotation processor here - validation happens in fabric/neoforge modules
+    // ASM required by Loom for Java 25 compatibility
+    compileOnly "org.ow2.asm:asm-tree:9.7.1"
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+// Don't generate a mod jar for common
+jar {
+    archiveClassifier = 'common'
+}

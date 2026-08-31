@@ -1,0 +1,30 @@
+license="${mod_license}"
+issueTrackerURL="https://github.com/Ahh-Studio/AhhPvP/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://github.com/Ahh-Studio/AhhPvP"
+logoFile="icon.png"
+authors="Aiden, ZCM"
+description='''
+Fireballs, TNTs, Self-res Platform, Bridge Egg, Strong Glass and Short/Long Invisibility Potion and much more!
+'''
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

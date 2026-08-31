@@ -1,0 +1,22 @@
+{
+    "required": true,
+    "package": "com.aiden.pvp.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "IllusionerEntityMixin",
+        "LivingEntityNeoForgeMixin",
+        "LivingEntityMixin",
+        "PlayerEntityMixin",
+        "accessor.LivingEntityAccessor",
+        "invoker.LivingEntityInvoker"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    },
+    "client": [
+        "ConditionalItemModelPropertiesMixin"
+    ]
+}
