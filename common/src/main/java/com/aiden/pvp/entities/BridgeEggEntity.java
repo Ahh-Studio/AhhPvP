@@ -1,6 +1,6 @@
 package com.aiden.pvp.entities;
 
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.items.ModItems;
 import net.minecraft.core.BlockPos;
@@ -62,7 +62,7 @@ public class BridgeEggEntity extends ThrowableItemProjectile {
     public void tick() {
         // 先判断世界是否为null（避免空指针）
         if (this.level() == null) {
-            PvP.LOGGER.warn("BlockEggEntity实体所在世界为null！");
+            PvPConstants.LOGGER.warn("BlockEggEntity实体所在世界为null！");
             return;
         }
 

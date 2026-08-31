@@ -1,7 +1,7 @@
 package com.aiden.pvp.items;
 
 import com.aiden.pvp.ModRegistrationConfig;
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.entities.ModEntityTypes;
 import net.minecraft.ChatFormatting;
@@ -90,7 +90,7 @@ public final class ModItems {
     public static CreativeModeTab PVP_ITEM_GROUP;
 
     private static Holder<Potion> registerPotion(String name, Potion potion) {
-        Identifier id = Identifier.fromNamespaceAndPath(PvP.MOD_ID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, name);
         if (!ModRegistrationConfig.SKIP_REGISTRY_REGISTER) {
             return Registry.registerForHolder(BuiltInRegistries.POTION, id, potion);
         }
@@ -99,7 +99,7 @@ public final class ModItems {
     }
 
     public static Item register(String path, Function<Item.Properties, Item> factory, Item.Properties settings) {
-        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(PvP.MOD_ID, path));
+        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, path));
         Item.Properties props = settings.setId(registryKey).rarity(Rarity.EPIC);
         Item item = factory.apply(props);
         if (item instanceof BlockItem blockItem) {
@@ -155,7 +155,7 @@ public final class ModItems {
                             Component.translatable("item.pvp.smithing_template.bbu_upgrade.base_slot_description"),
                             Component.translatable("item.pvp.smithing_template.bbu_upgrade.additions_slot_description"),
                             List.of(Identifier.withDefaultNamespace("container/slot/sword")),
-                            List.of(Identifier.fromNamespaceAndPath(PvP.MOD_ID, "container/slot/null")),
+                            List.of(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "container/slot/null")),
                             settings
                     ),
                     new Item.Properties()
@@ -204,12 +204,12 @@ public final class ModItems {
 
             // Register creative mode tab
             if (!ModRegistrationConfig.SKIP_REGISTRY_REGISTER) {
-                Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvP.MOD_ID, "assets/pvp")), PVP_ITEM_GROUP);
+                Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "assets/pvp")), PVP_ITEM_GROUP);
             }
 
-            PvP.LOGGER.info("[Item Initializer] Mod Items Initialized! ");
+            PvPConstants.LOGGER.info("[Item Initializer] Mod Items Initialized! ");
         } catch (Exception e) {
-            PvP.LOGGER.error("[Item Initializer] An Error Occurred: ", e);
+            PvPConstants.LOGGER.error("[Item Initializer] An Error Occurred: ", e);
             throw new RuntimeException("Failed to initialize ModItems", e);
         }
     }

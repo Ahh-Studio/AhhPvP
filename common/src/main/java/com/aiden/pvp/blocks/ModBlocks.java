@@ -1,7 +1,7 @@
 package com.aiden.pvp.blocks;
 
 import com.aiden.pvp.ModRegistrationConfig;
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -65,7 +65,7 @@ public class ModBlocks {
     }
 
     private static Block register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
-        Identifier id = Identifier.fromNamespaceAndPath(PvP.MOD_ID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, name);
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
         BlockBehaviour.Properties props = settings.setId(blockKey);
         Block block = blockFactory.apply(props);
@@ -169,9 +169,9 @@ public class ModBlocks {
                     BlockBehaviour.Properties.ofFullCopy(Blocks.CHEST)
             );
 
-            PvP.LOGGER.info("[Block Initializer] Mod Blocks Initialized!");
+            PvPConstants.LOGGER.info("[Block Initializer] Mod Blocks Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.error("[Block Initializer] An Error Occurred: ", e);
+            PvPConstants.LOGGER.error("[Block Initializer] An Error Occurred: ", e);
             throw new RuntimeException("Failed to initialize ModBlocks", e);
         }
     }

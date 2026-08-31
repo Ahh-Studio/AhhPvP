@@ -1,6 +1,8 @@
 package com.aiden.pvp.datagen;
 
-import com.aiden.pvp.datagen.lang.*;
+import com.aiden.pvp.datagen.lang.PvPEnUsLangProvider;
+import com.aiden.pvp.datagen.lang.PvPZhCnLangProvider;
+import com.aiden.pvp.datagen.lang.PvPZhTwLangProvider;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;

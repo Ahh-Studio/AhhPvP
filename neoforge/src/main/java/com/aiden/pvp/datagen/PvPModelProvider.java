@@ -10,7 +10,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import org.jspecify.annotations.NonNull;
 
 import java.util.stream.Stream;
 

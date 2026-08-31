@@ -1,7 +1,7 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.ModRegistrationConfig;
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +23,7 @@ public class ModEntityTypes {
     public static EntityType<EgglletEntity> EGGLLET;
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> entityType) {
-        Identifier identifier = Identifier.fromNamespaceAndPath(PvP.MOD_ID, id);
+        Identifier identifier = Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, id);
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, identifier);
         EntityType<T> type = entityType.build(key);
         if (!ModRegistrationConfig.SKIP_REGISTRY_REGISTER) {
@@ -108,9 +108,9 @@ public class ModEntityTypes {
                             .updateInterval(10)
             );
 
-            PvP.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
+            PvPConstants.LOGGER.info("[Entity Initializer] Mod Entities Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.warn("[Entity Initializer] An Error Occurred: {}", e.getMessage());
+            PvPConstants.LOGGER.warn("[Entity Initializer] An Error Occurred: {}", e.getMessage());
         }
     }
 }

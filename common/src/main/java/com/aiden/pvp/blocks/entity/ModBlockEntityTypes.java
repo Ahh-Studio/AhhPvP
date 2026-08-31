@@ -1,7 +1,7 @@
 package com.aiden.pvp.blocks.entity;
 
 import com.aiden.pvp.ModRegistrationConfig;
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import com.aiden.pvp.blocks.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -84,14 +84,14 @@ public class ModBlockEntityTypes {
             DEFENSE_TOWER_BLOCK_ENTITY = createBlockEntityType(DefenseTowerBlockEntity::new, ModBlocks.DEFENSE_TOWER);
 
             if (!ModRegistrationConfig.SKIP_REGISTRY_REGISTER) {
-                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "slime_block_entity"), SLIME_BLOCK_ENTITY);
-                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "boss_spawner_block_entity"), BOSS_SPAWNER_BLOCK_ENTITY);
-                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "boss_battle_handler_block_entity"), BOSS_BATTLE_HANDLER_BLOCK_ENTITY);
-                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, "defense_tower_block_entity"), DEFENSE_TOWER_BLOCK_ENTITY);
+                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "slime_block_entity"), SLIME_BLOCK_ENTITY);
+                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "boss_spawner_block_entity"), BOSS_SPAWNER_BLOCK_ENTITY);
+                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "boss_battle_handler_block_entity"), BOSS_BATTLE_HANDLER_BLOCK_ENTITY);
+                Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "defense_tower_block_entity"), DEFENSE_TOWER_BLOCK_ENTITY);
             }
-            PvP.LOGGER.info("[Block Entity Type Initializer] Mod Block Entity Types Initialized!");
+            PvPConstants.LOGGER.info("[Block Entity Type Initializer] Mod Block Entity Types Initialized!");
         } catch (Exception e) {
-            PvP.LOGGER.error("[Block Entity Type Initializer] An Error Occurred: ", e);
+            PvPConstants.LOGGER.error("[Block Entity Type Initializer] An Error Occurred: ", e);
         }
     }
 }

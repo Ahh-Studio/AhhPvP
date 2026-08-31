@@ -1,7 +1,7 @@
 package com.aiden.pvp.gamerules;
 
 import com.aiden.pvp.ModRegistrationConfig;
-import com.aiden.pvp.PvP;
+import com.aiden.pvp.PvPConstants;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -32,9 +32,9 @@ public class ModGameRules {
             SELF_RES_PLATFORM_CD = registerIntRule("self-res_platform_cd", 400, -1, 1600);
             SELF_RES_PLATFORM_DISAPPEAR_TIME = registerIntRule("self-res_platform_disappear_time", 400, -1, 1600);
 
-            PvP.LOGGER.info("[Game Rules Initializer] Mod Game Rules Initialized! ");
+            PvPConstants.LOGGER.info("[Game Rules Initializer] Mod Game Rules Initialized! ");
         } catch (Exception e) {
-            PvP.LOGGER.error("[Game Rules Initializer] An Error Occurred: ", e);
+            PvPConstants.LOGGER.error("[Game Rules Initializer] An Error Occurred: ", e);
             throw new RuntimeException("Failed to initialize ModGameRules", e);
         }
     }
@@ -88,7 +88,7 @@ public class ModGameRules {
         GameRule<T> rule = new GameRule<>(GameRuleCategory.MISC, type, argumentType, acceptor, codec, commandResultSupplier, defaultValue, requiredFeatures);
         if (!ModRegistrationConfig.SKIP_REGISTRY_REGISTER) {
             return Registry.register(
-                    BuiltInRegistries.GAME_RULE, Identifier.fromNamespaceAndPath(PvP.MOD_ID, name), rule
+                    BuiltInRegistries.GAME_RULE, Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, name), rule
             );
         }
         return rule;

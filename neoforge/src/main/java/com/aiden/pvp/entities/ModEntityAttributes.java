@@ -1,7 +1,6 @@
 package com.aiden.pvp.entities;
 
 import com.aiden.pvp.PvP;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.SubscribeEvent;
