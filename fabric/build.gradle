@@ -24,8 +24,12 @@ loom {
 
 sourceSets {
     main {
+        java {
+            srcDir project(":common").sourceSets.main.java
+        }
         resources {
             srcDir 'src/main/generated'
+            srcDir project(":common").sourceSets.main.resources
         }
     }
 }
