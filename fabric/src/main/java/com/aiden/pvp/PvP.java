@@ -39,6 +39,8 @@ public class PvP implements ModInitializer {
 	public void onInitialize() {
 		ModGameRules.initialize();
 		ModBlocks.initialize();
+		ModBlockEntityTypes.initialize();
+		ModEntityTypes.initialize();
 		ModItems.initialize();
 		ResourceKey<CreativeModeTab> tabKey = ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(PvP.MOD_ID, "assets/pvp"));
 		CreativeModeTabEvents.modifyOutputEvent(tabKey).register((FabricCreativeModeTabOutput output) -> {
@@ -89,8 +91,6 @@ public class PvP implements ModInitializer {
 					.map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
 					.forEach(stack -> output.accept(stack));
 		});
-		ModBlockEntityTypes.initialize();
-		ModEntityTypes.initialize();
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.MURDERER, MurdererEntity.createMurdererAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.CHICKEN_DEFENSE, com.aiden.pvp.entities.ChickenDefenseEntity.createAttributes());
 		ModCommands.initialize();
