@@ -1,6 +1,7 @@
 package com.aiden.pvp.mixin;
 
 import com.aiden.pvp.gamerules.ModGameRules;
+import com.aiden.pvp.entities.murderer.MurdererEntity;
 import com.aiden.pvp.items.SwordItem;
 import com.aiden.pvp.mixin.accessor.LivingEntityAccessor;
 import com.aiden.pvp.mixin.invoker.LivingEntityInvoker;
@@ -69,6 +70,11 @@ public abstract class LivingEntityMixin {
         
         if (isSwordBlocking) {
             strength = 0.4F;
+        }
+
+        // 杀手 Jump Reset：受击瞬间起跳时，减免大部分击退
+        if (instance instanceof MurdererEntity murderer && murderer.jumpResetQueued) {
+            strength *= 0.1F;
         }
 
         strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);

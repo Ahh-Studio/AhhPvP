@@ -5,7 +5,7 @@ import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.commands.ModCommands;
 import com.aiden.pvp.entities.ModEntityTypes;
-import com.aiden.pvp.entities.MurdererEntity;
+import com.aiden.pvp.entities.murderer.MurdererEntity;
 import com.aiden.pvp.gamerules.ModGameRules;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.payloads.*;

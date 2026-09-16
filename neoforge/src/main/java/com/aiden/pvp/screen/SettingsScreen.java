@@ -12,8 +12,10 @@ public class SettingsScreen extends Screen {
     private Screen parent;
     private int sliderValue1;
     private int sliderValue2;
+    private int sliderValue3;
     private ModSliderWidget sliderWidget1;
     private ModSliderWidget sliderWidget2;
+    private ModSliderWidget sliderWidget3;
 
     public SettingsScreen(Screen parent) {
         super(Component.translatable("screen.pvp.settings"));
@@ -68,10 +70,29 @@ public class SettingsScreen extends Screen {
         this.addRenderableWidget(sliderWidget1);
         this.addRenderableWidget(sliderWidget2);
 
+        sliderWidget3 = new ModSliderWidget(width / 4 - 100, height / 4 + 40, 200, 20,
+                Component.literal("Fireball Creates Fire: " + "[???]"), sliderValue3) {
+            @Override
+            public void updateMessage() {
+                this.setMessage(Component.literal("Fireball Creates Fire: " + (sliderValue3 != 0)));
+            }
+
+            @Override
+            public void applyValue() {
+                if (this.value > 0.5) {
+                    this.value = sliderValue3 = 1;
+                }
+                else {
+                    this.value = sliderValue3 = 0;
+                }
+            }
+        };
+        this.addRenderableWidget(sliderWidget3);
+
         Button applyButton = Button.builder(
                         Component.literal("Apply"),
                         (button) -> {
-                            SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2);
+                            SetGameRulesC2SPayload payload = new SetGameRulesC2SPayload(sliderValue1, sliderValue2, sliderValue3 != 0);
                             ClientPacketDistributor.sendToServer(payload);
                             this.onClose();
                         })
@@ -93,14 +114,17 @@ public class SettingsScreen extends Screen {
         minecraft.setScreen(this.parent);
     }
 
-    public void setSliderValues(int sliderValue1, int sliderValue2) {
+    public void setSliderValues(int sliderValue1, int sliderValue2, boolean sliderValue3) {
         this.sliderValue1 = sliderValue1;
         this.sliderValue2 = sliderValue2;
+        this.sliderValue3 = sliderValue3 ? 1 : 0;
         if (sliderWidget1 != null && sliderWidget2 != null) {
             sliderWidget1.setValue((double) sliderValue1 / 100);
             sliderWidget1.updateMessage();
             sliderWidget2.setValue((double) sliderValue2 / 10);
             sliderWidget2.updateMessage();
+            sliderWidget3.setValue(sliderValue3 ? 1 : 0);
+            sliderWidget3.updateMessage();
         }
     }
 }

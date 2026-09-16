@@ -7,10 +7,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 public class ModEntityModelLayers {
-    public static final ModelLayerLocation MURDERER = new ModelLayerLocation(
-            Identifier.fromNamespaceAndPath(PvP.MOD_ID, "murderer"),
-            "main"
-    );
     public static final ModelLayerLocation CHICKEN_DEFENSE = new ModelLayerLocation(
             Identifier.fromNamespaceAndPath(PvP.MOD_ID, "chicken_defense"),
             "main"
@@ -18,7 +14,6 @@ public class ModEntityModelLayers {
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(MURDERER, MurdererEntityModel::getTexturedModelData);
         event.registerLayerDefinition(CHICKEN_DEFENSE, ChickenDefenseEntityModel::createBodyLayer);
     }
 }

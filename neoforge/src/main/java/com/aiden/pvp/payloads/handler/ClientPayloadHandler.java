@@ -14,7 +14,8 @@ public class ClientPayloadHandler {
                 if (Minecraft.getInstance().screen instanceof SettingsScreen settingsScreen) {
                     settingsScreen.setSliderValues(
                             payload.value1(),
-                            payload.value2()
+                            payload.value2(),
+                            payload.value3()
                     );
                 }
             });

@@ -1,7 +1,7 @@
 package com.aiden.pvp.blocks.entity;
 
 import com.aiden.pvp.PvPConstants;
-import com.aiden.pvp.entities.MurdererEntity;
+import com.aiden.pvp.entities.murderer.MurdererEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;

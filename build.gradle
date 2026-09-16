@@ -88,3 +88,26 @@ publishing {
 
     }
 }
+
+// ===== Build All Variants =====
+tasks.register('buildAll') {
+    group = 'build'
+    description = 'Builds both Fabric and NeoForge variants and collects JARs into release/'
+    dependsOn ':fabric:build', ':neoforge:build'
+
+    doLast {
+        def destDir = file("release")
+        destDir.mkdirs()
+
+        def fabricJar = project(':fabric').tasks.jar.archiveFile.get().asFile
+        def neoforgeJar = project(':neoforge').tasks.jar.archiveFile.get().asFile
+
+        copy {
+            from fabricJar
+            from neoforgeJar
+            into destDir
+        }
+
+        logger.lifecycle "All JARs collected into: ${destDir.absolutePath}"
+    }
+}

@@ -37,20 +37,7 @@ public class FireballItem extends Item implements ProjectileItem {
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack itemStack = user.getItemInHand(hand);
         if (world instanceof ServerLevel serverWorld) {
-            FireballEntity fireballEntity = new FireballEntity(user, world, itemStack);
-            fireballEntity.setItem(itemStack);
-
-            float f = -Mth.sin(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            float g = -Mth.sin((user.getXRot() + 0.0F) * ((float)Math.PI / 180));
-            float h = Mth.cos(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_SHOOT_POWER) / 10, 0.0F);
-
-            if (serverWorld.getGameRules().get(ModGameRules.SHOOTER_AFFECTS_FIREBALL_VELOCITY)) {
-                Vec3 vec3d = user.getKnownMovement();
-                fireballEntity.setDeltaMovement(fireballEntity.getDeltaMovement().add(vec3d.x, user.onGround() ? 0.0 : vec3d.y, vec3d.z));
-            }
-
-            world.addFreshEntity(fireballEntity);
+            launchFireball(serverWorld, user, itemStack);
         }
         world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
         user.awardStat(Stats.ITEM_USED.get(this));
@@ -73,20 +60,7 @@ public class FireballItem extends Item implements ProjectileItem {
         // shoot
         ItemStack itemStack = user.getItemInHand(hand);
         if (world instanceof ServerLevel serverWorld) {
-            FireballEntity fireballEntity = new FireballEntity(user, world, itemStack);
-            fireballEntity.setItem(itemStack);
-
-            float f = -Mth.sin(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            float g = -Mth.sin((user.getXRot() + 0.0F) * ((float)Math.PI / 180));
-            float h = Mth.cos(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
-            fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_SHOOT_POWER) / 10, 0.0F);
-
-            if (serverWorld.getGameRules().get(ModGameRules.SHOOTER_AFFECTS_FIREBALL_VELOCITY)) {
-                Vec3 vec3d = user.getKnownMovement();
-                fireballEntity.setDeltaMovement(fireballEntity.getDeltaMovement().add(vec3d.x, user.onGround() ? 0.0 : vec3d.y, vec3d.z));
-            }
-
-            world.addFreshEntity(fireballEntity);
+            launchFireball(serverWorld, user, itemStack);
         }
         world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
         user.awardStat(Stats.ITEM_USED.get(this));
@@ -107,5 +81,23 @@ public class FireballItem extends Item implements ProjectileItem {
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    /** 从玩家朝向前方发射一个火球（含 Fireball Shooter 速度修正，与 FireballAttackGoal 的生命/目标逻辑无关） */
+    private void launchFireball(ServerLevel serverWorld, Player user, ItemStack itemStack) {
+        FireballEntity fireballEntity = new FireballEntity(user, serverWorld, itemStack);
+        fireballEntity.setItem(itemStack);
+
+        float f = -Mth.sin(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
+        float g = -Mth.sin((user.getXRot() + 0.0F) * ((float)Math.PI / 180));
+        float h = Mth.cos(user.getYRot() * ((float)Math.PI / 180)) * Mth.cos(user.getXRot() * ((float)Math.PI / 180));
+        fireballEntity.shoot(f, g, h, (float) serverWorld.getGameRules().get(ModGameRules.FIREBALL_SHOOT_POWER) / 10, 0.0F);
+
+        if (serverWorld.getGameRules().get(ModGameRules.SHOOTER_AFFECTS_FIREBALL_VELOCITY)) {
+            Vec3 vec3d = user.getKnownMovement();
+            fireballEntity.setDeltaMovement(fireballEntity.getDeltaMovement().add(vec3d.x, user.onGround() ? 0.0 : vec3d.y, vec3d.z));
+        }
+
+        serverWorld.addFreshEntity(fireballEntity);
     }
 }

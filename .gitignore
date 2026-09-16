@@ -11,3 +11,4 @@ run/
 /src/main/generated/.cache/
 src/main/resources/assets/pvp/items/.DS_Store
 /AhhPvP.iml
+/release/
