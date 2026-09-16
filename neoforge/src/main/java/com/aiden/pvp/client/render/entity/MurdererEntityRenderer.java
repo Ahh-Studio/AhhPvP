@@ -1,63 +1,87 @@
 package com.aiden.pvp.client.render.entity;
 
 import com.aiden.pvp.PvP;
-import com.aiden.pvp.client.render.entity.model.ModEntityModelLayers;
-import com.aiden.pvp.client.render.entity.model.MurdererEntityModel;
 import com.aiden.pvp.client.render.entity.state.MurdererEntityRenderState;
-import com.aiden.pvp.entities.MurdererEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.aiden.pvp.entities.murderer.MurdererEntity;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.CapeLayer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 import org.jspecify.annotations.NonNull;
 
-public class MurdererEntityRenderer extends HumanoidMobRenderer<MurdererEntity, MurdererEntityRenderState, MurdererEntityModel> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(PvP.MOD_ID, "textures/entity/murderer.png");
+public class MurdererEntityRenderer extends LivingEntityRenderer<MurdererEntity, AvatarRenderState, PlayerModel> {
+    private static final PlayerSkin SKIN;
+
+    static {
+        ClientAsset.ResourceTexture skinTexture = new ClientAsset.ResourceTexture(
+                Identifier.fromNamespaceAndPath(PvP.MOD_ID, "entity/murderer")
+        );
+        SKIN = PlayerSkin.insecure(skinTexture, null, null, PlayerModelType.WIDE);
+    }
 
     public MurdererEntityRenderer(EntityRendererProvider.Context ctx) {
-        super(ctx, new MurdererEntityModel(ctx.bakeLayer(ModEntityModelLayers.MURDERER)), 0.5F);
-        this.addLayer(new ItemInHandLayer<>(this) {
-            @Override
-            public void submit(
-                    PoseStack matrices, SubmitNodeCollector queue, int light,
-                    MurdererEntityRenderState state, float limbSwing, float limbSwingAmount
-            ) {
-                if (state.attacking || !state.getMainHandItemState().isEmpty()) {
-                    super.submit(matrices, queue, light, state, limbSwing, limbSwingAmount);
-                }
-            }
-        });
-        this.addLayer(
-                new HumanoidArmorLayer<>(
-                        this,
-                        ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, ctx.getModelSet(), MurdererEntityModel::new),
-                        ctx.getEquipmentRenderer())
-        );
+        super(ctx, new PlayerModel(ctx.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        this.addLayer(new HumanoidArmorLayer<>(
+                this,
+                ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, ctx.getModelSet(), part -> new PlayerModel(part, false)),
+                ctx.getEquipmentRenderer()
+        ));
+        this.addLayer(new CapeLayer(this, ctx.getModelSet(), ctx.getEquipmentAssets()));
+        this.addLayer(new ItemInHandLayer<>(this));
+        this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), ctx.getPlayerSkinRenderCache()));
+        this.addLayer(new WingsLayer<>(this, ctx.getModelSet(), ctx.getEquipmentRenderer()));
     }
 
     @Override
-    public void extractRenderState(MurdererEntity murdererEntity, MurdererEntityRenderState murdererEntityRenderState, float f) {
-        super.extractRenderState(murdererEntity, murdererEntityRenderState, f);
-        ArmedEntityRenderState.extractArmedEntityRenderState(murdererEntity, murdererEntityRenderState, this.itemModelResolver, f);
-        murdererEntityRenderState.hasVehicle = murdererEntity.isPassenger();
-        murdererEntityRenderState.mainArm = murdererEntity.getMainArm();
-        murdererEntityRenderState.attacking = murdererEntity.isAggressive();
-        murdererEntityRenderState.handSwingProgress = murdererEntity.getAttackAnim(f);
+    protected boolean shouldShowName(MurdererEntity entity, double distanceToCameraSq) {
+        return true;
     }
 
     @Override
-    public @NonNull Identifier getTextureLocation(MurdererEntityRenderState state) {
-        return TEXTURE;
+    public void extractRenderState(MurdererEntity entity, AvatarRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        HumanoidMobRenderer.extractHumanoidRenderState(entity, state, partialTicks, this.itemModelResolver);
+        state.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+        state.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+        state.skin = SKIN;
+        state.showHat = true;
+        state.showJacket = true;
+        state.showLeftPants = true;
+        state.showRightPants = true;
+        state.showLeftSleeve = true;
+        state.showRightSleeve = true;
+        state.showCape = false;
+        state.isSpectator = false;
+        state.arrowCount = 0;
+        state.stingerCount = 0;
+
+        if (state instanceof MurdererEntityRenderState murdererState) {
+            murdererState.attacking = entity.isAggressive();
+            murdererState.mainArm = entity.getMainArm();
+            murdererState.handSwingProgress = entity.getAttackAnim(partialTicks);
+        }
     }
 
     @Override
-    public MurdererEntityRenderState createRenderState() {
+    public @NonNull Identifier getTextureLocation(AvatarRenderState state) {
+        return state.skin.body().texturePath();
+    }
+
+    @Override
+    public AvatarRenderState createRenderState() {
         return new MurdererEntityRenderState();
     }
 }

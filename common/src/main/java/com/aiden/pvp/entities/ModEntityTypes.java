@@ -2,6 +2,7 @@ package com.aiden.pvp.entities;
 
 import com.aiden.pvp.ModRegistrationConfig;
 import com.aiden.pvp.PvPConstants;
+import com.aiden.pvp.entities.murderer.MurdererEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

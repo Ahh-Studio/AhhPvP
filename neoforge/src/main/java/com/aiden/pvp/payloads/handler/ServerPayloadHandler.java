@@ -8,6 +8,7 @@ import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -30,11 +31,12 @@ public class ServerPayloadHandler {
                 Entity user = context.player().level().getEntity(throwTntC2SPayload.userId());
                 if (user instanceof LivingEntity livingEntityUser) {
                     PrimedTnt tnt = new PrimedTnt(user.level(), user.getX(), user.getEyeY(), user.getZ(), livingEntityUser);
+                    RandomSource random = user.level().getRandom();
                     Vec3 vec3d = new Vec3(
                             -Mth.sin(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0)),
                             -Mth.sin((user.getXRot() + 0.0F) * (float) (Math.PI / 180.0)),
                             Mth.cos(user.getYRot() * (float) (Math.PI / 180.0)) * Mth.cos(user.getXRot() * (float) (Math.PI / 180.0))
-                    ).normalize().add(RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F), RandomSource.create().triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
+                    ).normalize().add(random.triangle(0.0, 0.0172275 * 1.0F), random.triangle(0.0, 0.0172275 * 1.0F), random.triangle(0.0, 0.0172275 * 1.0F)).scale(1.5F);
 
                     tnt.setDeltaMovement(vec3d);
                     tnt.needsSync = true;
@@ -59,10 +61,15 @@ public class ServerPayloadHandler {
 
         registrar.playToServer(SetGameRulesC2SPayload.TYPE, SetGameRulesC2SPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> {
+                if (context.player() instanceof ServerPlayer serverPlayer
+                        && !serverPlayer.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
+                    return;
+                }
                 Level level = context.player().level();
                 if (level instanceof ServerLevel serverLevel) {
                     serverLevel.getGameRules().set(ModGameRules.FIREBALL_EXPLODE_POWER, payload.value1(), serverLevel.getServer());
                     serverLevel.getGameRules().set(ModGameRules.PHDI, payload.value2(), serverLevel.getServer());
+                    serverLevel.getGameRules().set(ModGameRules.FIREBALL_CREATES_FIRE, payload.value3(), serverLevel.getServer());
                 }
             });
         });
@@ -75,7 +82,8 @@ public class ServerPayloadHandler {
                             serverPlayer,
                             new GetGameRulesS2CPayload(
                                     serverPlayer.level().getGameRules().get(ModGameRules.FIREBALL_EXPLODE_POWER),
-                                    serverPlayer.level().getGameRules().get(ModGameRules.PHDI)
+                                    serverPlayer.level().getGameRules().get(ModGameRules.PHDI),
+                                    serverPlayer.level().getGameRules().get(ModGameRules.FIREBALL_CREATES_FIRE)
                             )
                     );
                 }
