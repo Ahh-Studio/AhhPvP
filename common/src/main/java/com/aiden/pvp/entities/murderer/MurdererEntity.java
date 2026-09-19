@@ -82,6 +82,8 @@ public class MurdererEntity extends Monster {
 
     public MurdererEntity(EntityType<? extends MurdererEntity> type, Level world) {
         super(type, world);
+        // 设置持久化，防止远离玩家时自然消失
+        this.setPersistenceRequired();
         this.wTapFreezeTicks = 0;
     }
 

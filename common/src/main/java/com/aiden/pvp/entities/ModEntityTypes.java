@@ -90,7 +90,7 @@ public class ModEntityTypes {
                     EntityType.Builder.of(MurdererEntity::new, MobCategory.MONSTER)
                             .sized(0.6F, 1.95F)
                             .clientTrackingRange(8)
-                            .notInPeaceful()
+
             );
             CHICKEN_DEFENSE = register(
                     "chicken_defense",
