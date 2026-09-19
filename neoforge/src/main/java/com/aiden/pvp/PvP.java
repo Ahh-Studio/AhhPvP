@@ -1,5 +1,6 @@
 package com.aiden.pvp;
 
+import com.aiden.pvp.blocks.DefenseTowerBlock;
 import com.aiden.pvp.blocks.ModBlocks;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.client.PvPClient;
@@ -26,6 +27,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +73,16 @@ public class PvP {
 
         // Client commands
         NeoForge.EVENT_BUS.addListener(ModCommands::onRegisterClientCommands);
+
+        // 服务端 tick：逐 tick 处理防御塔方块生成任务（与 Fabric 端 ServerTickEvents.END_SERVER_TICK 等价）
+        NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> {
+            event.getServer().levelKeys().forEach(key -> {
+                var level = event.getServer().getLevel(key);
+                if (level != null && DefenseTowerBlock.hasPendingTasks()) {
+                    DefenseTowerBlock.processTasks(level);
+                }
+            });
+        });
 
         LOGGER.info("[Main] Mod Initialized Successfully! ");
     }

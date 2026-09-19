@@ -6,6 +6,7 @@ import com.aiden.pvp.payloads.GetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.GetGameRulesS2CPayload;
 import com.aiden.pvp.payloads.SetGameRulesC2SPayload;
 import com.aiden.pvp.payloads.ThrowTntC2SPayload;
+import com.aiden.pvp.payloads.UpdateInfoToClientPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
@@ -91,5 +92,7 @@ public class ServerPayloadHandler {
         });
 
         registrar.playToClient(GetGameRulesS2CPayload.TYPE, GetGameRulesS2CPayload.CODEC);
+
+        registrar.playToClient(UpdateInfoToClientPayload.TYPE, UpdateInfoToClientPayload.CODEC);
     }
 }

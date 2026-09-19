@@ -1,6 +1,8 @@
 package com.aiden.pvp.payloads.handler;
 
+import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
 import com.aiden.pvp.payloads.GetGameRulesS2CPayload;
+import com.aiden.pvp.payloads.UpdateInfoToClientPayload;
 import com.aiden.pvp.screen.SettingsScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,6 +20,14 @@ public class ClientPayloadHandler {
                             payload.value3()
                     );
                 }
+            });
+        });
+
+        event.register(UpdateInfoToClientPayload.TYPE, (payload, context) -> {
+            context.enqueueWork(() -> {
+                PlayerEntityPvpExtension playerExt = (PlayerEntityPvpExtension) context.player();
+                playerExt.AhhPvP$setTeleportingUsingReturnScroll(payload.teleportingUsingReturnScroll());
+                playerExt.AhhPvP$setReturnScrollTeleportCountDown(payload.returnScrollTeleportCountDown());
             });
         });
     }

@@ -3,12 +3,14 @@ package com.aiden.pvp.mixin;
 import com.aiden.pvp.entities.FishingBobberEntity;
 import com.aiden.pvp.items.ModItems;
 import com.aiden.pvp.mixin_extensions.PlayerEntityPvpExtension;
+import com.aiden.pvp.payloads.UpdateInfoToClientPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +26,7 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     public @Unique int selfRescuePlatformCooldown = 0;
     public @Unique int returnScrollTeleportCountDown = 100;
     public @Unique boolean teleportingUsingReturnScroll = false;
+    public @Unique int sendClientPacketCountdown = 0;
 
     @Override
     @Unique
@@ -83,6 +86,16 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
     )
     public void tick(CallbackInfo ci) {
         Player instance = (Player) (Object) this;
+
+        // 发网络包向客户端同步数据
+        if (this.sendClientPacketCountdown > 0) this.sendClientPacketCountdown--;
+        else {
+            if (instance instanceof ServerPlayer serverPlayer) {
+                UpdateInfoToClientPayload payload = new UpdateInfoToClientPayload(this.teleportingUsingReturnScroll, this.returnScrollTeleportCountDown);
+                PacketDistributor.sendToPlayer(serverPlayer, payload);
+            }
+            this.sendClientPacketCountdown = 10;
+        }
 
         if (!instance.getMainHandItem().is(ModItems.FISHING_ROD) && !instance.getOffhandItem().is(ModItems.FISHING_ROD) && this.pvpFishHook != null) {
             this.pvpFishHook.discard();
