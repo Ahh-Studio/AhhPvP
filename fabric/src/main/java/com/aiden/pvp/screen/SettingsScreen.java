@@ -115,7 +115,7 @@ public class SettingsScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        minecraft.setScreen(this.parent);
+        minecraft.gui.setScreen(this.parent);
     }
 
     public void setSliderValues(int sliderValue1, int sliderValue2, boolean sliderValue3) {

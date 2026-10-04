@@ -331,7 +331,9 @@ public class MurdererEntity extends Monster {
             livingTarget.knockback(
                     0.5,
                     Mth.sin(this.getYRot() * ((float) Math.PI / 180)),
-                    -Mth.cos(this.getYRot() * ((float) Math.PI / 180))
+                    -Mth.cos(this.getYRot() * ((float) Math.PI / 180)),
+                    this.damageSources().mobAttack(this),
+                    0.0F
             );
         }
         return result;

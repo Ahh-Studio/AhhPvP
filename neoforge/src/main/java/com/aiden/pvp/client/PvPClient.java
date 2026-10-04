@@ -42,12 +42,12 @@ public class PvPClient {
         while (ModKeyBindings.openSettingsKeyBinding.consumeClick()) {
             Minecraft client = Minecraft.getInstance();
             SettingsScreen settingsScreen = new SettingsScreen(null);
-            if (client.screen == null) {
-                client.setScreen(settingsScreen);
+            if (client.gui.screen() == null) {
+                client.gui.setScreen(settingsScreen);
                 break;
             }
-            if (client.screen instanceof SettingsScreen) {
-                client.setScreen(null);
+            if (client.gui.screen() instanceof SettingsScreen) {
+                client.gui.setScreen(null);
             }
         }
     }

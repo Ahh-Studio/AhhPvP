@@ -84,6 +84,7 @@ public class ModBlocks {
                             .mapColor(MapColor.GRASS)
                             .friction(0.8F)
                             .sound(SoundType.SLIME_BLOCK)
+                            .bounceRestitution(0.8F)
                             .noOcclusion()
             );
             EGG_BRIDGE = register(

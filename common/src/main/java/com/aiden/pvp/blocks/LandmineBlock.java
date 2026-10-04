@@ -8,6 +8,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,13 +38,14 @@ public class LandmineBlock extends Block {
 
     private void explode(Level level, BlockPos pos) {
         if (level instanceof ServerLevel) {
+            Vec3 center = Vec3.atCenterOf(pos);
             level.explode(
                     null,
                     Explosion.getDefaultDamageSource(level, null),
                     null,
-                    pos.getCenter().x(),
-                    pos.getCenter().y(),
-                    pos.getCenter().z(),
+                    center.x(),
+                    center.y(),
+                    center.z(),
                     4.0F,
                     false,
                     Level.ExplosionInteraction.TNT

@@ -2,6 +2,7 @@ package com.aiden.pvp.entities.murderer;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.level.Level;
@@ -32,7 +33,7 @@ public class EnderPearlTeleportGoal extends Goal {
         Level world = this.mob.level();
         if (world.isClientSide()) return;
 
-        ThrownEnderpearl enderPearl = new ThrownEnderpearl(EntityType.ENDER_PEARL, world);
+        ThrownEnderpearl enderPearl = new ThrownEnderpearl(EntityTypes.ENDER_PEARL, world);
         enderPearl.setOwner(this.mob);
         enderPearl.setPosRaw(mob.getX(), mob.getEyeY(), mob.getZ());
 

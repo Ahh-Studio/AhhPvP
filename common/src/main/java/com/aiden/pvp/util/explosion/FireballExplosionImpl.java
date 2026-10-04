@@ -19,6 +19,7 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -287,14 +288,14 @@ public class FireballExplosionImpl implements Explosion {
         if (this.destructionType != Explosion.BlockInteraction.TRIGGER_BLOCK) {
             return false;
         } else {
-            return this.entity != null && this.entity.getType() == EntityType.BREEZE_WIND_CHARGE ? this.world.getGameRules().get(GameRules.MOB_GRIEFING) : true;
+            return this.entity != null && this.entity.getType() == EntityTypes.BREEZE_WIND_CHARGE ? this.world.getGameRules().get(GameRules.MOB_GRIEFING) : true;
         }
     }
 
     @Override
     public boolean shouldAffectBlocklikeEntities() {
         boolean bl = this.world.getGameRules().get(GameRules.MOB_GRIEFING);
-        boolean bl2 = this.entity == null || this.entity.getType() != EntityType.BREEZE_WIND_CHARGE && this.entity.getType() != EntityType.WIND_CHARGE;
+        boolean bl2 = this.entity == null || this.entity.getType() != EntityTypes.BREEZE_WIND_CHARGE && this.entity.getType() != EntityTypes.WIND_CHARGE;
         return bl ? bl2 : this.destructionType.shouldAffectBlocklikeEntities() && bl2;
     }
 

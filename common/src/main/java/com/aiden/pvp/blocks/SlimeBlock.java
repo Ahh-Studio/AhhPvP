@@ -5,9 +5,7 @@ import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
@@ -39,23 +36,6 @@ public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
     public void fallOn(Level world, BlockState state, BlockPos pos, Entity entity, double fallDistance) {
         if (!entity.isSuppressingBounce()) {
             entity.causeFallDamage(fallDistance, 0.0F, world.damageSources().fall());
-        }
-    }
-
-    @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter blockGetter, Entity entity) {
-        if (entity.isSuppressingBounce()) {
-            super.updateEntityMovementAfterFallOn(blockGetter, entity);
-        } else {
-            this.bounce(entity);
-        }
-    }
-
-    private void bounce(Entity entity) {
-        Vec3 vec3d = entity.getDeltaMovement();
-        if (vec3d.y < 0.0) {
-            double d = entity instanceof LivingEntity ? 1.0 : 0.8;
-            entity.setDeltaMovement(vec3d.x, -vec3d.y * d, vec3d.z);
         }
     }
 

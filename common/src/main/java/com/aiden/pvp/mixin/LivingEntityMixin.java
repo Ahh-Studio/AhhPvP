@@ -6,7 +6,7 @@ import com.aiden.pvp.items.SwordItem;
 import com.aiden.pvp.mixin.accessor.LivingEntityAccessor;
 import com.aiden.pvp.mixin.invoker.LivingEntityInvoker;
 import it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -202,7 +202,7 @@ public abstract class LivingEntityMixin {
                         e = source.getSourcePosition().z() - instance.getZ();
                     }
 
-                    instance.knockback(0.4F, d, e);
+                    instance.knockback(0.4, d, e, source, amount);
 
                     if (!bl) {
                         instance.indicateDamage(d, e);

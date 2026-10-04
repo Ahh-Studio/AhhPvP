@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
@@ -169,7 +170,7 @@ public class GoldenAppleHealGoal extends Goal {
 
     /** 向远离目标方向抛末影珍珠瞬移脱身。 */
     private void throwEnderpearlAway(LivingEntity target) {
-        ThrownEnderpearl pearl = new ThrownEnderpearl(EntityType.ENDER_PEARL, this.mob.level());
+        ThrownEnderpearl pearl = new ThrownEnderpearl(EntityTypes.ENDER_PEARL, this.mob.level());
         pearl.setOwner(this.mob);
         pearl.setPosRaw(this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         Vec3 away = this.mob.position().subtract(target.position());

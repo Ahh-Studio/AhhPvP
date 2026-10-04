@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
@@ -81,7 +82,7 @@ public class BedBugEntity extends ThrowableItemProjectile {
     }
 
     private void spawnBug(Level world, double x, double y, double z) {
-        Silverfish silverfishEntity = EntityType.SILVERFISH.create(world, EntitySpawnReason.TRIGGERED);
+        Silverfish silverfishEntity = EntityTypes.SILVERFISH.create(world, EntitySpawnReason.TRIGGERED);
         if (silverfishEntity != null) {
             silverfishEntity.snapTo(x, y, z, world.getRandom().nextFloat() * 360.0F, 0.0F);
             world.addFreshEntity(silverfishEntity);

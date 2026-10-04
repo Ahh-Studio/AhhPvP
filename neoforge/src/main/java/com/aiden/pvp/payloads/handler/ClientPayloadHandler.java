@@ -13,7 +13,7 @@ public class ClientPayloadHandler {
     public static void register(RegisterClientPayloadHandlersEvent event) {
         event.register(GetGameRulesS2CPayload.TYPE, (payload, context) -> {
             context.enqueueWork(() -> {
-                if (Minecraft.getInstance().screen instanceof SettingsScreen settingsScreen) {
+                if (Minecraft.getInstance().gui.screen() instanceof SettingsScreen settingsScreen) {
                     settingsScreen.setSliderValues(
                             payload.value1(),
                             payload.value2(),

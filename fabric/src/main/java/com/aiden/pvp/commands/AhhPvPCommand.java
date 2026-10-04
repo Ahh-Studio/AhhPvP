@@ -12,7 +12,7 @@ public class AhhPvPCommand {
         dispatcher.register(
                 ClientCommands.literal("ahh-pvp-mod").executes(commandContext -> {
                     Minecraft.getInstance().execute(() -> {
-                        Minecraft.getInstance().setScreen(new SettingsScreen(null));
+                        Minecraft.getInstance().gui.setScreen(new SettingsScreen(null));
                     });
                     return 1;
                 })
