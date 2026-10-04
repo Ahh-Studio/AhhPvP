@@ -82,12 +82,12 @@ public class PvPClient implements ClientModInitializer {
 
             if (player == null || !player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) break;
 
-            if (minecraft.screen == null) {
+            if (minecraft.gui.screen() == null) {
                 SettingsScreen settingsScreen = new SettingsScreen(null);
-                minecraft.setScreen(settingsScreen);
+                minecraft.gui.setScreen(settingsScreen);
                 break;
-            } else if (minecraft.screen instanceof SettingsScreen) {
-                minecraft.setScreen(null);
+            } else if (minecraft.gui.screen() instanceof SettingsScreen) {
+                minecraft.gui.setScreen(null);
             }
         }
     }

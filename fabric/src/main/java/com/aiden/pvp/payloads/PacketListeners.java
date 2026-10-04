@@ -63,7 +63,7 @@ public class PacketListeners {
     }
 
     public static void getGameRulesS2CPayloadListener(GetGameRulesS2CPayload payload, ClientPlayNetworking.Context context) {
-        if (context.client().screen instanceof SettingsScreen settingsScreen) {
+        if (context.client().gui.screen() instanceof SettingsScreen settingsScreen) {
             settingsScreen.setSliderValues(
                     payload.value1(),
                     payload.value2(),

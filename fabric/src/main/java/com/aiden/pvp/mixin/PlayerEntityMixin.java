@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -88,8 +89,9 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
                 boolean bl2 = serverLevel.getBlockState(pos).is(Blocks.RESPAWN_ANCHOR);
 
                 if (bl || bl2) {
+                    Vec3 center = Vec3.atCenterOf(pos);
                     serverPlayer.teleportTo(
-                            serverLevel, pos.getCenter().x, pos.getCenter().y + 0.5, pos.getCenter().z,
+                            serverLevel, center.x(), center.y() + 0.5, center.z(),
                             Set.of(), 0.0F, 0.0F, true
                     );
                 }

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -115,28 +116,29 @@ public class PlayerEntityMixin implements PlayerEntityPvpExtension {
         }
         if (this.teleportingUsingReturnScroll && returnScrollTeleportCountDown == 0) {
             if (instance.level() instanceof ServerLevel serverLevel && instance instanceof ServerPlayer serverPlayer) {
-                if (serverPlayer.getRespawnConfig() != null && (serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BLACK_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BLUE_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BROWN_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.CYAN_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.GRAY_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.GREEN_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.LIGHT_BLUE_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.LIME_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.LIGHT_GRAY_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.MAGENTA_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.ORANGE_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.PINK_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.PURPLE_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.RED_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.WHITE_BED)
-                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.YELLOW_BED)
+                if (serverPlayer.getRespawnConfig() != null && (serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.black())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.blue())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.brown())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.cyan())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.gray())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.green())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.lightBlue())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.lime())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.lightGray())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.magenta())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.orange())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.pink())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.purple())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.red())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.white())
+                        || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.BED.yellow())
                         || serverLevel.getBlockState(serverPlayer.getRespawnConfig().respawnData().pos()).is(Blocks.RESPAWN_ANCHOR))) {
+                    Vec3 respawnCenter = Vec3.atCenterOf(serverPlayer.getRespawnConfig().respawnData().pos());
                     serverPlayer.teleportTo(
                             serverLevel,
-                            serverPlayer.getRespawnConfig().respawnData().pos().getCenter().x,
-                            serverPlayer.getRespawnConfig().respawnData().pos().getCenter().y + 0.5,
-                            serverPlayer.getRespawnConfig().respawnData().pos().getCenter().z,
+                            respawnCenter.x(),
+                            respawnCenter.y() + 0.5,
+                            respawnCenter.z(),
                             Set.of(),
                             0.0F,
                             0.0F,
