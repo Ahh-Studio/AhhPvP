@@ -7,6 +7,6 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 public class PvPModMenuCompat implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new SettingsScreen(parent);
+        return SettingsScreen::new;
     }
 }
