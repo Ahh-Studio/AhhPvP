@@ -36,21 +36,21 @@ public abstract class LivingEntityMixin {
     private boolean blockedByItemActive = false;
 
     @Inject(method = "blockedByItem", at = @At("HEAD"))
-    private void onBlockedByItem(LivingEntity attacker, CallbackInfo ci) {
+    private void onBlockedByItem(LivingEntity defender, DamageSource source, float damage, CallbackInfo ci) {
         this.blockedByItemActive = true;
     }
 
     @Inject(method = "blockedByItem", at = @At("RETURN"))
-    private void onBlockedByItemReturn(LivingEntity attacker, CallbackInfo ci) {
+    private void onBlockedByItemReturn(LivingEntity defender, DamageSource source, float damage, CallbackInfo ci) {
         this.blockedByItemActive = false;
     }
 
     @Inject(
-            method = "knockback",
+            method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    public void takeKnockback(double strength, double x, double z, CallbackInfo ci) {
+    public void takeKnockback(double power, double xd, double zd, final DamageSource source, final float damage, final boolean comesFromEffect, CallbackInfo ci) {
         LivingEntity instance = (LivingEntity) (Object) this;
 
         if (this.blockedByItemActive) {
@@ -69,35 +69,35 @@ public abstract class LivingEntityMixin {
         }
         
         if (isSwordBlocking) {
-            strength = 0.4F;
+            power = 0.4F;
         }
 
         // 杀手 Jump Reset：受击瞬间起跳时，减免大部分击退
         if (instance instanceof MurdererEntity murderer && murderer.jumpResetQueued) {
-            strength *= 0.1F;
+            power *= 0.1F;
         }
 
-        strength *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-        if (strength > 0.0) {
+        power *= 1.0 - instance.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+        if (power > 0.0) {
             instance.needsSync = true;
             Vec3 deltaMovement = instance.getDeltaMovement();
 
-            while (x * x + z * z < 1.0E-5F) {
-                x = (Math.random() - Math.random()) * 0.01;
-                z = (Math.random() - Math.random()) * 0.01;
+            while (xd * xd + zd * zd < 1.0E-5F) {
+                xd = (Math.random() - Math.random()) * 0.01;
+                zd = (Math.random() - Math.random()) * 0.01;
             }
 
-            Vec3 vec32 = new Vec3(x, 0.0, z).normalize().scale(strength);
+            Vec3 vec32 = new Vec3(xd, 0.0, zd).normalize().scale(power);
             if (instance.onGround()) {
                 instance.setDeltaMovement(
                         deltaMovement.x / 2.0 - vec32.x,
-                        Math.min(0.5, deltaMovement.y / 2.0 + strength),
+                        Math.min(0.5, deltaMovement.y / 2.0 + power),
                         deltaMovement.z / 2.0 - vec32.z
                 );
             } else {
                 instance.setDeltaMovement(
                         deltaMovement.x / 2.5 - vec32.x,
-                        Math.min(0.5, deltaMovement.y / 2.5 + strength * 0.8),
+                        Math.min(0.5, deltaMovement.y / 2.5 + power * 0.8),
                         deltaMovement.z / 2.5 - vec32.z
                 );
             }
