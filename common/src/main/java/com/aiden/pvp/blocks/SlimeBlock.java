@@ -2,7 +2,6 @@ package com.aiden.pvp.blocks;
 
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
 import com.aiden.pvp.blocks.entity.SlimeBlockEntity;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -19,14 +18,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jspecify.annotations.Nullable;
 
 public class SlimeBlock extends HalfTransparentBlock implements EntityBlock {
-    public static final MapCodec<SlimeBlock> CODEC = simpleCodec(SlimeBlock::new);
     public static final IntegerProperty VANISH_COUNTDOWN = IntegerProperty.create("vanish_countdown", 0, 1601);
-
-    @Override
-    public MapCodec<SlimeBlock> codec() {
-        return CODEC;
-    }
-
     public SlimeBlock(Properties settings) {
         super(settings);
         registerDefaultState(defaultBlockState().setValue(VANISH_COUNTDOWN, 0));

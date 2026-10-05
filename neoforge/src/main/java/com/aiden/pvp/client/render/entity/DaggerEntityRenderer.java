@@ -54,11 +54,11 @@ public class DaggerEntityRenderer<T extends DaggerEntity> extends EntityRenderer
         Vec3 velocity = daggerEntityRenderState.velocity;
         if (velocity.lengthSqr() > 0.001) {
             float yaw = (float) (Mth.atan2(velocity.x(), velocity.z()) * 180.0 / Math.PI) - 90.0F;
-            matrixStack.mulPose(Axis.YP.rotationDegrees(yaw - 135.0F));
+            matrixStack.rotateDegrees(Axis.YP, yaw - 135.0F);
         }
 
-        matrixStack.mulPose(Axis.XP.rotationDegrees(95.0F));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(0.0F));
+        matrixStack.rotateDegrees(Axis.XP, 95.0F);
+        ;
 
         daggerEntityRenderState.itemRenderState
                 .submit(matrixStack, orderedRenderCommandQueue, daggerEntityRenderState.lightCoords, OverlayTexture.NO_OVERLAY, daggerEntityRenderState.outlineColor);

@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FishingBobberEntity extends Projectile {
-    private final InterpolationHandler positionInterpolator = new InterpolationHandler(this);
     public boolean shouldDamageStack = false;
 
     public FishingBobberEntity(EntityType<? extends Projectile> entityType, Level world) {
@@ -54,11 +53,6 @@ public class FishingBobberEntity extends Projectile {
     }
 
     @NotNull
-    @Override
-    public InterpolationHandler getInterpolation() {
-        return this.positionInterpolator;
-    }
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
 

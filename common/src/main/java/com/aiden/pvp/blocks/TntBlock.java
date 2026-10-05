@@ -1,6 +1,5 @@
 package com.aiden.pvp.blocks;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -31,12 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class TntBlock extends Block {
-    public static final MapCodec<TntBlock> CODEC = TntBlock.simpleCodec(TntBlock::new);
     public static final BooleanProperty UNSTABLE = BlockStateProperties.UNSTABLE;
-
-    public MapCodec<TntBlock> codec() {
-        return CODEC;
-    }
 
     public TntBlock(BlockBehaviour.Properties settings) {
         super(settings);

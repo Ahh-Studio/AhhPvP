@@ -141,7 +141,7 @@ public class MeleeAttackGoal extends Goal {
     protected void attack(LivingEntity target) {
         if (this.canAttack(target)) {
             this.resetCooldown();
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
             // 仅在真正命中时才触发 W-Tap 冻结，挥空不冻结
             boolean hit = this.mob.doHurtTarget((ServerLevel) this.mob.level(), target);
             if (hit && this.mob instanceof MurdererEntity murderer) {

@@ -3,7 +3,6 @@ package com.aiden.pvp.blocks;
 import com.aiden.pvp.blocks.entity.BossSpawnerBlockEntity;
 import com.aiden.pvp.entities.ModEntityTypes;
 import com.aiden.pvp.items.ModItems;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
@@ -31,12 +30,6 @@ public class BossSpawnerBlock extends BaseEntityBlock {
     public BossSpawnerBlock(Properties settings) {
         super(settings);
     }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(BossSpawnerBlock::new);
-    }
-
     @Override
     protected @NonNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
                                                    Player player, InteractionHand hand, BlockHitResult hit) {
@@ -78,7 +71,7 @@ public class BossSpawnerBlock extends BaseEntityBlock {
 
     private void summonMurderer(Level world, Vec3i pos) {
         if (world instanceof ServerLevel serverWorld) {
-            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos), EntitySpawnReason.EVENT);
+            ModEntityTypes.MURDERER.spawn(serverWorld, new BlockPos(pos.getX(), pos.getY(), pos.getZ()), EntitySpawnReason.EVENT);
         }
     }
 

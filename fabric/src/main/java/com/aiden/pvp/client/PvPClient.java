@@ -16,7 +16,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -32,7 +31,6 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.Permissions;
-import org.lwjgl.glfw.GLFW;
 
 import static com.aiden.pvp.client.keybinding.ModKeyBindings.*;
 
@@ -55,12 +53,8 @@ public class PvPClient implements ClientModInitializer {
             BlockEntityRenderers.register(ModBlockEntityTypes.DEFENSE_TOWER_BLOCK_ENTITY, ChestRenderer::new);
         }
 
-        throwTntKeyBinding = KeyMappingHelper.registerKeyMapping(
-                new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, PVP_KEY_CATEGORY)
-        );
-        openSettingsKeyBinding = KeyMappingHelper.registerKeyMapping(
-                new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F7, PVP_KEY_CATEGORY)
-        );
+        throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, 0, PVP_KEY_CATEGORY);
+        openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYBOARD, 218, PVP_KEY_CATEGORY);
 
         ClientTickEvents.END_CLIENT_TICK.register(PvPClient::endClientTickEventListener);
 

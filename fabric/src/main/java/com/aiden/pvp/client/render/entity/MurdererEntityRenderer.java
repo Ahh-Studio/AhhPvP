@@ -74,7 +74,7 @@ public class MurdererEntityRenderer extends LivingEntityRenderer<MurdererEntity,
         if (state instanceof MurdererEntityRenderState murdererState) {
             murdererState.attacking = entity.isAggressive();
             murdererState.mainArm = entity.getMainArm();
-            murdererState.handSwingProgress = entity.getAttackAnim(partialTicks);
+            murdererState.handSwingProgress = entity.getSwingAnimation(partialTicks);
         }
     }
 

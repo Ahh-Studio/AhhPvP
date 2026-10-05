@@ -1,9 +1,10 @@
 package com.aiden.pvp.blocks;
 
 import com.aiden.pvp.blocks.entity.BossBattleHandlerBlockEntity;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -19,12 +20,6 @@ public class BossBattleHandlerBlock extends BaseEntityBlock {
     protected BossBattleHandlerBlock(Properties settings) {
         super(settings);
     }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(BossBattleHandlerBlock::new);
-    }
-
     @Override
     public @Nullable BossBattleHandlerBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BossBattleHandlerBlockEntity(pos, state);
@@ -42,7 +37,7 @@ public class BossBattleHandlerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+    public void playerDestroy(ServerLevel world, ServerPlayer player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool) {
         if (blockEntity instanceof BossBattleHandlerBlockEntity bossBattleHandlerBlockEntity) {
             bossBattleHandlerBlockEntity.removeBossBarPlayers();
         }
@@ -50,7 +45,7 @@ public class BossBattleHandlerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NonNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         if (world.getBlockEntity(pos) instanceof BossBattleHandlerBlockEntity bossBattleHandlerBlockEntity) {
             bossBattleHandlerBlockEntity.removeBossBarPlayers();
         }

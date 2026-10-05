@@ -33,8 +33,8 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
     }
 
     @Override
-    public boolean shouldRender(FishingBobberEntity entity, Frustum frustum, double x, double y, double z) {
-        return super.shouldRender(entity, frustum, x, y, z) && entity.getPlayerOwner() != null;
+    public boolean shouldRender(FishingBobberEntity entity, Frustum frustum, double x, double y, double z, float partialTick) {
+        return super.shouldRender(entity, frustum, x, y, z, partialTick) && entity.getPlayerOwner() != null;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         matrixStack.pushPose();
         matrixStack.pushPose();
         matrixStack.scale(0.5F, 0.5F, 0.5F);
-        matrixStack.mulPose(cameraRenderState.orientation);
+        matrixStack.rotate(cameraRenderState.orientation);
         orderedRenderCommandQueue.submitCustomGeometry(matrixStack, LAYER, (matricesEntry, vertexConsumer) -> {
             vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.lightCoords, 0.0F, 0, 0, 1);
             vertex(vertexConsumer, matricesEntry, fishingBobberEntityRenderState.lightCoords, 1.0F, 0, 1, 1);
@@ -148,7 +148,7 @@ public class FishingBobberEntityRenderer extends EntityRenderer<FishingBobberEnt
         if (playerEntity == null) {
             fishingBobberEntityRenderState.pos = Vec3.ZERO;
         } else {
-            float g = playerEntity.getAttackAnim(f);
+            float g = playerEntity.getSwingAnimation(f);
             float h = Mth.sin(Mth.sqrt(g) * (float) Math.PI);
             Vec3 vec3d = this.getHandPos(playerEntity, h, f);
             Vec3 vec3d2 = fishingBobberEntity.getPosition(f).add(0.0, 0.25, 0.0);
