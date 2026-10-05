@@ -247,9 +247,8 @@ public class FireballExplosionImpl implements Explosion {
                 serverPlayerEntity.connection.send(new ClientboundExplodePacket(
                         vec3d, power * 7.5F, i * 3, optional,
                         particleEffect, soundEvent,
-                        particleList
-                ));
-            }
+                        particleList, true));
+              }
         }
     }
 

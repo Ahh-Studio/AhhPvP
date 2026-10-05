@@ -153,7 +153,7 @@ public abstract class LivingEntityMixin {
             }
 
             boolean bl2 = true;
-            if (instance.invulnerableTime > 10.0F && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
+            if (instance.getInvulnerableTime() > 10 && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
                 if (amount <= accessor.getLastHurt()) {
                     cir.setReturnValue(false);
                     return;
@@ -168,7 +168,7 @@ public abstract class LivingEntityMixin {
                     phdi = serverWorld.getGameRules().get(ModGameRules.PHDI);
                 }
                 accessor.setLastDamageTaken(amount);
-                instance.invulnerableTime = 2 * phdi;
+                instance.setInvulnerableTime(2 * phdi);
 
                 invoker.invokedApplyDamage(world, source, amount);
 
@@ -187,7 +187,7 @@ public abstract class LivingEntityMixin {
                 }
 
                 if (!source.is(DamageTypeTags.NO_IMPACT) && (!bl || amount > 0.0F)) {
-                    instance.hurtMarked = true;
+                    instance.animateHurt(0.0F);
                 }
 
                 if (!source.is(DamageTypeTags.NO_KNOCKBACK)) {

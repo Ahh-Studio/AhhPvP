@@ -1,13 +1,15 @@
 package com.aiden.pvp.datagen;
 
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.advancements.AdvancementSubProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 
-import java.util.function.Consumer;
+public class PvPAdvancementProvider extends AdvancementSubProvider {
+    public PvPAdvancementProvider(BootstrapContext<net.minecraft.advancements.Advancement> output) {
+        super(output);
+    }
 
-public class PvPAdvancementProvider implements AdvancementSubProvider {
-    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> writer) {
-
+    @Override
+    public void generate() {
+        // no custom advancements yet
     }
 }

@@ -2,21 +2,21 @@ package com.aiden.pvp.datagen;
 
 import com.aiden.pvp.items.ModItemTags;
 import com.aiden.pvp.items.ModItems;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-
-import java.util.concurrent.CompletableFuture;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class PvPRecipeProvider extends RecipeProvider {
-    protected PvPRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public PvPRecipeProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<net.minecraft.advancements.Advancement> advancements) {
+        super(recipes, advancements);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PvPRecipeProvider extends RecipeProvider {
                 .pattern("BCB")
                 .pattern("ABA")
                 .unlockedBy("has_blaze_rod", this.has(Items.BLAZE_ROD))
-                .group("self-res_platform")
+                .group("self_res_platform")
                 .save(this.output);
         shaped(RecipeCategory.MISC, Items.PLAYER_HEAD)
                 .define('A', Items.POISONOUS_POTATO)
@@ -72,37 +72,5 @@ public class PvPRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_skeleton_skull", this.has(Items.SKELETON_SKULL))
                 .group("player_head")
                 .save(this.output);
-        offerBBUUpgradeRecipe(Items.WOODEN_SWORD, ModItems.WOODEN_SWORD);
-        offerBBUUpgradeRecipe(Items.STONE_SWORD, ModItems.STONE_SWORD);
-        offerBBUUpgradeRecipe(Items.IRON_SWORD, ModItems.IRON_SWORD);
-        offerBBUUpgradeRecipe(Items.DIAMOND_SWORD, ModItems.DIAMOND_SWORD);
-    }
-
-    public void offerBBUUpgradeRecipe(Item input, Item result) {
-        SmithingTransformRecipeBuilder.smithing(
-                        Ingredient.of(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE),
-                        Ingredient.of(input),
-                        this.tag(ModItemTags.EMPTY),
-                        RecipeCategory.COMBAT,
-                        result)
-                .unlocks("has_bbu_upgrade_template",
-                        this.has(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE))
-                .save(this.output, "bbu_" + getItemName(result) + "_smithing");
-    }
-
-    public static class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput output) {
-            return new PvPRecipeProvider(provider, output);
-        }
-
-        @Override
-        public String getName() {
-            return "Recipe";
-        }
     }
 }

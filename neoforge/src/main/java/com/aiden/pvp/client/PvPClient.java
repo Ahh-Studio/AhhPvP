@@ -18,14 +18,12 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import org.lwjgl.glfw.GLFW;
-
 public class PvPClient {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         ModKeyBindings.pvpKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(com.aiden.pvp.PvP.MOD_ID, "pvp"));
-        ModKeyBindings.throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", GLFW.GLFW_MOUSE_BUTTON_LEFT, ModKeyBindings.pvpKeyCategory);
-        ModKeyBindings.openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", GLFW.GLFW_KEY_F7, ModKeyBindings.pvpKeyCategory);
+        ModKeyBindings.throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", 0, ModKeyBindings.pvpKeyCategory);
+        ModKeyBindings.openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", 7, ModKeyBindings.pvpKeyCategory);
 
         event.registerCategory(ModKeyBindings.pvpKeyCategory);
         event.register(ModKeyBindings.throwTntKeyBinding);

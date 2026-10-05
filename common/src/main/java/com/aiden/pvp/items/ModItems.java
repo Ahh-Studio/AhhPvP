@@ -16,8 +16,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 
@@ -190,7 +188,7 @@ public final class ModItems {
             STONE_SWORD = register("stone_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.STONE, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
             IRON_SWORD = register("iron_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.IRON, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
             DIAMOND_SWORD = register("diamond_sword", SwordItem::new, new Item.Properties().sword(ToolMaterial.DIAMOND, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
-            AXE_OF_MURDER = register("axe_of_murder", properties -> new AxeItem(ModToolMaterials.SUPER, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED, properties), new Item.Properties());
+            AXE_OF_MURDER = register("axe_of_murder", Item::new, new Item.Properties().axe(ModToolMaterials.SUPER, PVP_SWORD_ATTACK_DAMAGE, PVP_SWORD_ATTACK_SPEED));
 
             THROWABLE_DAGGER = register("throwable_dagger", ThrowableDaggerItem::new, new Item.Properties().sword(ToolMaterial.IRON, 2, 251).useCooldown(5));
 
@@ -214,8 +212,6 @@ public final class ModItems {
         }
     }
 
-    public static void registerBrewingRecipes(PotionBrewing.Builder builder) {
-        builder.addMix(Potions.WATER, Items.GLASS, SHORT_INVISIBILITY_POTION);
-        builder.addMix(Potions.WATER, STRONG_GLASS, LONG_INVISIBILITY_POTION);
-    }
+    // Brewing recipes are now defined as JSON recipes in resources/data/pvp/recipe/brewing/.
+    // See vanilla data/minecraft/recipe/brewing/*.json for the format.
 }

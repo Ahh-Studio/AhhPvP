@@ -105,14 +105,7 @@ public class MurdererEntity extends Monster {
         } else {
             return State.IDLE;
         }
-    }
-
-    @Override
-    public boolean canSimulateMovement() {
-        return this.wTapFreezeTicks <= 0 && super.canSimulateMovement();
-    }
-
-    void triggerWTapPause() {
+    }void triggerWTapPause() {
         this.wTapFreezeTicks = DEFAULT_FREEZE_DURATION;
         this.getNavigation().stop();
     }

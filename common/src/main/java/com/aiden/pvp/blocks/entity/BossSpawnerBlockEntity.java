@@ -21,10 +21,10 @@ public class BossSpawnerBlockEntity extends BlockEntity {
     }
 
     public void placeStructure(ServerLevel world) {
-        StructureTemplate structureTemplate =  world.getStructureManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_a1")).orElse(null);
-        StructureTemplate structureTemplate2 =  world.getStructureManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_a2")).orElse(null);
-        StructureTemplate structureTemplate3 =  world.getStructureManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_b1")).orElse(null);
-        StructureTemplate structureTemplate4 =  world.getStructureManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_b2")).orElse(null);
+        StructureTemplate structureTemplate =  world.getStructureTemplateManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_a1")).orElse(null);
+        StructureTemplate structureTemplate2 =  world.getStructureTemplateManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_a2")).orElse(null);
+        StructureTemplate structureTemplate3 =  world.getStructureTemplateManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_b1")).orElse(null);
+        StructureTemplate structureTemplate4 =  world.getStructureTemplateManager().get(Identifier.fromNamespaceAndPath(PvPConstants.MOD_ID, "battlefield_b2")).orElse(null);
         if (structureTemplate != null && structureTemplate2 != null && structureTemplate3 != null && structureTemplate4 != null) {
             StructurePlaceSettings structurePlacementSettings = new StructurePlaceSettings()
                     .setMirror(Mirror.NONE)

@@ -3,18 +3,22 @@ package com.aiden.pvp.datagen;
 import com.aiden.pvp.items.ModItemTags;
 import com.aiden.pvp.items.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBrewingProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.BrewingProvider;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.crafting.Recipe;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -32,9 +36,8 @@ public class PvPRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider wrapperLookup,
-            @NotNull RecipeOutput recipeExporter) {
-        return new RecipeProvider(wrapperLookup, recipeExporter) {
+    protected @NonNull RecipeProvider createRecipeProvider(HolderLookup.@NonNull Provider wrapperLookup, @NonNull BootstrapContext<Recipe<?>> recipes, @NonNull BootstrapContext<Advancement> advancements) {
+        return new RecipeProvider(recipes, advancements) {
             @Override
             public void buildRecipes() {
                 shaped(RecipeCategory.MISC, ModItems.THROWABLE_DAGGER)
@@ -92,15 +95,16 @@ public class PvPRecipeProvider extends FabricRecipeProvider {
                 offerBBUUpgradeRecipe(Items.STONE_SWORD, ModItems.STONE_SWORD);
                 offerBBUUpgradeRecipe(Items.IRON_SWORD, ModItems.IRON_SWORD);
                 offerBBUUpgradeRecipe(Items.DIAMOND_SWORD, ModItems.DIAMOND_SWORD);
+                
             }
 
             public void offerBBUUpgradeRecipe(Item input, Item result) {
                 SmithingTransformRecipeBuilder.smithing(
-                        Ingredient.of(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE),
-                        Ingredient.of(input),
-                        Ingredient.of(itemLookup.getOrThrow(ModItemTags.EMPTY)),
-                        RecipeCategory.COMBAT,
-                        result)
+                                Ingredient.of(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE),
+                                Ingredient.of(input),
+                                Ingredient.of(itemLookup.getOrThrow(ModItemTags.EMPTY)),
+                                RecipeCategory.COMBAT,
+                                result)
                         .unlocks("has_bbu_upgrade_template",
                                 this.has(ModItems.BBU_UPGRADE_SMITHING_TEMPLATE))
                         .save(this.output, "bbu_" + getItemName(result) + "_smithing");
@@ -109,7 +113,7 @@ public class PvPRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return "Recipe";
     }
 }

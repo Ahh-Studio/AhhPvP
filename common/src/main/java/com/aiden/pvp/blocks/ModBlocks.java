@@ -60,7 +60,7 @@ public class ModBlocks {
                 .isValidSpawn((state, level, pos, type) -> false)
                 .isRedstoneConductor((state, level, pos) -> false)
                 .isSuffocating((state, level, pos) -> false)
-                .isViewBlocking((state, level, pos) -> false)
+                .isViewBlocking((state, level, pos, aabb) -> false)
         );
     }
 
@@ -135,7 +135,7 @@ public class ModBlocks {
                     BlockBehaviour.Properties.of()
                             .instrument(NoteBlockInstrument.CUSTOM_HEAD)
                             .strength(1200.0F)
-                            .pushReaction(PushReaction.BLOCK)
+                            .pushReaction(PushReaction.IMMOVEABLE)
             );
             BOSS_SPAWNER = register(
                     "boss_spawner",
