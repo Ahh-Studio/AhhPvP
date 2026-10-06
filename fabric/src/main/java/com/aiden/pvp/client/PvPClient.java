@@ -2,6 +2,7 @@ package com.aiden.pvp.client;
 
 import com.aiden.pvp.PvP;
 import com.aiden.pvp.blocks.entity.ModBlockEntityTypes;
+import com.aiden.pvp.client.keybinding.ModKeyBindings;
 import com.aiden.pvp.client.render.entity.ChickenDefenseEntityRenderer;
 import com.aiden.pvp.client.render.entity.DaggerEntityRenderer;
 import com.aiden.pvp.client.render.entity.FishingBobberEntityRenderer;
@@ -16,6 +17,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -53,8 +55,7 @@ public class PvPClient implements ClientModInitializer {
             BlockEntityRenderers.register(ModBlockEntityTypes.DEFENSE_TOWER_BLOCK_ENTITY, ChestRenderer::new);
         }
 
-        throwTntKeyBinding = new KeyMapping("key.pvp.throw_tnt", InputConstants.Type.MOUSE, 0, PVP_KEY_CATEGORY);
-        openSettingsKeyBinding = new KeyMapping("key.pvp.open_settings", InputConstants.Type.KEYBOARD, 218, PVP_KEY_CATEGORY);
+        ModKeyBindings.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(PvPClient::endClientTickEventListener);
 
