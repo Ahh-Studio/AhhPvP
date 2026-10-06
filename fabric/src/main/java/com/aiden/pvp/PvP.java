@@ -89,7 +89,7 @@ public class PvP implements ModInitializer {
 			BuiltInRegistries.POTION.listElements()
 					.filter(potionReference -> potionReference.value().isEnabled(output.getContext().enabledFeatures()) && (potionReference.is(ModItems.LONG_INVISIBILITY_POTION) || potionReference.is(ModItems.SHORT_INVISIBILITY_POTION)))
 					.map(potionReference -> PotionContents.createItemStack(Items.POTION, potionReference))
-					.forEach(stack -> output.accept(stack));
+					.forEach(output::accept);
 		});
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.MURDERER, MurdererEntity.createMurdererAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.CHICKEN_DEFENSE, com.aiden.pvp.entities.ChickenDefenseEntity.createAttributes());

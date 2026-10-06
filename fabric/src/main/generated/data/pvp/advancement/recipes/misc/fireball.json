@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "pvp:fireball"
+        "recipes": "pvp:fireball"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

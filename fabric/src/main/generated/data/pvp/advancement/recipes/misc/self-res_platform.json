@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "pvp:self-res_platform"
+        "recipes": "pvp:self-res_platform"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

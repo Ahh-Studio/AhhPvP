@@ -36,12 +36,12 @@ public abstract class LivingEntityMixin {
     private boolean blockedByItemActive = false;
 
     @Inject(method = "blockedByItem", at = @At("HEAD"))
-    private void onBlockedByItem(LivingEntity defender, DamageSource source, float damage, CallbackInfo ci) {
+    private void onBlockedByItem(LivingEntity defender, DamageSource source, float damage, boolean fullyBlocked, CallbackInfo ci) {
         this.blockedByItemActive = true;
     }
 
     @Inject(method = "blockedByItem", at = @At("RETURN"))
-    private void onBlockedByItemReturn(LivingEntity defender, DamageSource source, float damage, CallbackInfo ci) {
+    private void onBlockedByItemReturn(LivingEntity defender, DamageSource source, float damage, boolean fullyBlocked, CallbackInfo ci) {
         this.blockedByItemActive = false;
     }
 

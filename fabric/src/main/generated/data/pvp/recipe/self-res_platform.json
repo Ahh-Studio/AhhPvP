@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "self-res_platform",
   "key": {
     "A": "minecraft:slime_block",

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "pvp:bbu_wooden_sword_smithing"
+        "recipes": "pvp:bbu_wooden_sword_smithing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

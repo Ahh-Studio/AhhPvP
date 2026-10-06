@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "golden_head",
   "key": {
     "A": "minecraft:resin_brick",

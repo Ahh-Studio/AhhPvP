@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "fireball",
   "key": {
     "A": "minecraft:blaze_powder",
