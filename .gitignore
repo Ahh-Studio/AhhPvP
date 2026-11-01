@@ -7,8 +7,16 @@ build/
 
 # Minecraft
 run/
-.vscode/settings.json
 /src/main/generated/.cache/
+fabric/src/main/generated/.cache/
 src/main/resources/assets/pvp/items/.DS_Store
 /AhhPvP.iml
 /release/
+
+# 本地 Maven 镜像（离线依赖，体积大，不入库）
+local-maven/
+
+# IDE / 工具目录
+.vscode/
+.vscode.bak/
+.trae/
