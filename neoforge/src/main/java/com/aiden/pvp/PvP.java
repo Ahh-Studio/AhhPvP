@@ -64,6 +64,7 @@ public class PvP {
 
         // Data generator
         modBus.addListener(PvPDataGenerator::gatherData);
+        modBus.addListener(PvPDataGenerator::gatherRegistries);
 
         // Common setup (dispenser behavior)
         modBus.addListener(PvP::commonSetupEventListener);

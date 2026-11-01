@@ -2,6 +2,32 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 
+// Replace all repositories to use local Maven mirror (since maven.neoforged.net is down)
+repositories {
+    clear()
+    maven {
+        name = 'LocalMaven'
+        url = file("${rootDir}/local-maven")
+    }
+    maven {
+        name = 'NeoForgedForgeCDN'
+        url = 'https://neoforged.forgecdn.net/releases/'
+    }
+    mavenCentral()
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+    maven {
+        name = 'Terraformers'
+        url = 'https://maven.terraformersmc.com/'
+    }
+}
+
 version = "${project.mod_version}+mc${project.minecraft_version}-neoforge"
 base {
     archivesName = project.archives_base_name
@@ -62,7 +88,22 @@ configurations {
 }
 
 dependencies {
-    // compileOnly dependencies from common (provided by NeoForge at runtime)
+    // common 的源码已通过 sourceSets.main.java.srcDir 合并编译，不需要再依赖它的 jar。
+    // 若依赖 project(':common')，Loom 解析出的全平台 MC 库（含 natives-windows-arm64）
+    // 会进入 NFRT 的 classpath，而它们不在 artifact manifest 里，导致 NFRT 去联网下载。
+
+    // Minecraft libraries (fastutil, brigadier, authlib, slf4j, netty, lwjgl ...).
+    // Normally the NeoForge Gradle plugin injects this automatically; with our local
+    // Maven mirror it resolves to an empty module, so we declare it explicitly.
+    // The local POM lists all 54 libraries plus the Windows natives, so this stays one line.
+    implementation "net.neoforged:minecraft-dependencies:26.3"
+    modDevRuntimeDependencies "net.neoforged:minecraft-dependencies:26.3"
+
+    // FML needs at-parser at runtime. Keep it off NFRT's compile classpath:
+    // its Maven coordinate is not in NeoForge's artifact manifest, so NFRT would
+    // try to download it from maven.neoforged.net (unreachable here).
+    runtimeOnly "net.neoforged.accesstransformers:at-parser:11.0.2"
+
     compileOnly "org.spongepowered:mixin:0.8.5"
     compileOnly "io.github.llamalad7:mixinextras-common:0.5.5"
 }

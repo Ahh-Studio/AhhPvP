@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:brewing",
+  "input": {
+    "item": "minecraft:potion",
+    "potion_contents": {
+      "potions": "minecraft:water"
+    }
+  },
+  "output": {
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "pvp:long_invisibility_potion"
+      }
+    },
+    "id": "minecraft:potion"
+  },
+  "reagent": {
+    "item": "pvp:strong_glass"
+  }
+}
